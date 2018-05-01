@@ -30,11 +30,13 @@ public class Config {
 	
 	public final static String DEFAULT_CHARSET = Charset.UTF8;
 	
-	private final static String CONF_PATH = "./conf/ec_conf.xml";
+	private final static String CONF_PATH = "./conf/au_conf.xml";
 	
-	public final static String PAGE_TPL = "/exp/certificate/core/index.tpl";
+	public final static String PAGE_TPL = "/exp/au/core/index.tpl";
 	
-	public final static String TABLE_TPL = "/exp/certificate/core/table.tpl";
+	public final static String TABLE_TPL = "/exp/au/core/table.tpl";
+	
+	public final static String ROW_TPL = "/exp/au/core/row.tpl";
 	
 	public final static String PAGE_PATH = "./index.html";
 	
