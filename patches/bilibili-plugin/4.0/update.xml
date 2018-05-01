@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<update>
+  
+  <name caption="升级包名称">bilibili-plugin-patch-4.0.zip</name>
+  <MD5 caption="升级包MD5">AAAAAAAAAAAAAAAAAAAAA</MD5>
+  
+  <steps hint="自动升级步骤">
+    <mov caption="移动命令" from="项目位置" to="项目位置" />
+    <del caption="删除命令" from="项目位置" />
+    <add caption="添加命令" from="补丁包位置" to="项目位置" />
+  </steps>
+   
+</<update>>
