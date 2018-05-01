@@ -15,6 +15,7 @@ import exp.libs.utils.other.LogUtils;
  */
 public class Main {
 	
+	// 在线升级， 升级命令：移动文件，删除文件，添加文件,  压缩包转txt
 	public static void main(String[] args) {
 		LogUtils.loadLogBackConfig();
 		// TODO: 程序入口

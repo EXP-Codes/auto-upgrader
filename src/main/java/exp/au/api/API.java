@@ -4,9 +4,17 @@ import java.util.List;
 
 import exp.au.bean.ldm.UpdateInfo;
 import exp.au.bean.ldm.UpdateVersion;
+import exp.libs.warp.net.http.HttpURLUtils;
 
 public class API {
 
+	private final static String URL = "http://lyy289065406.gitee.io/auto-upgrader/";
+	
+	public static void main(String[] args) {
+		String response = HttpURLUtils.doGet(URL, null, null);
+		System.out.println(response);
+	}
+	
 	/*
 	 * 1.先检查是否存在新版本
 	 * 2.检查版本跨度

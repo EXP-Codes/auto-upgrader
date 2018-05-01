@@ -1,140 +1,142 @@
 package exp.au.convert;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
+import java.util.Iterator;
+import java.util.LinkedList;
+import java.util.List;
 
+import org.dom4j.Document;
+import org.dom4j.DocumentHelper;
+import org.dom4j.Element;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import exp.libs.envm.Charset;
+import exp.certificate.Config;
+import exp.certificate.bean.AppInfo;
+import exp.libs.utils.encode.CryptoUtils;
 import exp.libs.utils.io.FileUtils;
-import exp.libs.utils.num.BODHUtils;
+import exp.libs.utils.other.StrUtils;
+import exp.libs.utils.time.TimeUtils;
+import exp.libs.warp.tpl.Template;
 
-// 任意文件与txt文件互转: 用于在线升级
+/**
+ * <PRE>
+ * 页面/应用信息转换器
+ * </PRE>
+ * <B>PROJECT：</B> exp-certificate
+ * <B>SUPPORT：</B> EXP
+ * @version   1.0 2017-12-17
+ * @author    EXP: 272629724@qq.com
+ * @since     jdk版本：jdk1.6
+ */
 public class Convertor {
 
 	/** 日志器 */
 	private final static Logger log = LoggerFactory.getLogger(Convertor.class);
 	
-	private final static int BUFFER_SIZE = 4096;
-	
-	public final static String TMP_DIR = "/tmp/";
-	
-	private final static String TXT_SUFFIX = ".txt";
-	
 	/** 私有化构造函数 */
 	protected Convertor() {}
 	
-	public static void main(String[] args) {
-		System.out.println(toTXTs("./lib"));
-		System.out.println(toFiles("./lib/tmp"));
+	/**
+	 * 根据应用信息列表生成授权页面
+	 * @param appInfos 应用列表
+	 * @return 是否生成成功
+	 */
+	public static boolean toPage(List<AppInfo> appInfos) {
+		List<String> tables = toTables(appInfos);
+		Template tpl = new Template(Config.PAGE_TPL, Config.DEFAULT_CHARSET);
+		tpl.set("tables", StrUtils.concat(tables, ""));
+		tpl.set("time", TimeUtils.getSysDate());
+		return FileUtils.write(Config.PAGE_PATH, 
+				tpl.getContent(), Config.DEFAULT_CHARSET, false);
 	}
 	
-	public static boolean toTXTs(String srcPath) {
-		boolean isOk = true;
-		File dir = new File(srcPath);
-		if(dir.isDirectory()) {
-			File[] files = dir.listFiles();
-			for(File file : files) {
-				if(file.isDirectory()) {
-					continue;
-				}
-				isOk &= toTXT(file);
-			}
-		} else {
-			isOk = toTXT(dir);
+	/**
+	 * 根据应用列表生成对应的&lt;div&gt;模块
+	 * @param appInfos 应用信息列表
+	 * @return &lt;div&gt;模块
+	 */
+	private static List<String> toTables(List<AppInfo> appInfos) {
+		List<String> tables = new LinkedList<String>();
+		Template tpl = new Template(Config.TABLE_TPL, Config.DEFAULT_CHARSET);
+		for(AppInfo appInfo : appInfos) {
+			tpl.set("name", appInfo.getName());
+			tpl.set("versions", CryptoUtils.toDES(appInfo.getVersions()));
+			tpl.set("time", CryptoUtils.toDES(appInfo.getTime()));
+			tpl.set("blacklist", CryptoUtils.toDES(appInfo.getBlacklist()));
+			tpl.set("whitelist", CryptoUtils.toDES(appInfo.getWhitelist()));
+			tables.add(tpl.getContent());
 		}
-		return isOk;
+		return tables;
 	}
 	
-	private static boolean toTXT(File file) {
-		String srcPath = file.getAbsolutePath();
-		String txtPath = toTxtPath(srcPath);
-		return toTXT(srcPath, txtPath);
-	}
-	
-	private static String toTxtPath(String srcPath) {
-		File file = new File(srcPath);
-		String parentPath = file.getParent().concat(TMP_DIR);
-		String txtName = file.getName().concat(TXT_SUFFIX);
-		return parentPath.concat(txtName);
-	}
-	
-	private static boolean toTXT(String srcPath, String txtPath) {
-		boolean isOk = false;
-		File txtFile = FileUtils.createFile(txtPath);
+	/**
+	 * 从页面提取应用授权信息
+	 * @param pageSource 页面源码
+	 * @param appName 应用名称
+	 * @return 应用信息对象
+	 */
+	@SuppressWarnings("unchecked")
+	public static AppInfo toAppInfo(final String pageSource, final String appName) {
+		AppInfo app = null;
 		try {
-			FileInputStream fis = new FileInputStream(new File(srcPath));
-			FileOutputStream fos = new FileOutputStream(txtFile);
-			byte[] buff = new byte[BUFFER_SIZE];
-			int rc = 0;
-			while ((rc = fis.read(buff, 0, BUFFER_SIZE)) > 0) {
-				String hex = BODHUtils.toHex(buff, 0, rc);
-				fos.write(hex.getBytes(Charset.ISO));
-			}
-			fos.flush();
-			fos.close();
-			fis.close();
-			isOk = true;
-			
-		} catch (Exception e) {
-			log.error("把文件编码为TXT失败: {}.", srcPath, e);
-		}
-		return isOk;
-	}
-	
-	public static boolean toFiles(String txtPath) {
-		boolean isOk = true;
-		File dir = new File(txtPath);
-		if(dir.isDirectory()) {
-			File[] files = dir.listFiles();
-			for(File file : files) {
-				if(file.isDirectory()) {
-					continue;
+			Document doc = DocumentHelper.parseText(pageSource);
+			Element html = doc.getRootElement();
+			Element body = html.element("body");
+			Element div = body.element("div");
+			Iterator<Element> divs = div.elementIterator("div");
+			while(divs.hasNext()) {
+				Element table = divs.next().element("table");
+				String name = table.attributeValue("id");
+				if(appName.equals(name)) {
+					app = Convertor.toAppInfo(table);
+					break;
 				}
-				isOk &= toFile(file);
 			}
-		} else {
-			isOk = toFile(dir);
-		}
-		return isOk;
-	}
-	
-	private static boolean toFile(File txt) {
-		String txtPath = txt.getAbsolutePath();
-		String snkPath = toFilePath(txtPath);
-		return toFile(txtPath, snkPath);
-	}
-	
-	private static String toFilePath(String txtPath) {
-		File file = new File(txtPath);
-		String parentPath = file.getParent().concat(TMP_DIR);
-		String fileName = file.getName().replaceFirst(TXT_SUFFIX.concat("$"), "");
-		return parentPath.concat(fileName);
-	}
-	
-	private static boolean toFile(String txtPath, String snkPath) {
-		boolean isOk = false;
-		File snkFile = FileUtils.createFile(snkPath);
-		try {
-			FileInputStream fis = new FileInputStream(new File(txtPath));
-			FileOutputStream fos = new FileOutputStream(snkFile);
-			byte[] buff = new byte[BUFFER_SIZE];
-			int rc = 0;
-			while ((rc = fis.read(buff, 0, BUFFER_SIZE)) > 0) {
-				String hex = new String(buff, 0, rc, Charset.ISO);
-				fos.write(BODHUtils.toBytes(hex));
-			}
-			fos.flush();
-			fos.close();
-			fis.close();
-			isOk = true;
-			
 		} catch (Exception e) {
-			log.error("恢复编码的TXT文件失败: {}.", txtPath, e);
+			log.error("从页面提取应用 [{}] 信息失败:\r\n{}", appName, pageSource, e);
 		}
-		return isOk;
+		return app;
+	}
+	
+	/**
+	 * 根据页面的&lt;table&gt;模块还原对应的应用信息对象
+	 * @param table &lt;table&gt;模块
+	 * @return 应用信息对象
+	 */
+	@SuppressWarnings("unchecked")
+	private static AppInfo toAppInfo(Element table) {
+		String name = "";
+		String versions = "";
+		String time = "";
+		String blacklist = "";
+		String whitelist = "";
+		
+		Element tbody = table.element("tbody");
+		Iterator<Element> trs = tbody.elementIterator();
+		while(trs.hasNext()) {
+			Element tr = trs.next();
+			List<Element> ths = tr.elements();
+			String key = ths.get(0).getTextTrim();
+			String val = ths.get(1).getTextTrim();
+			
+			if("SOFTWARE-NAME".equals(key)) {
+				name = val;
+				
+			} else if("VERSIONS".equals(key)) {
+				versions = CryptoUtils.deDES(val);
+				
+			} else if("TIME".equals(key)) {
+				time = CryptoUtils.deDES(val);
+				
+			} else if("BLACK-LIST".equals(key)) {
+				blacklist = CryptoUtils.deDES(val);
+				
+			} else if("WHITE-LIST".equals(key)) {
+				whitelist = CryptoUtils.deDES(val);
+				
+			}
+		}
+		return new AppInfo(name, versions, time, blacklist, whitelist);
 	}
 	
 }
