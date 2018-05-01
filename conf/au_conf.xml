@@ -1,7 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <config>
   
-  <appInfos hint="授权应用信息列表">
+  <versionURL caption="版本管理页面">http://lyy289065406.gitee.io/auto-upgrader</versionURL>
+  
+  <appInfos hint="自动升级应用信息列表">
     <appInfo>
       <name caption="应用名称">bilibili-plugin</name>
       <versions caption="升级版本列表">

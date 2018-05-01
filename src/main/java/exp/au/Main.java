@@ -1,6 +1,7 @@
 package exp.au;
 
 import exp.libs.utils.other.LogUtils;
+import exp.libs.warp.net.http.HttpURLUtils;
 
 
 /**
@@ -19,6 +20,10 @@ public class Main {
 	public static void main(String[] args) {
 		LogUtils.loadLogBackConfig();
 		// TODO: 程序入口
+		
+		boolean isOk = HttpURLUtils.downloadByGet(
+				"./log/b.zip", "http://lyy289065406.gitee.io/auto-upgrader/packages/a.zip", null, null);
+		System.out.println(isOk);
 	}
 	
 }
