@@ -3,6 +3,8 @@
   
   <versionURL caption="版本管理页面">http://lyy289065406.gitee.io/auto-upgrader</versionURL>
   
+  
+  <!-- 不需要，直接把升级包放去 patches目录即可， 关键是如何生成升级包内容 -->
   <appInfos hint="自动升级应用信息列表">
     <appInfo>
       <name caption="应用名称">bilibili-plugin</name>
