@@ -9,6 +9,7 @@ import org.slf4j.LoggerFactory;
 
 import exp.au.Config;
 import exp.libs.utils.io.FileUtils;
+import exp.libs.utils.other.ListUtils;
 import exp.libs.utils.other.StrUtils;
 import exp.libs.utils.time.TimeUtils;
 import exp.libs.warp.tpl.Template;
@@ -36,18 +37,20 @@ public class Convertor {
 	protected Convertor() {}
 	
 	public static boolean toPage() {
+		File patchDir = new File(Config.PATCH_DIR);
+		List<String> tables = toTables(patchDir);
+		
 		Template tpl = new Template(Config.PAGE_TPL, Config.DEFAULT_CHARSET);
-		tpl.set("tables", StrUtils.concat(toTables(), ""));
+		tpl.set("tables", StrUtils.concat(tables, ""));
 		tpl.set("time", TimeUtils.getSysDate());
 		return FileUtils.write(Config.PAGE_PATH, 
 				tpl.getContent(), Config.DEFAULT_CHARSET, false);
 	}
 	
-	private static List<String> toTables() {
+	private static List<String> toTables(File patchDir) {
 		List<String> tables = new LinkedList<String>();
 		Template tpl = new Template(Config.TABLE_TPL, Config.DEFAULT_CHARSET);
 		
-		File patchDir = new File(Config.PATCH_DIR);
 		File[] prjDirs = patchDir.listFiles();
 		for(File prjDir : prjDirs) {
 			if(prjDir.isFile()) {
@@ -76,7 +79,7 @@ public class Convertor {
 			tpl.set("time", TimeUtils.toStr(verDir.lastModified()));
 			rows.add(tpl.getContent());
 		}
-		return rows;
+		return ListUtils.reverse(rows);	// 版本倒序
 	}
 //	
 //	/**

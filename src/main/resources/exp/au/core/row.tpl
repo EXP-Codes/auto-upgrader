@@ -8,4 +8,3 @@
          ) <a href="./patches/@{project}@/@{version}@/update.xml" hidden="hidden" />
        </td>
       </tr> 
-   
