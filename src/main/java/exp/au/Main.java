@@ -24,6 +24,14 @@ public class Main {
 		boolean isOk = HttpURLUtils.downloadByGet(
 				"./log/b.zip", "http://lyy289065406.gitee.io/auto-upgrader/packages/a.zip", null, null);
 		System.out.println(isOk);
+		
+		
+		// 1. 手工制造软件版本升级包，包括 patch.zip 和 update.xml (用界面？)
+		// 2. 使用API生成 zip.txt、 MD5, 然后把 4个文件放到 patches/${project}/${version} 目录下
+		// 3. 更新index.html页面
+		// 4. 运行API检测index.html页面的（多个）新版本并下载 （已下载的不再下载, zip无法下载则下载txt并转码）
+		// 5. 校验每个版本的MD5 （若MD5错误则重下该版本）
+		// 6. 根据 update.xml步骤进行升级
 	}
 	
 }
