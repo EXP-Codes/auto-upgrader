@@ -26,6 +26,8 @@ public class Config {
 	
 	private final static String CONF_PATH = "./conf/au_conf.xml";
 	
+	public final static String PATCH_DIR = "./patches/";
+	
 	public final static String PAGE_TPL = "/exp/au/core/index.tpl";
 	
 	public final static String TABLE_TPL = "/exp/au/core/table.tpl";

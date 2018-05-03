@@ -1,7 +1,17 @@
 package exp.au.convert;
 
+import java.io.File;
+import java.util.LinkedList;
+import java.util.List;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import exp.au.Config;
+import exp.libs.utils.io.FileUtils;
+import exp.libs.utils.other.StrUtils;
+import exp.libs.utils.time.TimeUtils;
+import exp.libs.warp.tpl.Template;
 
 /**
  * <PRE>
@@ -18,41 +28,56 @@ public class Convertor {
 	/** 日志器 */
 	private final static Logger log = LoggerFactory.getLogger(Convertor.class);
 	
+	public static void main(String[] args) {
+		System.out.println(Convertor.toPage());
+	}
+	
 	/** 私有化构造函数 */
 	protected Convertor() {}
 	
-//	/**
-//	 * 根据应用信息列表生成授权页面
-//	 * @param appInfos 应用列表
-//	 * @return 是否生成成功
-//	 */
-//	public static boolean toPage(List<AppInfo> appInfos) {
-//		List<String> tables = toTables(appInfos);
-//		Template tpl = new Template(Config.PAGE_TPL, Config.DEFAULT_CHARSET);
-//		tpl.set("tables", StrUtils.concat(tables, ""));
-//		tpl.set("time", TimeUtils.getSysDate());
-//		return FileUtils.write(Config.PAGE_PATH, 
-//				tpl.getContent(), Config.DEFAULT_CHARSET, false);
-//	}
-//	
-//	/**
-//	 * 根据应用列表生成对应的&lt;div&gt;模块
-//	 * @param appInfos 应用信息列表
-//	 * @return &lt;div&gt;模块
-//	 */
-//	private static List<String> toTables(List<AppInfo> appInfos) {
-//		List<String> tables = new LinkedList<String>();
-//		Template tpl = new Template(Config.TABLE_TPL, Config.DEFAULT_CHARSET);
-//		for(AppInfo appInfo : appInfos) {
-//			tpl.set("name", appInfo.getName());
-//			tpl.set("versions", CryptoUtils.toDES(appInfo.getVersions()));
-//			tpl.set("time", CryptoUtils.toDES(appInfo.getTime()));
-//			tpl.set("blacklist", CryptoUtils.toDES(appInfo.getBlacklist()));
-//			tpl.set("whitelist", CryptoUtils.toDES(appInfo.getWhitelist()));
-//			tables.add(tpl.getContent());
-//		}
-//		return tables;
-//	}
+	public static boolean toPage() {
+		Template tpl = new Template(Config.PAGE_TPL, Config.DEFAULT_CHARSET);
+		tpl.set("tables", StrUtils.concat(toTables(), ""));
+		tpl.set("time", TimeUtils.getSysDate());
+		return FileUtils.write(Config.PAGE_PATH, 
+				tpl.getContent(), Config.DEFAULT_CHARSET, false);
+	}
+	
+	private static List<String> toTables() {
+		List<String> tables = new LinkedList<String>();
+		Template tpl = new Template(Config.TABLE_TPL, Config.DEFAULT_CHARSET);
+		
+		File patchDir = new File(Config.PATCH_DIR);
+		File[] prjDirs = patchDir.listFiles();
+		for(File prjDir : prjDirs) {
+			if(prjDir.isFile()) {
+				continue;
+			}
+			
+			tpl.set("name", prjDir.getName());
+			tpl.set("rows", StrUtils.concat(toRows(prjDir), ""));
+			tables.add(tpl.getContent());
+		}
+		return tables;
+	}
+	
+	private static List<String> toRows(File prjDir) {
+		List<String> rows = new LinkedList<String>();
+		Template tpl = new Template(Config.ROW_TPL, Config.DEFAULT_CHARSET);
+		
+		File[] verDirs = prjDir.listFiles();
+		for(File verDir : verDirs) {
+			if(verDir.isFile()) {
+				continue;
+			}
+			
+			tpl.set("project", prjDir.getName());
+			tpl.set("version", verDir.getName());
+			tpl.set("time", TimeUtils.toStr(verDir.lastModified()));
+			rows.add(tpl.getContent());
+		}
+		return rows;
+	}
 //	
 //	/**
 //	 * 从页面提取应用授权信息
