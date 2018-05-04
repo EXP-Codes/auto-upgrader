@@ -185,10 +185,6 @@
 		  	  <artifactId>base64</artifactId>
 	        </exclusion>
 	        <exclusion>
-	          <groupId>org.jb</groupId>
-              <artifactId>beauty-eye</artifactId>
-	        </exclusion>
-	        <exclusion>
 	          <groupId>org.java-websocket</groupId>
 		      <artifactId>Java-WebSocket</artifactId>
 	        </exclusion>
