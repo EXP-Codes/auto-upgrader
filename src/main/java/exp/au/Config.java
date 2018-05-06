@@ -20,8 +20,6 @@ import exp.libs.warp.conf.xml.XConfigFactory;
  */
 public class Config {
 	
-	private final static Logger log = LoggerFactory.getLogger(Config.class);
-	
 	public final static String DEFAULT_CHARSET = Charset.UTF8;
 	
 	private final static String CONF_PATH = "./conf/au_conf.xml";
