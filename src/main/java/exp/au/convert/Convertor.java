@@ -30,14 +30,19 @@ public class Convertor {
 	private final static Logger log = LoggerFactory.getLogger(Convertor.class);
 	
 	public static void main(String[] args) {
-		System.out.println(Convertor.toPage());
+		System.out.println(Convertor.toPage(Config.PATCH_DIR));
 	}
 	
 	/** 私有化构造函数 */
 	protected Convertor() {}
 	
-	public static boolean toPage() {
-		File patchDir = new File(Config.PATCH_DIR);
+	/**
+	 * 根据升级补丁目录生成升级导航页面
+	 * @param patchDirPath 升级补丁目录路径
+	 * @return 升级导航页面
+	 */
+	public static boolean toPage(String patchDirPath) {
+		File patchDir = new File(patchDirPath);
 		List<String> tables = toTables(patchDir);
 		
 		Template tpl = new Template(Config.PAGE_TPL, Config.DEFAULT_CHARSET);
@@ -47,34 +52,44 @@ public class Convertor {
 				tpl.getContent(), Config.DEFAULT_CHARSET, false);
 	}
 	
+	/**
+	 * 根据升级补丁目录生成每个应用的升级补丁导航表单
+	 * @param patchDir 升级补丁目录
+	 * @return 每个应用的升级补丁导航表单
+	 */
 	private static List<String> toTables(File patchDir) {
 		List<String> tables = new LinkedList<String>();
 		Template tpl = new Template(Config.TABLE_TPL, Config.DEFAULT_CHARSET);
 		
-		File[] prjDirs = patchDir.listFiles();
-		for(File prjDir : prjDirs) {
-			if(prjDir.isFile()) {
+		File[] appDirs = patchDir.listFiles();
+		for(File appDir : appDirs) {
+			if(appDir.isFile()) {
 				continue;
 			}
 			
-			tpl.set("name", prjDir.getName());
-			tpl.set("rows", StrUtils.concat(toRows(prjDir), ""));
+			tpl.set("name", appDir.getName());
+			tpl.set("rows", StrUtils.concat(toRows(appDir), ""));
 			tables.add(tpl.getContent());
 		}
 		return tables;
 	}
 	
-	private static List<String> toRows(File prjDir) {
+	/**
+	 * 根据某个应用的升级补丁目录生成其每个升级补丁的导航栏
+	 * @param appDir 某个应用的升级补丁
+	 * @return 每个升级补丁的导航栏
+	 */
+	private static List<String> toRows(File appDir) {
 		List<String> rows = new LinkedList<String>();
 		Template tpl = new Template(Config.ROW_TPL, Config.DEFAULT_CHARSET);
 		
-		File[] verDirs = prjDir.listFiles();
+		File[] verDirs = appDir.listFiles();
 		for(File verDir : verDirs) {
 			if(verDir.isFile()) {
 				continue;
 			}
 			
-			tpl.set("project", prjDir.getName());
+			tpl.set("app_name", appDir.getName());
 			tpl.set("version", verDir.getName());
 			tpl.set("time", TimeUtils.toStr(verDir.lastModified()));
 			rows.add(tpl.getContent());

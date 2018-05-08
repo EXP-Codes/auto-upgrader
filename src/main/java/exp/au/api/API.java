@@ -2,18 +2,21 @@ package exp.au.api;
 
 import java.util.List;
 
+import exp.au.Config;
 import exp.au.bean.ldm.UpdateInfo;
 import exp.au.bean.ldm.UpdateVersion;
+import exp.libs.envm.Charset;
+import exp.libs.utils.encode.CryptoUtils;
+import exp.libs.utils.format.TXTUtils;
+import exp.libs.utils.io.FileUtils;
+import exp.libs.utils.other.PathUtils;
+import exp.libs.utils.other.StrUtils;
+import exp.libs.utils.verify.RegexUtils;
 import exp.libs.warp.net.http.HttpURLUtils;
 
 public class API {
 
 	private final static String URL = "http://lyy289065406.gitee.io/auto-upgrader/";
-	
-	public static void main(String[] args) {
-		String response = HttpURLUtils.doGet(URL, null, null);
-		System.out.println(response);
-	}
 	
 	/*
 	 * 1.先检查是否存在新版本
@@ -63,6 +66,35 @@ public class API {
 		return "";
 	}
 	
+	/**
+	 * 
+	 * @param zipPatchPath
+	 */
+	public static void toTxtAndMD5(String zipPatchPath) {
+		final String REGEX = "(([^/\\\\]*?)-patch-(\\d\\.\\d).zip)";
+		List<String> groups = RegexUtils.findGroups(zipPatchPath, REGEX);
+		if(groups.size() == 4) {
+			String zipName = groups.get(1);
+			String appName = groups.get(2);
+			String version = groups.get(3);
+			String dir = StrUtils.concat(Config.PATCH_DIR, appName, "/", version, "/");
+			String path = dir.concat(zipName);
+			FileUtils.copyFile(zipPatchPath, path);
+			
+			String txtPath = TXTUtils.toTXT(path);
+			String MD5 = CryptoUtils.toFileMD5(path);
+			String MD5Path = PathUtils.combine(PathUtils.getParentDir(txtPath), "MD5.html");
+			FileUtils.write(MD5Path, MD5, Charset.ISO, false);
+		} else {
+			System.out.println("not match");
+		}
+	}
 	
+	public static void main(String[] args) {
+//		String response = HttpURLUtils.doGet(URL, null, null);
+//		System.out.println(response);
+		
+		toTxtAndMD5("./log/bilibili-plugin-patch-4.2.zip");
+	}
 	
 }
