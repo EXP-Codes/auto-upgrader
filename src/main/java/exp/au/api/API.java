@@ -3,6 +3,7 @@ package exp.au.api;
 import java.util.List;
 
 import exp.au.Config;
+import exp.au.bean.ldm.PatchInfo;
 import exp.au.bean.ldm.UpdateInfo;
 import exp.au.bean.ldm.UpdateVersion;
 import exp.libs.envm.Charset;
@@ -15,7 +16,15 @@ import exp.libs.utils.verify.RegexUtils;
 import exp.libs.warp.net.http.HttpURLUtils;
 
 public class API {
-
+	
+	
+	public static void main(String[] args) {
+		String response = HttpURLUtils.doGet(URL, null, null);
+		System.out.println(response);
+		
+		
+	}
+	
 	private final static String URL = "http://lyy289065406.gitee.io/auto-upgrader/";
 	
 	/*
@@ -26,6 +35,11 @@ public class API {
 	 * 5.根据升级指导文件升级（删除、增加、替换文件）
 	 */
 	protected API() {}
+	
+	public static List<PatchInfo> getPatchInfos(String appName) {
+		return null;
+	}
+	
 	
 	/**
 	 * 获取升级信息列表
@@ -67,11 +81,13 @@ public class API {
 	}
 	
 	/**
+	 * toTxtAndMD5("./log/bilibili-plugin-patch-4.2.zip");
 	 * 
+	 * 2. 使用API生成 zip.txt、 MD5, 然后把3个文件放到 patches/${project}/${version} 目录下
 	 * @param zipPatchPath
 	 */
 	public static void toTxtAndMD5(String zipPatchPath) {
-		final String REGEX = "(([^/\\\\]*?)-patch-(\\d\\.\\d).zip)";
+		final String REGEX = "(([^/\\\\]*?)-patch-(\\d\\.\\d).zip)";	// 补丁有严格的格式要求
 		List<String> groups = RegexUtils.findGroups(zipPatchPath, REGEX);
 		if(groups.size() == 4) {
 			String zipName = groups.get(1);
@@ -90,11 +106,5 @@ public class API {
 		}
 	}
 	
-	public static void main(String[] args) {
-//		String response = HttpURLUtils.doGet(URL, null, null);
-//		System.out.println(response);
-		
-		toTxtAndMD5("./log/bilibili-plugin-patch-4.2.zip");
-	}
 	
 }

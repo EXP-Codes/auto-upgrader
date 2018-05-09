@@ -1,17 +1,23 @@
 package exp.au.convert;
 
 import java.io.File;
+import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 
+import org.dom4j.Document;
+import org.dom4j.DocumentHelper;
+import org.dom4j.Element;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import exp.au.Config;
+import exp.au.bean.ldm.PatchInfo;
 import exp.libs.utils.io.FileUtils;
 import exp.libs.utils.other.ListUtils;
 import exp.libs.utils.other.StrUtils;
 import exp.libs.utils.time.TimeUtils;
+import exp.libs.utils.verify.RegexUtils;
 import exp.libs.warp.tpl.Template;
 
 /**
@@ -96,75 +102,69 @@ public class Convertor {
 		}
 		return ListUtils.reverse(rows);	// 版本倒序
 	}
-//	
-//	/**
-//	 * 从页面提取应用授权信息
-//	 * @param pageSource 页面源码
-//	 * @param appName 应用名称
-//	 * @return 应用信息对象
-//	 */
-//	@SuppressWarnings("unchecked")
-//	public static AppInfo toAppInfo(final String pageSource, final String appName) {
-//		AppInfo app = null;
-//		try {
-//			Document doc = DocumentHelper.parseText(pageSource);
-//			Element html = doc.getRootElement();
-//			Element body = html.element("body");
-//			Element div = body.element("div");
-//			Iterator<Element> divs = div.elementIterator("div");
-//			while(divs.hasNext()) {
-//				Element table = divs.next().element("table");
-//				String name = table.attributeValue("id");
-//				if(appName.equals(name)) {
-//					app = Convertor.toAppInfo(table);
-//					break;
-//				}
-//			}
-//		} catch (Exception e) {
-//			log.error("从页面提取应用 [{}] 信息失败:\r\n{}", appName, pageSource, e);
-//		}
-//		return app;
-//	}
-//	
-//	/**
-//	 * 根据页面的&lt;table&gt;模块还原对应的应用信息对象
-//	 * @param table &lt;table&gt;模块
-//	 * @return 应用信息对象
-//	 */
-//	@SuppressWarnings("unchecked")
-//	private static AppInfo toAppInfo(Element table) {
-//		String name = "";
-//		String versions = "";
-//		String time = "";
-//		String blacklist = "";
-//		String whitelist = "";
-//		
-//		Element tbody = table.element("tbody");
-//		Iterator<Element> trs = tbody.elementIterator();
-//		while(trs.hasNext()) {
-//			Element tr = trs.next();
-//			List<Element> ths = tr.elements();
-//			String key = ths.get(0).getTextTrim();
-//			String val = ths.get(1).getTextTrim();
-//			
-//			if("SOFTWARE-NAME".equals(key)) {
-//				name = val;
-//				
-//			} else if("VERSIONS".equals(key)) {
-//				versions = CryptoUtils.deDES(val);
-//				
-//			} else if("TIME".equals(key)) {
-//				time = CryptoUtils.deDES(val);
-//				
-//			} else if("BLACK-LIST".equals(key)) {
-//				blacklist = CryptoUtils.deDES(val);
-//				
-//			} else if("WHITE-LIST".equals(key)) {
-//				whitelist = CryptoUtils.deDES(val);
-//				
-//			}
-//		}
-//		return new AppInfo(name, versions, time, blacklist, whitelist);
-//	}
+	
+	/**
+	 * 从页面提取应用补丁列表信息
+	 * @param pageSource 页面源码
+	 * @param appName 应用名称
+	 * @return 补丁列表信息
+	 */
+	@SuppressWarnings("unchecked")
+	public static List<PatchInfo> getPatchInfos(String pageSource, String appName) {
+		List<PatchInfo> patchInfos = new LinkedList<PatchInfo>();
+		try {
+			Document doc = DocumentHelper.parseText(pageSource);
+			Element html = doc.getRootElement();
+			Element body = html.element("body");
+			Element div = body.element("div");
+			Iterator<Element> divs = div.elementIterator("div");
+			while(divs.hasNext()) {
+				Element table = divs.next().element("table");
+				String name = table.attributeValue("id");
+				if(appName.equals(name)) {
+					patchInfos = toPatchInfos(table);
+					break;
+				}
+			}
+		} catch (Exception e) {
+			log.error("从页面提取应用 [{}] 的补丁列表信息失败:\r\n{}", appName, pageSource, e);
+		}
+		return patchInfos;
+	}
+	
+	@SuppressWarnings("unchecked")
+	private static List<PatchInfo> toPatchInfos(Element table) {
+		List<PatchInfo> patchInfos = new LinkedList<PatchInfo>();
+		final String REGEX = "\\[([^\\]]+)\\] VERSIONS: (.*)";
+		String appName = "";
+		
+		Element tbody = table.element("tbody");
+		Iterator<Element> trs = tbody.elementIterator();
+		while(trs.hasNext()) {
+			Element tr = trs.next();
+			List<Element> ths = tr.elements();
+			String key = ths.get(0).getTextTrim();
+			String val = ths.get(1).getTextTrim();
+			
+			if("SOFTWARE-NAME".equals(key)) {
+				appName = val;
+				
+			} else {
+				List<String> groups = RegexUtils.findGroups(key, REGEX);
+				String time = groups.get(1);
+				String version = groups.get(2);
+				
+				// TODO
+				/*
+		click to download (
+           <a href="./patches/bilibili-plugin/4.1/bilibili-plugin-patch-4.1.zip">zip</a>, 
+           <a href="./patches/bilibili-plugin/4.1/bilibili-plugin-patch-4.1.zip.txt">txt</a>, 
+           <a href="./patches/bilibili-plugin/4.1/MD5.html">MD5</a> 
+         ) <a href="./patches/bilibili-plugin/4.1/update.xml" hidden="hidden" />
+				 */
+			}
+		}
+		return patchInfos;
+	}
 	
 }

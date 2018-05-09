@@ -27,7 +27,7 @@ public class Main {
 		
 		
 		// TODO 1. (用界面？)手工制造软件版本升级包，包括 patch.zip 和 update.xml ( update.xml 在压缩包内)
-		// 2. 使用API生成 zip.txt、 MD5, 然后把3个文件放到 patches/${project}/${version} 目录下
+		// FIN 2. 使用API生成 zip.txt、 MD5, 然后把3个文件放到 patches/${project}/${version} 目录下
 		// FIN 3. 更新index.html页面
 		
 		
