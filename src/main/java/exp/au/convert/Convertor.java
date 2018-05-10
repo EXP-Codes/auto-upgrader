@@ -13,8 +13,10 @@ import org.slf4j.LoggerFactory;
 
 import exp.au.Config;
 import exp.au.bean.ldm.PatchInfo;
+import exp.libs.envm.Regex;
 import exp.libs.utils.io.FileUtils;
 import exp.libs.utils.other.ListUtils;
+import exp.libs.utils.other.PathUtils;
 import exp.libs.utils.other.StrUtils;
 import exp.libs.utils.time.TimeUtils;
 import exp.libs.utils.verify.RegexUtils;
@@ -144,7 +146,7 @@ public class Convertor {
 			Element tr = trs.next();
 			List<Element> ths = tr.elements();
 			String key = ths.get(0).getTextTrim();
-			String val = ths.get(1).getTextTrim();
+			String val = StrUtils.trimAll(ths.get(1).getText());
 			
 			if("SOFTWARE-NAME".equals(key)) {
 				appName = val;
@@ -153,6 +155,11 @@ public class Convertor {
 				List<String> groups = RegexUtils.findGroups(key, REGEX);
 				String time = groups.get(1);
 				String version = groups.get(2);
+				
+				List<String> brackets = RegexUtils.findBrackets(val, "href=\"([^\"]+)\"");
+				String zipURL = brackets.get(0);
+				String txtURL = brackets.get(1);
+				String md5URL = brackets.get(2);
 				
 				// TODO
 				/*
@@ -166,5 +173,6 @@ public class Convertor {
 		}
 		return patchInfos;
 	}
+	
 	
 }

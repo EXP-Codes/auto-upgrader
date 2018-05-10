@@ -19,10 +19,8 @@ public class API {
 	
 	
 	public static void main(String[] args) {
-		String response = HttpURLUtils.doGet(URL, null, null);
-		System.out.println(response);
-		
-		
+//		String response = HttpURLUtils.doGet(URL, null, null);
+//		System.out.println(response);
 	}
 	
 	private final static String URL = "http://lyy289065406.gitee.io/auto-upgrader/";

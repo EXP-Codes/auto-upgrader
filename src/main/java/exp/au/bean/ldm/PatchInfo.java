@@ -10,17 +10,17 @@ public class PatchInfo {
 	
 	private String MD5;
 	
-	private String downZipURL;
+	private String zipURL;
 	
-	private String downTxtURL;
+	private String txtURL;
 	
 	public PatchInfo() {
 		this.appName = "";
 		this.time = "";
 		this.version = "";
 		this.MD5 = "";
-		this.downZipURL = "";
-		this.downTxtURL = "";
+		this.zipURL = "";
+		this.txtURL = "";
 	}
 
 	public String getAppName() {
@@ -51,24 +51,24 @@ public class PatchInfo {
 		return MD5;
 	}
 
-	public void setMD5(String mD5) {
-		MD5 = mD5;
+	public void setMD5(String MD5) {
+		MD5 = MD5;
 	}
 
-	public String getDownZipURL() {
-		return downZipURL;
+	public String getZipURL() {
+		return zipURL;
 	}
 
-	public void setDownZipURL(String downZipURL) {
-		this.downZipURL = downZipURL;
+	public void setZipURL(String zipURL) {
+		this.zipURL = zipURL;
 	}
 
-	public String getDownTxtURL() {
-		return downTxtURL;
+	public String getTxtURL() {
+		return txtURL;
 	}
 
-	public void setDownTxtURL(String downTxtURL) {
-		this.downTxtURL = downTxtURL;
+	public void setTxtURL(String txtURL) {
+		this.txtURL = txtURL;
 	}
 	
 }
