@@ -14,8 +14,6 @@ public class PatchInfo implements Comparable<PatchInfo> {
 	
 	private String txtURL;
 	
-	private String patchName;
-	
 	private String zipPatchName;
 	
 	private String txtPatchName;
@@ -27,7 +25,6 @@ public class PatchInfo implements Comparable<PatchInfo> {
 		this.MD5 = "";
 		this.zipURL = "";
 		this.txtURL = "";
-		this.patchName = "";
 		this.zipPatchName = "";
 		this.txtPatchName = "";
 	}
@@ -81,7 +78,6 @@ public class PatchInfo implements Comparable<PatchInfo> {
 	}
 	
 	public void setPatchName(String patchName) {
-		this.patchName = patchName;
 		setZipPatchName(patchName);
 		setTxtPatchName(patchName.concat(".txt"));	// FIXME
 	}
