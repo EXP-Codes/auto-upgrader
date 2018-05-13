@@ -1,5 +1,12 @@
 package exp.au.bean;
 
+import java.util.LinkedList;
+import java.util.List;
+
+import exp.au.Config;
+import exp.au.envm.Params;
+import exp.libs.utils.other.StrUtils;
+
 public class PatchInfo implements Comparable<PatchInfo> {
 
 	private String appName;
@@ -12,21 +19,28 @@ public class PatchInfo implements Comparable<PatchInfo> {
 	
 	private String zipURL;
 	
+	private String zipName;
+	
 	private String txtURL;
 	
-	private String zipPatchName;
+	private String txtName;
 	
-	private String txtPatchName;
+	private String updateURL;
+	
+	private List<Step> updateSteps;
 	
 	public PatchInfo() {
 		this.appName = "";
 		this.version = Version.NULL;
 		this.time = "";
 		this.MD5 = "";
+		this.updateURL = "";
 		this.zipURL = "";
+		this.zipName = "";
 		this.txtURL = "";
-		this.zipPatchName = "";
-		this.txtPatchName = "";
+		this.txtName = "";
+		this.updateURL = "";
+		this.updateSteps = new LinkedList<Step>();
 	}
 
 	public String getAppName() {
@@ -43,6 +57,11 @@ public class PatchInfo implements Comparable<PatchInfo> {
 
 	public void setVersion(String version) {
 		this.version = new Version(version);
+	}
+	
+	public String getPatchDir() {
+		return StrUtils.concat(Config.PATCH_DOWN_DIR, 
+				getAppName(), "/", getVersion().VER(), "/");
 	}
 	
 	public String getTime() {
@@ -78,24 +97,40 @@ public class PatchInfo implements Comparable<PatchInfo> {
 	}
 	
 	public void setPatchName(String patchName) {
-		setZipPatchName(patchName);
-		setTxtPatchName(patchName.concat(".txt"));	// FIXME
+		setZipName(patchName);
+		setTxtName(patchName.concat(Params.TXT_SUFFIX));
 	}
 
-	public String getZipPatchName() {
-		return zipPatchName;
+	public String getZipName() {
+		return zipName;
 	}
 
-	private void setZipPatchName(String zipPatchName) {
-		this.zipPatchName = zipPatchName;
+	private void setZipName(String zipName) {
+		this.zipName = zipName;
 	}
 
-	public String getTxtPatchName() {
-		return txtPatchName;
+	public String getTxtName() {
+		return txtName;
 	}
 
-	private void setTxtPatchName(String txtPatchName) {
-		this.txtPatchName = txtPatchName;
+	private void setTxtName(String txtName) {
+		this.txtName = txtName;
+	}
+	
+	public String getUpdateURL() {
+		return updateURL;
+	}
+
+	public void setUpdateURL(String updateURL) {
+		this.updateURL = updateURL;
+	}
+
+	public List<Step> getUpdateSteps() {
+		return updateSteps;
+	}
+
+	public void setUpdateSteps(List<Step> updateSteps) {
+		this.updateSteps = updateSteps;
 	}
 
 	@Override
@@ -112,9 +147,14 @@ public class PatchInfo implements Comparable<PatchInfo> {
 		sb.append("VERSION : ").append(getVersion()).append("\r\n");
 		sb.append("MD5 : ").append(getMD5()).append("\r\n");
 		sb.append("ZIP_URL : ").append(getZipURL()).append("\r\n");
+		sb.append("ZIP_NAME : ").append(getZipName()).append("\r\n");
 		sb.append("TXT_URL : ").append(getTxtURL()).append("\r\n");
-		sb.append("ZIP_NAME : ").append(getZipPatchName()).append("\r\n");
-		sb.append("TXT_NAME : ").append(getTxtPatchName()).append("\r\n");
+		sb.append("TXT_NAME : ").append(getTxtName()).append("\r\n");
+		sb.append("UPDATE_URL : ").append(getUpdateURL()).append("\r\n");
+		sb.append("UPDATE_STEP : \r\n");
+		for(Step updateStep : updateSteps) {
+			sb.append("  ").append(updateStep.toString()).append("\r\n");
+		}
 		return sb.toString();
 	}
 

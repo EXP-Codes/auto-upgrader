@@ -25,11 +25,13 @@ public class Config {
 	
 	public final static String PATCH_PAGE_DIR = "./patches-for-page/";
 	
-	public final static String PAGE_TPL = "/exp/au/core/index.tpl";
+	public final static String PAGE_TPL = "/exp/au/core/server/index.tpl";
 	
-	public final static String TABLE_TPL = "/exp/au/core/table.tpl";
+	public final static String TABLE_TPL = "/exp/au/core/server/table.tpl";
 	
-	public final static String ROW_TPL = "/exp/au/core/row.tpl";
+	public final static String ROW_TPL = "/exp/au/core/server/row.tpl";
+	
+	public final static String UPDATE_TPL = "/exp/au/core/server/update.tpl";
 	
 	public final static String PAGE_PATH = "./index.html";
 	

@@ -13,12 +13,15 @@ import org.slf4j.LoggerFactory;
 
 import exp.au.Config;
 import exp.au.bean.PatchInfo;
+import exp.au.bean.Step;
 import exp.au.bean.Version;
+import exp.au.envm.CmdType;
+import exp.au.envm.Params;
 import exp.libs.envm.Charset;
 import exp.libs.utils.encode.CryptoUtils;
 import exp.libs.utils.format.TXTUtils;
+import exp.libs.utils.format.XmlUtils;
 import exp.libs.utils.io.FileUtils;
-import exp.libs.utils.other.PathUtils;
 import exp.libs.utils.other.StrUtils;
 import exp.libs.utils.verify.RegexUtils;
 import exp.libs.warp.net.http.HttpURLUtils;
@@ -118,12 +121,14 @@ public class Down {
 				String zipURL = combineURL(VER_URL, brackets.get(0));
 				String txtURL = combineURL(VER_URL, brackets.get(1));
 				String md5URL = combineURL(VER_URL, brackets.get(2));
+				String updateURL = combineURL(VER_URL, brackets.get(3));
 				
 				PatchInfo patchInfo = new PatchInfo();
 				patchInfo.setAppName(appName);
 				patchInfo.setVersion(version);
 				patchInfo.setTime(time);
 				patchInfo.setMD5(HttpURLUtils.doGet(md5URL));
+				patchInfo.setUpdateURL(updateURL);
 				patchInfo.setZipURL(zipURL);
 				patchInfo.setTxtURL(txtURL);
 				patchInfo.setPatchName(toPatchName(appName, version));
@@ -145,12 +150,11 @@ public class Down {
 	}
 	
 	
-	public static boolean download(List<PatchInfo> patchInfos) {
+	private static boolean download(List<PatchInfo> patchInfos) {
 		int cnt = 0;
 		for(PatchInfo patchInfo : patchInfos) {
-			String saveDir = StrUtils.concat(Config.PATCH_DOWN_DIR, patchInfo.getAppName(), 
-					"/", patchInfo.getVersion().VER(), "/");
-			String zipSavePath = saveDir.concat(patchInfo.getZipPatchName());
+			String saveDir = patchInfo.getPatchDir();
+			String zipSavePath = saveDir.concat(patchInfo.getZipName());
 			if(FileUtils.exists(zipSavePath)) {
 				cnt++;
 				continue;
@@ -158,35 +162,81 @@ public class Down {
 			
 			// 先下载zip版本升级包
 			FileUtils.createDir(saveDir);
-			boolean isOk = HttpURLUtils.downloadByGet(zipSavePath, patchInfo.getZipURL());
-			if(isOk == true) {
-				String MD5 = CryptoUtils.toFileMD5(zipSavePath);
-				isOk = patchInfo.getMD5().equalsIgnoreCase(MD5);
-			}
-			System.out.println(patchInfo.getZipURL());
-			System.out.println("下载" + zipSavePath + "补丁:" + isOk);
+			boolean isOk = downZIP(patchInfo.getZipURL(), 
+					zipSavePath, patchInfo.getMD5());
 			
 			// 若zip版本升级包下载失败, 则下载txt版本升级包
 			if(isOk == false) {
 				FileUtils.delete(zipSavePath);
-				String txtSavePath = saveDir.concat(patchInfo.getTxtPatchName());
-				isOk = HttpURLUtils.downloadByGet(txtSavePath, patchInfo.getTxtURL());
-				if(isOk == true) {
-					isOk = TXTUtils.toFile(txtSavePath, zipSavePath);
-					if(isOk == true) {
-						String MD5 = CryptoUtils.toFileMD5(zipSavePath);
-						isOk = patchInfo.getMD5().equalsIgnoreCase(MD5);
-					}
-				}
-				System.out.println(patchInfo.getTxtURL());
-				System.out.println("下载" + txtSavePath + "补丁:" + isOk);
+				String txtSavePath = saveDir.concat(patchInfo.getTxtName());
+				isOk = downTXT(patchInfo.getTxtURL(), 
+						txtSavePath, zipSavePath, patchInfo.getMD5());
 			}
 			
-			cnt += (isOk ? 1 : 0);
+			// 下载升级步骤
+			if(isOk == true) {
+				String updatePath = saveDir.concat(Params.UPDATE_XML);
+				List<Step> updateSteps = downXML(patchInfo.getUpdateURL(), updatePath);
+				patchInfo.setUpdateSteps(updateSteps);
+			}
+			
+			// 补丁包计数
+			if(isOk == true) {
+				cnt++;
+				
+			} else {
+				FileUtils.delete(saveDir);
+			}
 		}
 		return (cnt == patchInfos.size());
 	}
 	
+	private static boolean downZIP(String zipURL, String zipPath, String zipMD5) {
+		boolean isOk = HttpURLUtils.downloadByGet(zipPath, zipURL);
+		if(isOk == true) {
+			String MD5 = CryptoUtils.toFileMD5(zipPath);
+			isOk = zipMD5.equalsIgnoreCase(MD5);
+		}
+		return isOk;
+	}
 	
+	private static boolean downTXT(String txtURL, String txtPath, String zipPath, String zipMD5) {
+		boolean isOk = HttpURLUtils.downloadByGet(txtPath, txtURL);
+		if(isOk == true) {
+			isOk = TXTUtils.toFile(txtPath, zipPath);
+			if(isOk == true) {
+				String MD5 = CryptoUtils.toFileMD5(zipPath);
+				isOk = zipMD5.equalsIgnoreCase(MD5);
+			}
+		}
+		return isOk;
+	}
+	
+	private static List<Step> downXML(String updateURL, String updatePath) {
+		List<Step> updateSteps = new LinkedList<Step>();
+		boolean isOk = HttpURLUtils.downloadByGet(updatePath, updateURL);
+		if(isOk == true) {
+			String xml = FileUtils.read(updatePath, Charset.UTF8);
+			try {
+				Document doc = DocumentHelper.parseText(xml);
+				Element root = doc.getRootElement();
+				Element steps = root.element("steps");
+				Iterator<Element> cmds = steps.elementIterator();
+				while(cmds.hasNext()) {
+					Element cmd = cmds.next();
+					CmdType type = CmdType.toType(cmd.getName());
+					String from = XmlUtils.getAttribute(cmd, "from");
+					String to = XmlUtils.getAttribute(cmd, "to");
+					
+					Step step = new Step(type, from , to);
+					updateSteps.add(step);
+				}
+			} catch (Exception e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}
+		return updateSteps;
+	}
 	
 }
