@@ -43,8 +43,8 @@ public class Convertor {
 	private final static String VER_URL = Config.getInstn().VERSION_URL();
 	
 	public static void main(String[] args) {
-		testPage();
-//		testDown();
+//		testPage();
+		testDown();
 	}
 	
 	private static void testPage() {
