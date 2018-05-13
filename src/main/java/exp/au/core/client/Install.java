@@ -3,6 +3,7 @@ package exp.au.core.client;
 import java.util.List;
 
 import exp.au.bean.PatchInfo;
+import exp.au.bean.Step;
 import exp.au.bean.Version;
 
 //客户端步骤2：安装升级包 
@@ -17,14 +18,34 @@ public class Install {
 	public static Version install(List<PatchInfo> patchInfos) {
 		
 		for(PatchInfo patchInfo : patchInfos) {
-			
+			int step = toDo(patchInfo);
+			if(step < patchInfo.getUpdateSteps().size()) {
+				rollback(patchInfo, step);
+				break;
+			}
 		}
 		return null;
 	}
 	
-	private static boolean toDo(PatchInfo patchInfo) {
+	/**
+	 * 进行版本升级
+	 * @param patchInfo
+	 * @return 成功执行的步骤数
+	 */
+	private static int toDo(PatchInfo patchInfo) {
+		String patchBaseDir = patchInfo.getPatchDir();
+		String appBaseDir = ".";
 		
-		return true;
+		int step = 0;
+		for(Step updateStep : patchInfo.getUpdateSteps()) {
+			
+		}
+		return step;
+	}
+	
+	private static boolean rollback(PatchInfo patchInfo, int step) {
+		
+		return false;
 	}
 	
 }
