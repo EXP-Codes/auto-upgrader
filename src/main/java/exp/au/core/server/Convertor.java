@@ -16,7 +16,7 @@ import exp.libs.warp.tpl.Template;
 
 /**
  * <PRE>
- * 服务端步骤3： 把升级包目录  patches-for-page 转换成升级页面 index.html
+ * 服务端步骤2： 把升级包目录  patches-for-page 转换成升级页面 index.html
  * </PRE>
  * <B>PROJECT：</B> exp-certificate
  * <B>SUPPORT：</B> EXP

@@ -1,4 +1,4 @@
-package exp.au.bean.ldm;
+package exp.au.bean;
 
 import java.util.List;
 

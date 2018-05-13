@@ -1,4 +1,4 @@
-package exp.au.bean.ldm;
+package exp.au.bean;
 
 public class PatchInfo implements Comparable<PatchInfo> {
 

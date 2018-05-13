@@ -12,8 +12,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import exp.au.Config;
-import exp.au.bean.ldm.PatchInfo;
-import exp.au.bean.ldm.Version;
+import exp.au.bean.PatchInfo;
+import exp.au.bean.Version;
 import exp.libs.envm.Charset;
 import exp.libs.utils.encode.CryptoUtils;
 import exp.libs.utils.format.TXTUtils;
