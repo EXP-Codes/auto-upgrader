@@ -13,17 +13,8 @@ import exp.libs.utils.io.FileUtils;
 import exp.libs.utils.other.PathUtils;
 import exp.libs.utils.other.StrUtils;
 import exp.libs.utils.verify.RegexUtils;
-import exp.libs.warp.net.http.HttpURLUtils;
 
 public class API {
-	
-	
-	public static void main(String[] args) {
-//		String response = HttpURLUtils.doGet(URL, null, null);
-//		System.out.println(response);
-	}
-	
-	private final static String URL = "http://lyy289065406.gitee.io/auto-upgrader/";
 	
 	/*
 	 * 1.先检查是否存在新版本
@@ -91,7 +82,7 @@ public class API {
 			String zipName = groups.get(1);
 			String appName = groups.get(2);
 			String version = groups.get(3);
-			String dir = StrUtils.concat(Config.PATCH_DIR, appName, "/", version, "/");
+			String dir = StrUtils.concat(Config.PATCH_PAGE_DIR, appName, "/", version, "/");
 			String path = dir.concat(zipName);
 			FileUtils.copyFile(zipPatchPath, path);
 			
