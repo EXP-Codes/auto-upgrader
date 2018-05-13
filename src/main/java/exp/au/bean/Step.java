@@ -33,11 +33,11 @@ public class Step {
 		StringBuilder sb = new StringBuilder();
 		sb.append("[").append(cmdType.CMD()).append("] : ");
 		if(cmdType == CmdType.DEL) {
-			sb.append(" from [").append(fromPath).append("]");
-			sb.append(" to [").append(toPath).append("]");
+			sb.append(" [").append(fromPath).append("]");
 			
 		} else {
-			sb.append(" [").append(fromPath).append("]");
+			sb.append(" from [").append(fromPath).append("]");
+			sb.append(" to [").append(toPath).append("]");
 		}
 		return sb.toString();
 	}

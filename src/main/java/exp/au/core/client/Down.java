@@ -65,6 +65,10 @@ public class Down {
 		// 下载升级补丁
 		boolean isOk = download(patchInfos);
 		System.out.println("下载全部补丁:" + isOk);
+		for(PatchInfo patchInfo : patchInfos) {
+			System.out.println(patchInfo);
+			System.out.println("=======");
+		}
 	}
 	
 	/**
@@ -155,22 +159,23 @@ public class Down {
 		for(PatchInfo patchInfo : patchInfos) {
 			String saveDir = patchInfo.getPatchDir();
 			String zipSavePath = saveDir.concat(patchInfo.getZipName());
-			if(FileUtils.exists(zipSavePath)) {
-				cnt++;
-				continue;
-			}
 			
-			// 先下载zip版本升级包
-			FileUtils.createDir(saveDir);
-			boolean isOk = downZIP(patchInfo.getZipURL(), 
-					zipSavePath, patchInfo.getMD5());
-			
-			// 若zip版本升级包下载失败, 则下载txt版本升级包
-			if(isOk == false) {
-				FileUtils.delete(zipSavePath);
-				String txtSavePath = saveDir.concat(patchInfo.getTxtName());
-				isOk = downTXT(patchInfo.getTxtURL(), 
-						txtSavePath, zipSavePath, patchInfo.getMD5());
+			boolean isOk = true;
+			if(!FileUtils.exists(zipSavePath)) {
+				
+				// 先下载zip版本升级包
+				FileUtils.createDir(saveDir);
+				isOk = downZIP(patchInfo.getZipURL(), 
+						zipSavePath, patchInfo.getMD5());
+				
+				// 若zip版本升级包下载失败, 则下载txt版本升级包
+				if(isOk == false) {
+					FileUtils.delete(zipSavePath);
+					String txtSavePath = saveDir.concat(patchInfo.getTxtName());
+					isOk = downTXT(patchInfo.getTxtURL(), 
+							txtSavePath, zipSavePath, patchInfo.getMD5());
+				}
+				
 			}
 			
 			// 下载升级步骤
