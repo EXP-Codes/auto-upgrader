@@ -10,4 +10,6 @@ public class Params {
 	
 	public final static String TXT_SUFFIX = ".txt";
 	
+	public final static String TMP_DIR = "tmp";
+	
 }
