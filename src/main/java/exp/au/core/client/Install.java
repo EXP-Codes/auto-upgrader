@@ -18,13 +18,13 @@ public class Install {
 		Version lastVer = patchInfos.get(patchInfos.size() - 1).getVersion();
 		Version installVer = install(patchInfos);
 		if(installVer == null) {
-			// 一个都没升级成功, 停留在当前版本 curVer
+			System.out.println("一个都没升级成功, 停留在当前版本:" + curVer.VER());
 			
 		} else if(installVer.compareTo(lastVer) == 0) {
-			// 成功升级到最新版
+			System.out.println("成功升级到最新版");
 			
 		} else {
-			// 仅升级到 installVer 版本
+			System.out.println("仅升级到版本:" + installVer.VER());
 		}
 	}
 	

@@ -27,8 +27,8 @@ public class Main {
 		
 		
 		// FIN 4. 运行API检测index.html页面的（多个）新版本并下载 （已下载的不再下载, zip无法下载则下载txt并转码）
-		// TODO 5. 校验每个版本的MD5 （若MD5错误则重下该版本）
-		// TODO 6. 根据 update.xml步骤进行升级
+		// FIN 5. 校验每个版本的MD5 （若MD5错误则重下该版本）
+		// FIN 6. 根据 update.xml步骤进行升级
 	}
 	
 }
