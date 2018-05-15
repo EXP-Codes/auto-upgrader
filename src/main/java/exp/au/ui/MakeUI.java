@@ -3,6 +3,7 @@ package exp.au.ui;
 import java.awt.BorderLayout;
 
 import javax.swing.JButton;
+import javax.swing.JComponent;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
@@ -10,6 +11,7 @@ import javax.swing.JTextField;
 import exp.libs.utils.other.StrUtils;
 import exp.libs.warp.ui.BeautyEyeUtils;
 import exp.libs.warp.ui.SwingUtils;
+import exp.libs.warp.ui.cpt.pnl.ADPanel;
 import exp.libs.warp.ui.cpt.win.MainWindow;
 
 //升级包制作UI
@@ -27,6 +29,8 @@ public class MakeUI extends MainWindow {
 	
 	private final static int HEIGHT = 600;
 	
+	private ADPanel<_CmdLine> adPanel;
+	
 	private MakeUI() {
 		super("升级包制作", WIDTH, HEIGHT);
 	}
@@ -34,15 +38,15 @@ public class MakeUI extends MainWindow {
 	@Override
 	protected void initComponents(Object... args) {
 		// TODO Auto-generated method stub
-		
+		this.adPanel = new ADPanel<_CmdLine>(_CmdLine.class);
 	}
 
 	@Override
 	protected void setComponentsLayout(JPanel rootPanel) {
 		// TODO Auto-generated method stub
 		
-		
 		rootPanel.add(getNorthPanel(), BorderLayout.NORTH);
+		rootPanel.add(getCenterPanel(), BorderLayout.CENTER);
 	}
 	
 	private JPanel getNorthPanel() {
@@ -64,6 +68,10 @@ public class MakeUI extends MainWindow {
 		);
 		SwingUtils.addBorder(northPanel);
 		return northPanel;
+	}
+	
+	private JComponent getCenterPanel() {
+		return SwingUtils.addBorder(adPanel.getJScrollPanel());
 	}
 	
 	private JLabel createLabel() {
