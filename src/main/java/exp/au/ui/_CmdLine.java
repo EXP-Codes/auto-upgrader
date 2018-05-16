@@ -12,10 +12,12 @@ public class _CmdLine extends JPanel {
 
 	private static final long serialVersionUID = -1015365465387409580L;
 
-	private JComboBox<CmdType> cmds;
+	private JComboBox cmds;
 	
 	public _CmdLine() {
-		this.cmds = SwingUtils.getComboBox(CmdType.ADD, CmdType.MOV, CmdType.DEL);
+		super(new BorderLayout());
+		this.cmds = SwingUtils.getComboBox(CmdType.ADD.CMD(), 
+				CmdType.MOV.CMD(), CmdType.DEL.CMD());
 		
 		
 		// 布局

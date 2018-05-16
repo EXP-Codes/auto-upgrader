@@ -10,7 +10,7 @@
 	<packaging>jar</packaging>
 
 	<name>auto-upgrader</name>
-	<description>自动化升级管理器</description>
+	<description>软件自动升级插件</description>
 	<url>项目SVN路径(可选)</url>
 	<inceptionYear>2018-04-28</inceptionYear>
 

@@ -6,7 +6,7 @@
   <meta name="robots" content="noarchive" /> 
   <meta name="author" content="EXP" /> 
   <link rel="stylesheet" type="text/css" href="./css/page.css" /> 
-  <title>EXP-CERTIFICATE</title> 
+  <title>EXP-SOFTWARE-PATCHES</title> 
  </head> 
  
  <body class="html"> 

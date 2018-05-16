@@ -3,9 +3,9 @@ package exp.au.ui;
 import java.awt.BorderLayout;
 
 import javax.swing.JButton;
-import javax.swing.JComponent;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
+import javax.swing.JScrollPane;
 import javax.swing.JTextField;
 
 import exp.libs.utils.other.StrUtils;
@@ -70,7 +70,7 @@ public class MakeUI extends MainWindow {
 		return northPanel;
 	}
 	
-	private JComponent getCenterPanel() {
+	private JScrollPane getCenterPanel() {
 		return SwingUtils.addBorder(adPanel.getJScrollPanel());
 	}
 	
