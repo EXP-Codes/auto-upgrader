@@ -1,9 +1,12 @@
 package exp.au.ui;
 
 import java.awt.BorderLayout;
+import java.awt.event.ItemEvent;
+import java.awt.event.ItemListener;
 
 import javax.swing.JComboBox;
 import javax.swing.JPanel;
+import javax.swing.JRadioButton;
 import javax.swing.JTextField;
 
 import exp.au.envm.CmdType;
@@ -27,6 +30,28 @@ public class _CmdLine extends JPanel {
 				SwingUtils.getPairsPanel("到", new JTextField("文件/目录"))
 		), BorderLayout.CENTER);
 		SwingUtils.addBorder(this);
+		
+		cmds.addItemListener(new ItemListener() {
+			
+			@Override
+			public void itemStateChanged(ItemEvent e) {
+				
+				if(e.getStateChange() == ItemEvent.SELECTED){  
+		            CmdType cmd = CmdType.toType((String) e.getItem());
+		            if(cmd == CmdType.ADD) {
+		            	System.out.println("ADD");
+		            	
+		            } else if(cmd == CmdType.MOV) {
+		            	System.out.println("MOV");
+		            	
+		            } else if(cmd == CmdType.DEL) {
+		            	System.out.println("DEL:禁止编辑 第二个文本框");
+		            	
+		            	
+		            }
+		        }  
+			}
+		});
 	}
 	
 	

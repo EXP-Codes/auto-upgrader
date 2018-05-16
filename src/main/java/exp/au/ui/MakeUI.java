@@ -25,9 +25,9 @@ public class MakeUI extends MainWindow {
 	/** 全局唯一ID */
 	private static final long serialVersionUID = 8994503171771453009L;
 
-	private final static int WIDTH = 600;
+	private final static int WIDTH = 800;
 	
-	private final static int HEIGHT = 600;
+	private final static int HEIGHT = 900;
 	
 	private ADPanel<_CmdLine> adPanel;
 	
@@ -56,17 +56,17 @@ public class MakeUI extends MainWindow {
 						SwingUtils.getEBorderPanel(new JTextField(), createButton("选择")), createLabel()), 
 				SwingUtils.getWEBorderPanel(new JLabel("    [应用名称] : "), new JTextField(), createLabel()), 
 				SwingUtils.getWEBorderPanel(new JLabel("    [补丁版本] : "), 
-						SwingUtils.getEBorderPanel(new JTextField("控制格式"), createButton("设置")), createLabel()), 
-				SwingUtils.getWEBorderPanel(new JLabel("    [发布时间] : "), 
-						SwingUtils.getEBorderPanel(new JTextField("自动生成"), createButton("设置")), createLabel()), 
+						SwingUtils.getEBorderPanel(new JTextField("控制格式(主版本+次版本)"), createButton("设置")), createLabel()), 
+				SwingUtils.getWEBorderPanel(new JLabel("    [发布时间] : "), new JTextField("禁止编辑,当前时间"), createLabel()), 
 				SwingUtils.getWEBorderPanel(new JLabel("    [校验 MD5] : "), new JTextField("自动生成"), createLabel()), 
-				SwingUtils.getWBorderPanel(createLabel(), new JButton("ℋ"))	// FIXME 悬浮比按钮更好看
+				createLabel()
 		);
 		return SwingUtils.addBorder(panel, "配置补丁信息");
 	}
 	
-	private JScrollPane getCenterPanel() {
-		return SwingUtils.addBorder(adPanel.getJScrollPanel(), "配置升级步骤");
+	private JPanel getCenterPanel() {
+		JScrollPane cmdPanel = SwingUtils.addBorder(adPanel.getJScrollPanel(), "配置升级步骤");
+		return SwingUtils.getSBorderPanel(cmdPanel, new JButton("一键生成补丁"));
 	}
 	
 	private JLabel createLabel() {
