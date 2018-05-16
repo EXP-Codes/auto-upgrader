@@ -1,39 +1,48 @@
 package exp.au.envm;
 
+import exp.libs.utils.other.StrUtils;
+
 public class CmdType {
 
-	public final static CmdType UNKNOW = new CmdType("unknow");
+	public final static CmdType UNKNOW = new CmdType("unknow", "未知");
 	
-	public final static CmdType ADD = new CmdType("add");
+	public final static CmdType ADD = new CmdType("add", "添加");
 	
-	public final static CmdType MOV = new CmdType("mov");
+	public final static CmdType MOV = new CmdType("mov", "移动");
 	
-	public final static CmdType DEL = new CmdType("del");
+	public final static CmdType DEL = new CmdType("del", "删除");
 	
-	private String cmd;
+	private String en;
 	
-	public CmdType(String cmd) {
-		this.cmd = cmd;
+	private String ch;
+	
+	public CmdType(String en, String ch) {
+		this.en = en;
+		this.ch = ch;
 	}
 	
-	public String CMD() {
-		return cmd;
+	public String EN() {
+		return en;
+	}
+	
+	public String CH() {
+		return ch;
 	}
 	
 	@Override
 	public String toString() {
-		return CMD();
+		return StrUtils.concat(CH(), "(", EN(), ")");
 	}
 	
-	public static CmdType toType(String cmd) {
+	public static CmdType toType(String cmdName) {
 		CmdType type = UNKNOW;
-		if(ADD.CMD().equalsIgnoreCase(cmd)) {
+		if(ADD.EN().equalsIgnoreCase(cmdName) || ADD.CH().equals(cmdName)) {
 			type = ADD;
 			
-		} else if(MOV.CMD().equalsIgnoreCase(cmd)) {
+		} else if(MOV.EN().equalsIgnoreCase(cmdName) || MOV.CH().equals(cmdName)) {
 			type = MOV;
 			
-		} else if(DEL.CMD().equalsIgnoreCase(cmd)) {
+		} else if(DEL.EN().equalsIgnoreCase(cmdName) || DEL.CH().equals(cmdName)) {
 			type = DEL;
 			
 		}

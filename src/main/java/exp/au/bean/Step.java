@@ -40,7 +40,7 @@ public class Step {
 	@Override
 	public String toString() {
 		StringBuilder sb = new StringBuilder();
-		sb.append("[").append(cmdType.CMD()).append("] : ");
+		sb.append("[").append(cmdType.toString()).append("] : ");
 		if(cmdType == CmdType.DEL) {
 			sb.append(" [").append(fromPath).append("]");
 			

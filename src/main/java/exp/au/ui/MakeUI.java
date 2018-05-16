@@ -50,28 +50,24 @@ public class MakeUI extends MainWindow {
 	}
 	
 	private JPanel getNorthPanel() {
-		JPanel northPanel = SwingUtils.getVGridPanel(
-				new JLabel(), 
+		JPanel panel = SwingUtils.getVGridPanel(
+				createLabel(), 
 				SwingUtils.getWEBorderPanel(new JLabel("    [补丁目录] : "), 
 						SwingUtils.getEBorderPanel(new JTextField(), createButton("选择")), createLabel()), 
-				new JLabel(), 
 				SwingUtils.getWEBorderPanel(new JLabel("    [应用名称] : "), new JTextField(), createLabel()), 
-				new JLabel(), 
 				SwingUtils.getWEBorderPanel(new JLabel("    [补丁版本] : "), 
 						SwingUtils.getEBorderPanel(new JTextField("控制格式"), createButton("设置")), createLabel()), 
-				new JLabel(), 
 				SwingUtils.getWEBorderPanel(new JLabel("    [发布时间] : "), 
 						SwingUtils.getEBorderPanel(new JTextField("自动生成"), createButton("设置")), createLabel()), 
-				new JLabel(), 
-				SwingUtils.getWEBorderPanel(new JLabel("    [校验MD5] : "), new JTextField("自动生成"), createLabel()), 
-				new JLabel()
+				SwingUtils.getWEBorderPanel(new JLabel("    [校验 MD5] : "), new JTextField("自动生成"), createLabel()), 
+				SwingUtils.getWBorderPanel(createLabel(), 
+						new JButton(SwingUtils.loadImage("/exp/au/ui/question.png", 16, 16)))	// FIXME 命令说明，按钮图片改成透明底色
 		);
-		SwingUtils.addBorder(northPanel);
-		return northPanel;
+		return SwingUtils.addBorder(panel, "配置补丁信息");
 	}
 	
 	private JScrollPane getCenterPanel() {
-		return SwingUtils.addBorder(adPanel.getJScrollPanel());
+		return SwingUtils.addBorder(adPanel.getJScrollPanel(), "配置升级步骤");
 	}
 	
 	private JLabel createLabel() {
@@ -80,13 +76,6 @@ public class MakeUI extends MainWindow {
 	
 	private JButton createButton(String name) {
 		return new JButton(StrUtils.concat("  ", name, "  "));
-	}
-	
-	private JPanel getSelectPanel() {
-		JTextField patchDirTF = new JTextField();
-		JButton selectBtn = new JButton("选择");
-		return SwingUtils.getEBorderPanel(
-				SwingUtils.getPairsPanel("补丁目录/zip包", patchDirTF), selectBtn);
 	}
 	
 	@Override
