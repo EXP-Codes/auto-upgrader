@@ -5,8 +5,8 @@ import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
 
 import javax.swing.JComboBox;
+import javax.swing.JLabel;
 import javax.swing.JPanel;
-import javax.swing.JRadioButton;
 import javax.swing.JTextField;
 
 import exp.au.envm.CmdType;
@@ -18,16 +18,22 @@ public class _CmdLine extends JPanel {
 
 	private JComboBox cmds;
 	
+	private JLabel fromLabel;
+	
+	private JLabel toLabel;
+	
 	public _CmdLine() {
 		super(new BorderLayout());
 		this.cmds = SwingUtils.getComboBox(CmdType.ADD.CH(), 
 				CmdType.MOV.CH(), CmdType.DEL.CH());
+		this.fromLabel = new JLabel("{patch-dir}/");
+		this.toLabel = new JLabel("{app-dir}/");
 		
 		// 布局 (根据命令提示文本框的相对位置是基于补丁还是程序)
 		add(cmds, BorderLayout.WEST);
 		add(SwingUtils.getHGridPanel(
-				SwingUtils.getPairsPanel("从", new JTextField("文件/目录")),
-				SwingUtils.getPairsPanel("到", new JTextField("文件/目录"))
+				SwingUtils.getPairsPanel("从", SwingUtils.getWBorderPanel(new JTextField("文件/目录"), fromLabel)),
+				SwingUtils.getPairsPanel("到", SwingUtils.getWBorderPanel(new JTextField("文件/目录"), toLabel))
 		), BorderLayout.CENTER);
 		SwingUtils.addBorder(this);
 		
@@ -39,14 +45,16 @@ public class _CmdLine extends JPanel {
 				if(e.getStateChange() == ItemEvent.SELECTED){  
 		            CmdType cmd = CmdType.toType((String) e.getItem());
 		            if(cmd == CmdType.ADD) {
-		            	System.out.println("ADD");
+		            	fromLabel.setText("{patch-dir}/");
+		            	toLabel.setText("{app-dir}/");
 		            	
 		            } else if(cmd == CmdType.MOV) {
-		            	System.out.println("MOV");
+		            	fromLabel.setText("{app-dir}/");
+		            	toLabel.setText("{app-dir}/");
 		            	
 		            } else if(cmd == CmdType.DEL) {
-		            	System.out.println("DEL:禁止编辑 第二个文本框");
-		            	
+		            	fromLabel.setText("{app-dir}/");
+		            	toLabel.setText("unuse:");
 		            	
 		            }
 		        }  
