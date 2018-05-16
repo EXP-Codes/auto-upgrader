@@ -60,7 +60,7 @@ public class MakeUI extends MainWindow {
 				SwingUtils.getWEBorderPanel(new JLabel("    [发布时间] : "), 
 						SwingUtils.getEBorderPanel(new JTextField("自动生成"), createButton("设置")), createLabel()), 
 				SwingUtils.getWEBorderPanel(new JLabel("    [校验 MD5] : "), new JTextField("自动生成"), createLabel()), 
-				SwingUtils.getWBorderPanel(createLabel(), new JButton("ℋ"))	// FIXME 命令说明，按钮图片改成透明底色
+				SwingUtils.getWBorderPanel(createLabel(), new JButton("ℋ"))	// FIXME 悬浮比按钮更好看
 		);
 		return SwingUtils.addBorder(panel, "配置补丁信息");
 	}
