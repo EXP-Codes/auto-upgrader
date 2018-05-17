@@ -8,6 +8,8 @@ public class CmdType {
 	
 	public final static CmdType ADD = new CmdType("add", "添加");
 	
+	public final static CmdType RPL = new CmdType("rpl", "替换");
+	
 	public final static CmdType MOV = new CmdType("mov", "移动");
 	
 	public final static CmdType DEL = new CmdType("del", "删除");
@@ -38,6 +40,9 @@ public class CmdType {
 		CmdType type = UNKNOW;
 		if(ADD.EN().equalsIgnoreCase(cmdName) || ADD.CH().equals(cmdName)) {
 			type = ADD;
+			
+		} else if(RPL.EN().equalsIgnoreCase(cmdName) || RPL.CH().equals(cmdName)) {
+			type = RPL;
 			
 		} else if(MOV.EN().equalsIgnoreCase(cmdName) || MOV.CH().equals(cmdName)) {
 			type = MOV;

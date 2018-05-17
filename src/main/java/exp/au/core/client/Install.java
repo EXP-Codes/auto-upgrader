@@ -62,7 +62,8 @@ public class Install {
 		for(Step updateStep : patchInfo.getUpdateSteps()) {
 			
 			boolean isOk = false;
-			if(CmdType.ADD == updateStep.getCmdType()) {
+			if(CmdType.ADD == updateStep.getCmdType() || 
+					CmdType.RPL == updateStep.getCmdType()) {
 				String from = PathUtils.combine(patchBaseDir, updateStep.getFromPath());
 				String to = PathUtils.combine(appBaseDir, updateStep.getToPath());
 				
@@ -138,7 +139,8 @@ public class Install {
 			Step updateStep = updateSteps.get(i);
 			
 			boolean isOk = false;
-			if(CmdType.ADD == updateStep.getCmdType()) {
+			if(CmdType.ADD == updateStep.getCmdType() || 
+					CmdType.RPL == updateStep.getCmdType()) {
 				String to = PathUtils.combine(appBaseDir, updateStep.getToPath());
 				isOk = FileUtils.delete(to);
 				

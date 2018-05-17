@@ -24,7 +24,7 @@ public class _CmdLine extends JPanel {
 	
 	public _CmdLine() {
 		super(new BorderLayout());
-		this.cmds = SwingUtils.getComboBox(CmdType.ADD.CH(), 
+		this.cmds = SwingUtils.getComboBox(CmdType.ADD.CH(), CmdType.RPL.CH(), 
 				CmdType.MOV.CH(), CmdType.DEL.CH());
 		this.fromLabel = new JLabel("{patch-dir}/");
 		this.toLabel = new JLabel("{app-dir}/");
@@ -44,7 +44,7 @@ public class _CmdLine extends JPanel {
 				
 				if(e.getStateChange() == ItemEvent.SELECTED){  
 		            CmdType cmd = CmdType.toType((String) e.getItem());
-		            if(cmd == CmdType.ADD) {
+		            if(cmd == CmdType.ADD) {	// 监听，， 默认ADD/RPL 的 源宿路径是相同的
 		            	fromLabel.setText("{patch-dir}/");
 		            	toLabel.setText("{app-dir}/");
 		            	
