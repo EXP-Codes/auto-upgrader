@@ -18,6 +18,16 @@ import exp.libs.warp.ui.BeautyEyeUtils;
 import exp.libs.warp.ui.SwingUtils;
 import exp.libs.warp.ui.cpt.win.PopChildWindow;
 
+/**
+ * <PRE>
+ * 版本设置窗口
+ * </PRE>
+ * <B>PROJECT：</B> auto-upgrade-plugin
+ * <B>SUPPORT：</B> EXP
+ * @version   1.0 2018-05-20
+ * @author    EXP: 272629724@qq.com
+ * @since     jdk版本：jdk1.6
+ */
 public class _VerWin extends PopChildWindow {
 
 	private static final long serialVersionUID = 5311506428590057579L;

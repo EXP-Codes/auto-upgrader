@@ -15,6 +15,17 @@ import exp.au.envm.CmdType;
 import exp.libs.utils.other.StrUtils;
 import exp.libs.warp.ui.SwingUtils;
 
+/**
+ * <PRE>
+ * 命令行组件
+ * </PRE>
+ * <B>PROJECT：</B> auto-upgrade-plugin
+ * <B>SUPPORT：</B> EXP
+ * @version   1.0 2018-05-20
+ * @author    EXP: 272629724@qq.com
+ * @since     jdk版本：jdk1.6
+ */
+@SuppressWarnings("rawtypes")
 public class _CmdLine extends JPanel {
 
 	private static final long serialVersionUID = -1015365465387409580L;
@@ -150,7 +161,7 @@ public class _CmdLine extends JPanel {
 	private void tips(CmdType cmdType, String... msgs) {
 		String cmd = StrUtils.concat("<font color='red'>【", cmdType.CH(), "】 命令: </font>");
 		String msg = StrUtils.concat(msgs);
-		MakeUI.getInstn().console(cmd, "<font color='blue'>", msg, "</font>");
+		MakePatchUI.getInstn().console(cmd, msg);
 	}
 	
 	protected CmdType getCmdType() {

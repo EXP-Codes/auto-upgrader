@@ -41,8 +41,8 @@ public class UIUtils {
 		        if(!(ch >= '0' && ch <= '9')) {
 		            e.consume();    // 销毁当前输入字符
 
-		        // 限制不能是0开头
-		        } else if("".equals(text) && ch == '0') {   
+		        // 限制不能连续两个以上的0开头
+		        } else if("0".equals(text) && ch == '0') {   
 		            e.consume();
 		        }
 		    }
