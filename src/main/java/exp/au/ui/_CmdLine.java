@@ -109,7 +109,7 @@ public class _CmdLine extends JPanel {
 			
 			@Override
 			public void keyTyped(KeyEvent e) {
-				CmdType cmdType = CmdType.toType(cmdCB.getSelectedItem().toString());
+				CmdType cmdType = getCmdType();
 				if(cmdType == CmdType.ADD || cmdType == CmdType.RPL) {
 					
 					String data = fromTF.getText();
@@ -150,20 +150,32 @@ public class _CmdLine extends JPanel {
 	private void tips(CmdType cmdType, String... msgs) {
 		String cmd = StrUtils.concat("<font color='red'>【", cmdType.CH(), "】 命令: </font>");
 		String msg = StrUtils.concat(msgs);
-		MakeUI.getInstn().tips(cmd, "<font color='blue'>", msg, "</font>");
+		MakeUI.getInstn().console(cmd, "<font color='blue'>", msg, "</font>");
+	}
+	
+	protected CmdType getCmdType() {
+		return CmdType.toType((String) cmdCB.getSelectedItem());
+	}
+	
+	protected String getFromPath() {
+		return fromTF.getText();
+	}
+	
+	protected String getToPath() {
+		return toTF.getText();
 	}
 	
 	protected String toXml() {
 		String cmdXml = "";
-		CmdType cmdType = CmdType.toType((String) cmdCB.getSelectedItem());
+		CmdType cmdType = getCmdType();
 		if(CmdType.DEL == cmdType) {
 			cmdXml = StrUtils.concat("    <", cmdType.EN(), " caption=\"", 
-					cmdType.CH(), "命令\" from=\"", fromTF.getText(), "\" />");
+					cmdType.CH(), "命令\" from=\"", getFromPath(), "\" />");
 					
 		} else {
 			cmdXml = StrUtils.concat("    <", cmdType.EN(), " caption=\"", 
-					cmdType.CH(), "命令\" from=\"", fromTF.getText(), 
-					"\" to=\"", toTF.getText(), "\" />");
+					cmdType.CH(), "命令\" from=\"", getFromPath(), 
+					"\" to=\"", getToPath(), "\" />");
 		}
 		return cmdXml;
 	}

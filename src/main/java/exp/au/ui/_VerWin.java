@@ -9,9 +9,12 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
 
+import org.jb2011.lnf.beautyeye.ch3_button.BEButtonUI.NormalColor;
+
 import exp.au.bean.Version;
 import exp.au.utils.UIUtils;
 import exp.libs.utils.num.NumUtils;
+import exp.libs.warp.ui.BeautyEyeUtils;
 import exp.libs.warp.ui.SwingUtils;
 import exp.libs.warp.ui.cpt.win.PopChildWindow;
 
@@ -39,7 +42,10 @@ public class _VerWin extends PopChildWindow {
 	protected void initComponents(Object... args) {
 		this.majorTF = new JTextField();
 		this.minorTF = new JTextField();
+		
 		this.okBtn = new JButton("确 认");
+		BeautyEyeUtils.setButtonStyle(NormalColor.lightBlue, okBtn);
+		
 		this.verTF = (JTextField) args[0];
 	}
 

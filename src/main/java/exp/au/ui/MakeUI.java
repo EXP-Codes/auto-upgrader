@@ -17,12 +17,11 @@ import javax.swing.JTextField;
 import org.jb2011.lnf.beautyeye.ch3_button.BEButtonUI.NormalColor;
 
 import exp.au.Config;
-import exp.au.core.server.GenNative;
+import exp.au.envm.CmdType;
 import exp.au.envm.Params;
 import exp.au.utils.UIUtils;
 import exp.libs.envm.Charset;
 import exp.libs.envm.Delimiter;
-import exp.libs.envm.FileType;
 import exp.libs.utils.encode.CompressUtils;
 import exp.libs.utils.encode.CryptoUtils;
 import exp.libs.utils.format.TXTUtils;
@@ -30,7 +29,6 @@ import exp.libs.utils.io.FileUtils;
 import exp.libs.utils.other.PathUtils;
 import exp.libs.utils.other.StrUtils;
 import exp.libs.utils.time.TimeUtils;
-import exp.libs.utils.verify.RegexUtils;
 import exp.libs.warp.tpl.Template;
 import exp.libs.warp.ui.BeautyEyeUtils;
 import exp.libs.warp.ui.SwingUtils;
@@ -54,7 +52,7 @@ public class MakeUI extends MainWindow {
 	
 	private final static int HEIGHT = 900;
 	
-	private JTextField patchDir;
+	private JTextField patchDirTF;
 	
 	private JButton patchBtn;
 	
@@ -95,8 +93,8 @@ public class MakeUI extends MainWindow {
 	
 	@Override
 	protected void initComponents(Object... args) {
-		this.patchDir = new JTextField();
-		patchDir.setToolTipText("应用补丁的根目录");
+		this.patchDirTF = new JTextField();
+		patchDirTF.setToolTipText("应用补丁的根目录");
 		this.patchBtn = newButton("选择");
 		
 		this.appNameTF = new JTextField();
@@ -140,7 +138,7 @@ public class MakeUI extends MainWindow {
 		JPanel ctrlPanel = SwingUtils.getVGridPanel(
 				newLabel(), 
 				SwingUtils.getWEBorderPanel(new JLabel("    [补丁目录] : "), 
-						SwingUtils.getEBorderPanel(patchDir, patchBtn), newLabel()), 
+						SwingUtils.getEBorderPanel(patchDirTF, patchBtn), newLabel()), 
 				SwingUtils.getWEBorderPanel(new JLabel("    [应用名称] : "), appNameTF, newLabel()), 
 				SwingUtils.getWEBorderPanel(new JLabel("    [补丁版本] : "), 
 						SwingUtils.getEBorderPanel(verTF, verBtn), newLabel()), 
@@ -190,7 +188,7 @@ public class MakeUI extends MainWindow {
 				fc.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);	// 只能选择目录
 				if(JFileChooser.APPROVE_OPTION == fc.showOpenDialog(null)) {
 					File file = fc.getSelectedFile();
-					patchDir.setText(file.getAbsolutePath());
+					patchDirTF.setText(file.getAbsolutePath());
 				}
 			}
 		});
@@ -207,41 +205,113 @@ public class MakeUI extends MainWindow {
 			
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				// TODO 检查参数是否为空
-				generatePatch();
+				if(chechPatchParams()) {
+					generatePatch();
+				}
 			}
 		});
 	}
 	
 	/**
-	 * 生成补丁文件, 并拷贝到发布目录
+	 * 检查补丁生成参数
+	 * @return
 	 */
-	private boolean generatePatch() {
-		// TODO 在控制台显示步骤
-		
-		boolean isOk = generateCmdFile();
-		if(isOk == false) {
-			return isOk;
+	private boolean chechPatchParams() {
+		if(StrUtils.isEmpty(patchDirTF.getText())) {
+			SwingUtils.warn("[补丁目录] 不能为空");
+			return false;
+			
+		} else if(StrUtils.isEmpty(appNameTF.getText())) {
+			SwingUtils.warn("[应用名称] 不能为空");
+			return false;
+			
+		} else if(StrUtils.isEmpty(verTF.getText())) {
+			SwingUtils.warn("[补丁版本] 不能为空");
+			return false;
 		}
 		
-		String zipPath = toZipPatch();
-		isOk = StrUtils.isNotEmpty(zipPath);
-		if(isOk == false) {
-			return isOk;
-		}
-		
-		isOk = toTxtAndMD5(zipPath);
-		if(isOk == false) {
-			return isOk;
+		boolean isOk = true;
+		List<_CmdLine> cmdLines = adPanel.getLineComponents();
+		for(int i = 1, size = cmdLines.size(); i <= size; i++) {
+			_CmdLine cmdLine = cmdLines.get(i - 1);
+			
+			CmdType cmdType = cmdLine.getCmdType();
+			if(CmdType.DEL == cmdType) {
+				if(StrUtils.isTrimEmpty(cmdLine.getFromPath())) {
+					SwingUtils.warn("第 [", i, "] 条 [", cmdType.CH(), "] 命令的源目录不能为空");
+					isOk = false;
+					break;
+				}
+				
+			} else {
+				if(StrUtils.isTrimEmpty(cmdLine.getFromPath())) {
+					SwingUtils.warn("第 [", i, "] 条 [", cmdType.CH(), "] 命令的源目录不能为空");
+					isOk = false;
+					break;
+					
+				} else if(StrUtils.isTrimEmpty(cmdLine.getToPath())) {
+					SwingUtils.warn("第 [", i, "] 条 [", cmdType.CH(), "] 命令的目标目录不能为空");
+					isOk = false;
+					break;
+				}
+			}
 		}
 		return isOk;
 	}
 	
 	/**
-	 * 生成命令文件
+	 * 生成补丁文件, 并拷贝到发布目录
+	 */
+	private void generatePatch() {
+		final String APP_NAME = appNameTF.getText();
+		final String VERSION = verTF.getText();
+		final String PATCH_ZIP_NAME = StrUtils.concat(APP_NAME, 
+				Params.PATCH_TAG, VERSION, Params.ZIP_SUFFIX);
+		final String SRC_DIR = patchDirTF.getText();
+		final String SNK_DIR = StrUtils.concat(Config.PATCH_PAGE_DIR, APP_NAME, "/", VERSION, "/");
+		final String PATCH_ZIP = PathUtils.combine(SNK_DIR, PATCH_ZIP_NAME);
+		
+		
+		console("正在生成 [", Params.UPDATE_XML, "] 升级步骤文件...");
+		boolean isOk = _toUpdateXml(PATCH_ZIP_NAME);
+		if(isOk == false) {
+			console("生成 [", Params.UPDATE_XML, "] 升级步骤文件失败");
+			return;
+		}
+		
+		console("正在生成补丁目录 [", SRC_DIR, "] 的压缩文件...");
+		isOk = CompressUtils.toZip(SRC_DIR, PATCH_ZIP);
+		if(isOk == false) {
+			console("生成补丁目录 [", PATCH_ZIP_NAME, "] 的压缩文件失败");
+			return;
+		}
+
+		console("正在生成补丁文件 [", PATCH_ZIP_NAME, "] 的备份文件...");
+		String txtPath = PATCH_ZIP.concat(Params.TXT_SUFFIX);
+		isOk = TXTUtils.toTXT(PATCH_ZIP, txtPath);
+		if(isOk == false) {
+			console("生成补丁文件 [", PATCH_ZIP_NAME, "] 的备份文件失败");
+			return;
+		}
+		
+		console("正在生成补丁文件 [", PATCH_ZIP_NAME, "] 的MD5校验码...");
+		final String MD5 = CryptoUtils.toFileMD5(PATCH_ZIP);
+		String MD5Path = PathUtils.combine(SNK_DIR, Params.MD5_HTML);
+		isOk = FileUtils.write(MD5Path, MD5, Charset.ISO, false);
+		if(isOk == false) {
+			console("生成补丁文件 [", PATCH_ZIP_NAME, "] 的MD5校验码失败");
+			return;
+		}
+		
+		md5TF.setText(MD5);
+		console("生成应用程序 [", APP_NAME, "] 的升级补丁完成");
+	}
+	
+	/**
+	 * 生成升级步骤文件
 	 * @return
 	 */
-	private boolean generateCmdFile() {
+	private boolean _toUpdateXml(String patchName) {
 		StringBuilder cmds = new StringBuilder();
 		List<_CmdLine> cmdLines = adPanel.getLineComponents();
 		for(_CmdLine cmdLine : cmdLines) {
@@ -249,43 +319,18 @@ public class MakeUI extends MainWindow {
 		}
 		
 		Template tmp = new Template(TPL_PATH, Charset.UTF8);
+		tmp.set("patch-name", patchName);
 		tmp.set("cmds", cmds.toString());
 		
-		String savePath = PathUtils.combine(patchDir.getText(), Params.UPDATE_XML);
+		String savePath = PathUtils.combine(patchDirTF.getText(), Params.UPDATE_XML);
 		return FileUtils.write(savePath, tmp.getContent(), Charset.UTF8, false);
 	}
 	
-	private String toZipPatch() {
-		String srcPath = patchDir.getText();
-		String snkDir = PathUtils.getParentDir(srcPath);
-		String zipName = StrUtils.concat(appNameTF.getText(), "-patch-", verTF.getText(), ".zip");
-		String zipPath = PathUtils.combine(snkDir, zipName);
-		boolean isOk = CompressUtils.toZip(srcPath, zipPath);
-		return (isOk ? zipPath : "");
-	}
-	
-	// FIXME 参数拆开，和上面的方法一起
-	private boolean toTxtAndMD5(String zipPath) {
-		boolean isOk = false;
-		final String REGEX = "(([^/\\\\]*?)-patch-(\\d\\.\\d).zip)";
-		List<String> groups = RegexUtils.findGroups(zipPath, REGEX);
-		if(groups.size() == 4) {
-			String zipName = groups.get(1);
-			String appName = groups.get(2);
-			String version = groups.get(3);
-			String dir = StrUtils.concat(Config.PATCH_PAGE_DIR, appName, "/", version, "/");
-			String path = dir.concat(zipName);
-			isOk = FileUtils.copyFile(zipPath, path);
-			
-			String txtPath = TXTUtils.toTXT(path);
-			String MD5 = CryptoUtils.toFileMD5(path);
-			String MD5Path = PathUtils.combine(PathUtils.getParentDir(txtPath), Params.MD5_HTML);
-			isOk &= FileUtils.write(MD5Path, MD5, Charset.ISO, false);
-		}
-		return isOk;
-	}
-	
-	protected void tips(Object... msgs) {
+	/**
+	 * 打印信息到控制台
+	 * @param msgs
+	 */
+	protected void console(Object... msgs) {
 		String msg = StrUtils.concat(msgs);
 		console.setText(StrUtils.concat(
 				"<html>", 

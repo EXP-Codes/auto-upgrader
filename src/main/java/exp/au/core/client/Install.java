@@ -55,7 +55,7 @@ public class Install {
 	 * @return 成功执行的步骤数
 	 */
 	private static int toDo(PatchInfo patchInfo) {
-		String patchBaseDir = patchInfo.getPatchDir();
+		String patchBaseDir = patchInfo.getPatchDir();	// FIXME 解压后的根目录文件名不一定和zip文件名同名
 		String appBaseDir = "./";
 		
 		int step = 0;
