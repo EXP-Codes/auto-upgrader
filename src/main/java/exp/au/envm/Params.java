@@ -1,7 +1,9 @@
 package exp.au.envm;
 
 public class Params {
-
+	
+	public final static String PATCH = "-patch-";
+	
 	public final static String MD5_HTML = "MD5.html";
 	
 	public final static String UPDATE_XML = "update.xml";

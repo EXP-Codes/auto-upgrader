@@ -31,7 +31,7 @@ public class _CmdLine extends JPanel {
 	
 	private final static String APP_DIR = APP_DIR_TIPS.concat("/");
 	
-	private JComboBox cmds;
+	private JComboBox cmdCB;
 	
 	private JLabel fromTipsLabel;
 	
@@ -47,7 +47,7 @@ public class _CmdLine extends JPanel {
 	
 	public _CmdLine() {
 		super(new BorderLayout());
-		this.cmds = SwingUtils.getComboBox(
+		this.cmdCB = SwingUtils.getComboBox(
 				CmdType.ADD.CH(), CmdType.RPL.CH(), 
 				CmdType.MOV.CH(), CmdType.DEL.CH());
 		
@@ -66,7 +66,7 @@ public class _CmdLine extends JPanel {
 	}
 	
 	private void initLayout() {
-		add(cmds, BorderLayout.WEST);
+		add(cmdCB, BorderLayout.WEST);
 		add(SwingUtils.getHGridPanel(
 				SwingUtils.getPairsPanel(fromTipsLabel, 
 						SwingUtils.getWBorderPanel(fromTF, fromLabel)),
@@ -77,7 +77,7 @@ public class _CmdLine extends JPanel {
 	}
 	
 	private void initListener() {
-		cmds.addItemListener(new ItemListener() {
+		cmdCB.addItemListener(new ItemListener() {
 			
 			@Override
 			public void itemStateChanged(ItemEvent e) {
@@ -109,7 +109,7 @@ public class _CmdLine extends JPanel {
 			
 			@Override
 			public void keyTyped(KeyEvent e) {
-				CmdType cmdType = CmdType.toType(cmds.getSelectedItem().toString());
+				CmdType cmdType = CmdType.toType(cmdCB.getSelectedItem().toString());
 				if(cmdType == CmdType.ADD || cmdType == CmdType.RPL) {
 					
 					String data = fromTF.getText();
@@ -151,6 +151,21 @@ public class _CmdLine extends JPanel {
 		String cmd = StrUtils.concat("<font color='red'>【", cmdType.CH(), "】 命令: </font>");
 		String msg = StrUtils.concat(msgs);
 		MakeUI.getInstn().tips(cmd, "<font color='blue'>", msg, "</font>");
+	}
+	
+	protected String toXml() {
+		String cmdXml = "";
+		CmdType cmdType = CmdType.toType((String) cmdCB.getSelectedItem());
+		if(CmdType.DEL == cmdType) {
+			cmdXml = StrUtils.concat("    <", cmdType.EN(), " caption=\"", 
+					cmdType.CH(), "命令\" from=\"", fromTF.getText(), "\" />");
+					
+		} else {
+			cmdXml = StrUtils.concat("    <", cmdType.EN(), " caption=\"", 
+					cmdType.CH(), "命令\" from=\"", fromTF.getText(), 
+					"\" to=\"", toTF.getText(), "\" />");
+		}
+		return cmdXml;
 	}
 	
 }
