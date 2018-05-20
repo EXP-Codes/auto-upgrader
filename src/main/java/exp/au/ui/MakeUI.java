@@ -265,37 +265,46 @@ public class MakeUI extends MainWindow {
 	private void generatePatch() {
 		final String APP_NAME = appNameTF.getText();
 		final String VERSION = verTF.getText();
-		final String PATCH_ZIP_NAME = StrUtils.concat(APP_NAME, 
-				Params.PATCH_TAG, VERSION, Params.ZIP_SUFFIX);
+		final String PATCH_NAME = StrUtils.concat(APP_NAME, Params.PATCH_TAG, VERSION);
+		final String PATCH_ZIP_NAME = PATCH_NAME.concat(Params.ZIP_SUFFIX);
 		final String SRC_DIR = patchDirTF.getText();
 		final String SNK_DIR = StrUtils.concat(Config.PATCH_PAGE_DIR, APP_NAME, "/", VERSION, "/");
-		final String PATCH_ZIP = PathUtils.combine(SNK_DIR, PATCH_ZIP_NAME);
+		final String PATCH_DIR = SNK_DIR.concat(PATCH_NAME);
+		final String PATCH_ZIP_PATH = SNK_DIR.concat(PATCH_ZIP_NAME);
 		
+		
+		console("正在复制补丁目录到 [", PATCH_DIR, "] ...");
+		boolean isOk = FileUtils.copyDirectory(SRC_DIR, PATCH_DIR);
+		if(isOk == false) {
+			console("复制补丁目录到 [", PATCH_DIR, "] 失败");
+			return;
+		}
 		
 		console("正在生成 [", Params.UPDATE_XML, "] 升级步骤文件...");
-		boolean isOk = _toUpdateXml(PATCH_ZIP_NAME);
+		isOk = _toUpdateXml(PATCH_DIR, PATCH_ZIP_NAME);
 		if(isOk == false) {
 			console("生成 [", Params.UPDATE_XML, "] 升级步骤文件失败");
 			return;
 		}
 		
-		console("正在生成补丁目录 [", SRC_DIR, "] 的压缩文件...");
-		isOk = CompressUtils.toZip(SRC_DIR, PATCH_ZIP);
+		console("正在生成补丁目录 [", PATCH_DIR, "] 的压缩文件...");
+		isOk = CompressUtils.toZip(PATCH_DIR, PATCH_ZIP_PATH);
+		isOk &= FileUtils.delete(PATCH_DIR);
 		if(isOk == false) {
 			console("生成补丁目录 [", PATCH_ZIP_NAME, "] 的压缩文件失败");
 			return;
 		}
 
 		console("正在生成补丁文件 [", PATCH_ZIP_NAME, "] 的备份文件...");
-		String txtPath = PATCH_ZIP.concat(Params.TXT_SUFFIX);
-		isOk = TXTUtils.toTXT(PATCH_ZIP, txtPath);
+		String txtPath = PATCH_ZIP_PATH.concat(Params.TXT_SUFFIX);
+		isOk = TXTUtils.toTXT(PATCH_ZIP_PATH, txtPath);
 		if(isOk == false) {
 			console("生成补丁文件 [", PATCH_ZIP_NAME, "] 的备份文件失败");
 			return;
 		}
 		
 		console("正在生成补丁文件 [", PATCH_ZIP_NAME, "] 的MD5校验码...");
-		final String MD5 = CryptoUtils.toFileMD5(PATCH_ZIP);
+		final String MD5 = CryptoUtils.toFileMD5(PATCH_ZIP_PATH);
 		String MD5Path = PathUtils.combine(SNK_DIR, Params.MD5_HTML);
 		isOk = FileUtils.write(MD5Path, MD5, Charset.ISO, false);
 		if(isOk == false) {
@@ -309,9 +318,11 @@ public class MakeUI extends MainWindow {
 	
 	/**
 	 * 生成升级步骤文件
+	 * @param patchDir
+	 * @param patchName
 	 * @return
 	 */
-	private boolean _toUpdateXml(String patchName) {
+	private boolean _toUpdateXml(String patchDir, String patchName) {
 		StringBuilder cmds = new StringBuilder();
 		List<_CmdLine> cmdLines = adPanel.getLineComponents();
 		for(_CmdLine cmdLine : cmdLines) {
@@ -322,7 +333,7 @@ public class MakeUI extends MainWindow {
 		tmp.set("patch-name", patchName);
 		tmp.set("cmds", cmds.toString());
 		
-		String savePath = PathUtils.combine(patchDirTF.getText(), Params.UPDATE_XML);
+		String savePath = PathUtils.combine(patchDir, Params.UPDATE_XML);
 		return FileUtils.write(savePath, tmp.getContent(), Charset.UTF8, false);
 	}
 	
