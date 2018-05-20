@@ -9,9 +9,9 @@ import exp.libs.warp.conf.xml.XConfigFactory;
  * <PRE>
  * 程序配置
  * </PRE>
- * <B>PROJECT：</B> exp-certificate
+ * <B>PROJECT：</B> auto-upgrade-plugin
  * <B>SUPPORT：</B> EXP
- * @version   1.0 2017-12-17
+ * @version   1.0 2018-05-20
  * @author    EXP: 272629724@qq.com
  * @since     jdk版本：jdk1.6
  */

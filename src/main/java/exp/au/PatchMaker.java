@@ -1,11 +1,11 @@
 package exp.au;
 
-import exp.au.ui.MakePatchUI;
+import exp.au.ui.server.MakePatchUI;
 import exp.libs.warp.ui.BeautyEyeUtils;
 
 /**
  * <PRE>
- * 制作应用升级包.
+ * 应用升级包制作器(服务端用).
  * -----------------------------------------
  *   此方法在编译环境下运行即可.
  *   目的是生成升级包到管理目录, 并通过SVN上传到管理页.
@@ -16,7 +16,7 @@ import exp.libs.warp.ui.BeautyEyeUtils;
  * @author    EXP: 272629724@qq.com
  * @since     jdk版本：jdk1.6
  */
-public class MakePatch {
+public class PatchMaker {
 
 	public static void main(String[] args) {
 		BeautyEyeUtils.init();
