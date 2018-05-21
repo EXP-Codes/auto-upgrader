@@ -15,6 +15,18 @@ public class UpgradeUI extends MainWindow {
 	
 	private final static int HEIGHT = 700;
 	
+	
+	// 检查版本
+	//  版本列表 (历史版本标灰， 当前版本标红， 未升级版本标蓝)
+	
+	// 下载补丁
+	//  版本列表 (历史版本标灰， 当前版本标红， 未升级版本标绿)
+	//  版本列表新增两列：下载状态， 安装状态
+	
+	// 控制台日志(下载时需打印MD5校验情况)
+	// 一键升级(升级过程中，当前版本标色变化)
+	
+	
 	@Override
 	protected void initComponents(Object... args) {
 		// TODO Auto-generated method stub
