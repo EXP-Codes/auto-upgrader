@@ -15,7 +15,7 @@ import exp.libs.warp.ui.SwingUtils;
 
 /**
  * <PRE>
- * 根据补丁参数制作补丁
+ * 根据补丁参数制作补丁, 并放置到补丁管理目录
  * </PRE>
  * <B>PROJECT：</B> auto-upgrade-plugin
  * <B>SUPPORT：</B> EXP
