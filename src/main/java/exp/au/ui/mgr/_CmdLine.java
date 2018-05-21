@@ -25,7 +25,6 @@ import exp.libs.warp.ui.SwingUtils;
  * @author    EXP: 272629724@qq.com
  * @since     jdk版本：jdk1.6
  */
-@SuppressWarnings("rawtypes")
 public class _CmdLine extends JPanel {
 
 	private static final long serialVersionUID = -1015365465387409580L;
@@ -92,26 +91,28 @@ public class _CmdLine extends JPanel {
 			
 			@Override
 			public void itemStateChanged(ItemEvent e) {
-				if(e.getStateChange() == ItemEvent.SELECTED){  
-		            CmdType cmdType = CmdType.toType((String) e.getItem());
-		            if(cmdType == CmdType.ADD || cmdType == CmdType.RPL) {
-		            	updateFromTips(true);
-		            	updateToTips(false);
-		            	tips(cmdType, "从 ", PATCH_DIR_TIPS, " 移动一个 [文件/目录] 到 ", 
-		            			APP_DIR_TIPS, " 的相同位置 (存在则覆盖)");
-		            	
-		            } else if(cmdType == CmdType.MOV) {
-		            	updateFromTips(false);
-		            	updateToTips(false);
-		            	tips(cmdType, "从 ", APP_DIR_TIPS, " 移动一个 [文件/目录] 到 ", 
-		            			APP_DIR_TIPS, " 的另一个位置");
-		            	
-		            } else if(cmdType == CmdType.DEL) {
-		            	updateFromTips(false);
-		            	updateToTips(true);
-		            	tips(cmdType, "从 ", APP_DIR_TIPS, " 删除一个 [文件/目录]");
-		            }
-		        }  
+				if(e.getStateChange() != ItemEvent.SELECTED) {  
+					return;
+				}
+				
+	            CmdType cmdType = CmdType.toType((String) e.getItem());
+	            if(cmdType == CmdType.ADD || cmdType == CmdType.RPL) {
+	            	updateFromTips(true);
+	            	updateToTips(false);
+	            	tips(cmdType, "从 ", PATCH_DIR_TIPS, " 移动一个 [文件/目录] 到 ", 
+	            			APP_DIR_TIPS, " 的相同位置 (存在则覆盖)");
+	            	
+	            } else if(cmdType == CmdType.MOV) {
+	            	updateFromTips(false);
+	            	updateToTips(false);
+	            	tips(cmdType, "从 ", APP_DIR_TIPS, " 移动一个 [文件/目录] 到 ", 
+	            			APP_DIR_TIPS, " 的另一个位置");
+	            	
+	            } else if(cmdType == CmdType.DEL) {
+	            	updateFromTips(false);
+	            	updateToTips(true);
+	            	tips(cmdType, "从 ", APP_DIR_TIPS, " 删除一个 [文件/目录]");
+	            }
 			}
 		});
 		
@@ -176,7 +177,7 @@ public class _CmdLine extends JPanel {
 		return toTF.getText();
 	}
 	
-	protected String toXml() {
+	public String toXml() {
 		String cmdXml = "";
 		CmdType cmdType = getCmdType();
 		if(CmdType.DEL == cmdType) {

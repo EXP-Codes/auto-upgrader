@@ -8,8 +8,19 @@ import javax.swing.JTextField;
 
 import exp.libs.utils.other.StrUtils;
 
+/**
+ * <PRE>
+ * UI工具
+ * </PRE>
+ * <B>PROJECT：</B> auto-upgrade-plugin
+ * <B>SUPPORT：</B> EXP
+ * @version   1.0 2018-05-20
+ * @author    EXP: 272629724@qq.com
+ * @since     jdk版本：jdk1.6
+ */
 public class UIUtils {
 
+	/** 私有化构造函数 */
 	protected UIUtils() {}
 	
 	/**

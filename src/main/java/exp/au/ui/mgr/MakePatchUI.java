@@ -4,10 +4,13 @@ import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.ItemEvent;
+import java.awt.event.ItemListener;
 import java.io.File;
 import java.util.List;
 
 import javax.swing.JButton;
+import javax.swing.JComboBox;
 import javax.swing.JEditorPane;
 import javax.swing.JFileChooser;
 import javax.swing.JLabel;
@@ -17,20 +20,13 @@ import javax.swing.JTextField;
 import org.jb2011.lnf.beautyeye.ch3_button.BEButtonUI.NormalColor;
 
 import exp.au.Config;
-import exp.au.core.mgr.MakePage;
+import exp.au.core.mgr.MakePatch;
 import exp.au.envm.CmdType;
-import exp.au.envm.Params;
 import exp.au.utils.UIUtils;
-import exp.libs.envm.Charset;
 import exp.libs.envm.Delimiter;
-import exp.libs.utils.encode.CompressUtils;
-import exp.libs.utils.encode.CryptoUtils;
-import exp.libs.utils.format.TXTUtils;
-import exp.libs.utils.io.FileUtils;
-import exp.libs.utils.other.PathUtils;
+import exp.libs.utils.os.OSUtils;
 import exp.libs.utils.other.StrUtils;
 import exp.libs.utils.time.TimeUtils;
-import exp.libs.warp.tpl.Template;
 import exp.libs.warp.ui.BeautyEyeUtils;
 import exp.libs.warp.ui.SwingUtils;
 import exp.libs.warp.ui.cpt.pnl.ADPanel;
@@ -51,15 +47,17 @@ public class MakePatchUI extends MainWindow {
 	/** 全局唯一ID */
 	private static final long serialVersionUID = 8994503171771453009L;
 
-	private final static int WIDTH = 800;
+	private final static int WIDTH = 700;
 	
-	private final static int HEIGHT = 900;
+	private final static int HEIGHT = 700;
 	
 	private JTextField patchDirTF;
 	
-	private JButton patchBtn;
+	private JButton selectBtn;
 	
 	private JTextField appNameTF;
+	
+	private JComboBox appNameCB;
 	
 	private JTextField verTF;
 	
@@ -69,7 +67,11 @@ public class MakePatchUI extends MainWindow {
 	
 	private JTextField timeTF;
 	
-	private JTextField md5TF;
+	private JButton timeBtn;
+	
+	private JTextField MD5TF;
+	
+	private JButton copyBtn;
 	
 	private ADPanel<_CmdLine> adPanel;
 	
@@ -98,35 +100,52 @@ public class MakePatchUI extends MainWindow {
 	protected void initComponents(Object... args) {
 		this.patchDirTF = new JTextField();
 		patchDirTF.setToolTipText("应用补丁的根目录");
-		this.patchBtn = newButton("选择");
+		this.selectBtn = newButton("选择");
 		
 		this.appNameTF = new JTextField();
 		appNameTF.setToolTipText("应用名称 (建议使用英文名称)");
+		this.appNameCB = initAppNames();
 		
 		this.verTF = new JTextField();
 		verTF.setEditable(false);
 		verTF.setToolTipText("补丁版本, 格式要求为: \"主版本.次版本\" (如: 3.4)");
 		this.verBtn = newButton("设置");
-		this.verWin = new _VerWin(verTF);
+		this.verWin = new _VerWin(appNameTF, verTF);
 		
 		this.timeTF = new JTextField(TimeUtils.getSysDate());
 		timeTF.setEditable(false);
+		this.timeBtn = newButton("更新");
 		
-		this.md5TF = new JTextField();
-		md5TF.setEditable(false);
-		md5TF.setToolTipText("补丁校验MD5 (自动生成)");
+		this.MD5TF = new JTextField();
+		MD5TF.setEditable(false);
+		MD5TF.setToolTipText("补丁校验MD5 (自动生成)");
+		this.copyBtn = newButton("复制");
 		
 		this.adPanel = new ADPanel<_CmdLine>(_CmdLine.class);
 		
-		this.console = new JEditorPane();
+		this.console = SwingUtils.getHtmlTextArea();
 		console.setEditable(false);
-		console.setContentType("text/html");	// 把编辑框设置为支持html的编辑格式
 		
 		this.generateBtn = new JButton("一 键 生 成 补 丁");
 		BeautyEyeUtils.setButtonStyle(NormalColor.lightBlue, generateBtn);
 		generateBtn.setForeground(Color.BLACK);
 	}
 
+	private JComboBox initAppNames() {
+		JComboBox cb = new JComboBox();
+		cb.setToolTipText("已存在补丁的应用列表");
+		cb.addItem("");
+		
+		File pageDir = new File(Config.PATCH_PAGE_DIR);
+		File[] appDirs = pageDir.listFiles();
+		for(File appDir : appDirs) {
+			if(appDir.isDirectory()) {
+				cb.addItem(appDir.getName());
+			}
+		}
+		return cb;
+	}
+	
 	@Override
 	protected void setComponentsLayout(JPanel rootPanel) {
 		rootPanel.add(getNorthPanel(), BorderLayout.NORTH);
@@ -141,12 +160,15 @@ public class MakePatchUI extends MainWindow {
 		JPanel ctrlPanel = SwingUtils.getVGridPanel(
 				newLabel(), 
 				SwingUtils.getWEBorderPanel(new JLabel("    [补丁目录] : "), 
-						SwingUtils.getEBorderPanel(patchDirTF, patchBtn), newLabel()), 
-				SwingUtils.getWEBorderPanel(new JLabel("    [应用名称] : "), appNameTF, newLabel()), 
+						SwingUtils.getEBorderPanel(patchDirTF, selectBtn), newLabel()), 
+				SwingUtils.getWEBorderPanel(new JLabel("    [应用名称] : "), 
+						SwingUtils.getHGridPanel(appNameTF, appNameCB), newLabel()), 
 				SwingUtils.getWEBorderPanel(new JLabel("    [补丁版本] : "), 
 						SwingUtils.getEBorderPanel(verTF, verBtn), newLabel()), 
-				SwingUtils.getWEBorderPanel(new JLabel("    [发布时间] : "), timeTF, newLabel()), 
-				SwingUtils.getWEBorderPanel(new JLabel("    [校验 MD5] : "), md5TF, newLabel()), 
+				SwingUtils.getWEBorderPanel(new JLabel("    [发布时间] : "), 
+						SwingUtils.getEBorderPanel(timeTF, timeBtn), newLabel()), 
+				SwingUtils.getWEBorderPanel(new JLabel("    [校验 MD5] : "), 
+						SwingUtils.getEBorderPanel(MD5TF, copyBtn), newLabel()), 
 				newLabel()
 		);
 		return SwingUtils.addBorder(ctrlPanel, "配置补丁信息");
@@ -183,7 +205,7 @@ public class MakePatchUI extends MainWindow {
 	
 	@Override
 	protected void setComponentsListener(JPanel rootPanel) {
-		patchBtn.addActionListener(new ActionListener() {
+		selectBtn.addActionListener(new ActionListener() {
 			
 			@Override
 			public void actionPerformed(ActionEvent e) {
@@ -196,6 +218,21 @@ public class MakePatchUI extends MainWindow {
 			}
 		});
 		
+		appNameCB.addItemListener(new ItemListener() {
+			
+			@Override
+			public void itemStateChanged(ItemEvent e) {
+				if(e.getStateChange() != ItemEvent.SELECTED) {  
+					return;
+				}
+				
+				String appName = (String) e.getItem();
+				if(StrUtils.isNotTrimEmpty(appName)) {
+					appNameTF.setText(appName);
+				}
+			}
+		});
+		
 		verBtn.addActionListener(new ActionListener() {
 			
 			@Override
@@ -204,12 +241,33 @@ public class MakePatchUI extends MainWindow {
 			}
 		});
 		
+		timeBtn.addActionListener(new ActionListener() {
+			
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				timeTF.setText(TimeUtils.getSysDate());
+			}
+		});
+		
+		copyBtn.addActionListener(new ActionListener() {
+			
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				String MD5 = MD5TF.getText();
+				if(StrUtils.isNotTrimEmpty(MD5)) {
+					OSUtils.copyToClipboard(MD5);
+					SwingUtils.info("已复制MD5到剪贴板");
+				}
+			}
+		});
+		
 		generateBtn.addActionListener(new ActionListener() {
 			
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				if(chechPatchParams()) {
-					generatePatch();
+					MakePatch.generate(patchDirTF.getText(), 
+							appNameTF.getText(), verTF.getText());
 				}
 			}
 		});
@@ -263,108 +321,37 @@ public class MakePatchUI extends MainWindow {
 	}
 	
 	/**
-	 * 生成升级补丁
-	 */
-	private void generatePatch() {
-		final String APP_NAME = appNameTF.getText();
-		final String VERSION = verTF.getText();
-		final String PATCH_NAME = StrUtils.concat(APP_NAME, Params.PATCH_TAG, VERSION);
-		final String PATCH_ZIP_NAME = PATCH_NAME.concat(Params.ZIP_SUFFIX);
-		final String SRC_DIR = patchDirTF.getText();
-		final String SNK_DIR = StrUtils.concat(Config.PATCH_PAGE_DIR, APP_NAME, "/", VERSION, "/");
-		final String PATCH_DIR = SNK_DIR.concat(PATCH_NAME);
-		final String PATCH_ZIP_PATH = SNK_DIR.concat(PATCH_ZIP_NAME);
-		
-		if(FileUtils.exists(PATCH_ZIP_PATH) && 
-				!SwingUtils.confirm("补丁已存在, 是否覆盖 ? ")) {
-			return;
-		} else {
-			timeTF.setText(TimeUtils.getSysDate());
-		}
-		
-		console("正在复制补丁目录到 [", PATCH_DIR, "] ...");
-		boolean isOk = FileUtils.copyDirectory(SRC_DIR, PATCH_DIR);
-		if(isOk == false) {
-			console("复制补丁目录到 [", PATCH_DIR, "] 失败");
-			return;
-		}
-		
-		console("正在生成 [", Params.UPDATE_XML, "] 升级步骤文件...");
-		isOk = _toUpdateXml(PATCH_DIR, PATCH_ZIP_NAME);
-		if(isOk == false) {
-			console("生成 [", Params.UPDATE_XML, "] 升级步骤文件失败");
-			return;
-		}
-		
-		console("正在生成补丁目录 [", PATCH_DIR, "] 的压缩文件...");
-		isOk = CompressUtils.toZip(PATCH_DIR, PATCH_ZIP_PATH);
-		isOk &= FileUtils.delete(PATCH_DIR);
-		if(isOk == false) {
-			console("生成补丁目录 [", PATCH_ZIP_NAME, "] 的压缩文件失败");
-			return;
-		}
-
-		console("正在生成补丁文件 [", PATCH_ZIP_NAME, "] 的备份文件...");
-		String txtPath = PATCH_ZIP_PATH.concat(Params.TXT_SUFFIX);
-		isOk = TXTUtils.toTXT(PATCH_ZIP_PATH, txtPath);
-		if(isOk == false) {
-			console("生成补丁文件 [", PATCH_ZIP_NAME, "] 的备份文件失败");
-			return;
-		}
-		
-		console("正在生成补丁文件 [", PATCH_ZIP_NAME, "] 的MD5校验码...");
-		String MD5 = CryptoUtils.toFileMD5(PATCH_ZIP_PATH);
-		md5TF.setText(MD5);
-		String MD5Path = PathUtils.combine(SNK_DIR, Params.MD5_HTML);
-		isOk = FileUtils.write(MD5Path, MD5, Charset.ISO, false);
-		if(isOk == false) {
-			console("生成补丁文件 [", PATCH_ZIP_NAME, "] 的MD5校验码失败");
-			return;
-		}
-		
-		console("正在更新补丁管理页面...");
-		isOk = MakePage.updatePage();
-		if(isOk == false) {
-			console("更新补丁管理页面失败");
-			return;
-		}
-		
-		console("生成应用程序 [", APP_NAME, "] 的升级补丁完成 (管理页面已更新)");
-		SwingUtils.info("生成补丁成功");
-	}
-	
-	/**
-	 * 生成升级步骤文件
-	 * @param patchDir
-	 * @param patchName
+	 * 提取xml格式的命令列表
 	 * @return
 	 */
-	private boolean _toUpdateXml(String patchDir, String patchName) {
+	public String getXmlCmds() {
 		StringBuilder cmds = new StringBuilder();
 		List<_CmdLine> cmdLines = adPanel.getLineComponents();
 		for(_CmdLine cmdLine : cmdLines) {
 			cmds.append(cmdLine.toXml()).append(Delimiter.CRLF);
 		}
-		
-		Template tmp = new Template(Config.UPDATE_TPL, Charset.UTF8);
-		tmp.set("patch-name", patchName);
-		tmp.set("cmds", cmds.toString());
-		
-		String savePath = PathUtils.combine(patchDir, Params.UPDATE_XML);
-		return FileUtils.write(savePath, tmp.getContent(), Charset.UTF8, false);
+		return cmds.toString();
+	}
+	
+	/**
+	 * 更新MD5值
+	 * @param MD5
+	 */
+	public void updatMD5(String MD5) {
+		MD5TF.setText(MD5 == null ? "" : MD5);
 	}
 	
 	/**
 	 * 打印信息到控制台
 	 * @param msgs
 	 */
-	protected void console(Object... msgs) {
+	public void console(Object... msgs) {
 		String msg = StrUtils.concat(msgs);
 		console.setText(StrUtils.concat(
 				"<html>", 
 				  "<body>", 
 				    "<pre>&nbsp;&nbsp;&nbsp;&nbsp;", 
-				      "<font color='blue'>", msg, "</font>", 
+				      "<font color='blue' size='3'>", msg, "</font>", 
 				    "</pre>", 
 				  "</body>", 
 				"</html>"
