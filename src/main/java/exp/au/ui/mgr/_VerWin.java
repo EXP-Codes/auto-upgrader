@@ -41,7 +41,7 @@ public class _VerWin extends PopChildWindow {
 
 	private final static int WIDTH = 300;
 	
-	private final static int HEIGHT = 240;
+	private final static int HEIGHT = 250;
 	
 	private JTextField majorTF;
 	

@@ -6,7 +6,6 @@ import exp.au.Config;
 import exp.libs.envm.Delimiter;
 import exp.libs.utils.io.FileUtils;
 import exp.libs.utils.other.StrUtils;
-import exp.libs.utils.verify.RegexUtils;
 import exp.libs.warp.ver.VersionMgr;
 
 /**
@@ -23,14 +22,14 @@ import exp.libs.warp.ver.VersionMgr;
  * @author    EXP: 272629724@qq.com
  * @since     jdk版本：jdk1.6
  */
-public class ExportVerInfo {
+public class AppVerInfo {
 
 	/**
 	 * 从版本库导出应用程序的当前版本信息.
 	 * @return 是否导出成功
 	 */
-	public static boolean exec() {
-		return exec(null);
+	public static boolean export() {
+		return export(null);
 	}
 	
 	/**
@@ -44,12 +43,11 @@ public class ExportVerInfo {
 	 * @param appName 强制指定应用名称
 	 * @return 是否导出成功
 	 */
-	public static boolean exec(String appName) {
-		String verInfo = VersionMgr.getVersionInfo(true, false);
+	public static boolean export(String appName) {
 		if(StrUtils.isEmpty(appName)) {
-			appName = RegexUtils.findFirst(verInfo, "项目名称[ |]*([a-z|\\-]+)");
+			appName = VersionMgr.getAppName();
 		}
-		String version = RegexUtils.findFirst(verInfo, "版本号[ |]*([\\d|\\.]+)");
+		String version = VersionMgr.getVersion();
 		
 		File verFile = FileUtils.createFile(Config.LAST_VER_PATH);
 		FileUtils.hide(verFile);
