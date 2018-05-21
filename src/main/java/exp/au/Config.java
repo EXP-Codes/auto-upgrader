@@ -19,7 +19,11 @@ public class Config {
 	
 	public final static String DEFAULT_CHARSET = Charset.UTF8;
 	
-	private final static String CONF_PATH = "./conf/au_conf.xml";
+	private final static String APP_PATH = "/exp/au/au_conf.xml";
+	
+	private final static String USER_PATH = "./conf/au_conf.xml";
+	
+	public final static String LAST_VER_PATH = "./conf/au.ver";
 	
 	public final static String PATCH_DOWN_DIR = "./patches/";
 	
@@ -43,7 +47,8 @@ public class Config {
 	
 	private Config() {
 		this.xConf = XConfigFactory.createConfig("au-conf");
-		xConf.loadConfFile(CONF_PATH);
+		xConf.loadConfFileInJar(APP_PATH);
+		xConf.loadConfFile(USER_PATH);
 	}
 	
 	public static Config getInstn() {
@@ -57,8 +62,8 @@ public class Config {
 		return instance;
 	}
 	
-	public String VERSION_URL() {
-		return xConf.getVal("versionURL");
+	public String VER_MGR_URL() {
+		return xConf.getVal("verMgrURL");
 	}
 	
 }

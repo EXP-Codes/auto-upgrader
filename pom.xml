@@ -4,7 +4,7 @@
 	<modelVersion>4.0.0</modelVersion>
 
 	<!--项目基本信息(必填)-->
-	<groupId>exp.aup</groupId>
+	<groupId>exp.au</groupId>
 	<artifactId>auto-upgrader</artifactId>
 	<version>1.0-SNAPSHOT</version>
 	<packaging>jar</packaging>

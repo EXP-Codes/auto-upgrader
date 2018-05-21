@@ -32,7 +32,7 @@ public class DownPatch {
 	/** 日志器 */
 	private final static Logger log = LoggerFactory.getLogger(DownPatch.class);
 	
-	private final static String VER_URL = Config.getInstn().VERSION_URL();
+	private final static String VER_MGR_URL = Config.getInstn().VER_MGR_URL();
 	
 	/*
 	 * 1.先检查是否存在新版本
@@ -49,7 +49,7 @@ public class DownPatch {
 	
 	private static void testDown() {
 		// 获取指定应用的升级补丁列表
-		String pageSource = HttpURLUtils.doGet(VER_URL);
+		String pageSource = HttpURLUtils.doGet(VER_MGR_URL);
 		List<PatchInfo> patchInfos = getPatchInfos(pageSource, "bilibili-plugin");
 		
 		// 根据当前版本号筛选升级列表
@@ -122,10 +122,10 @@ public class DownPatch {
 				String version = groups.get(2);
 				
 				List<String> brackets = RegexUtils.findBrackets(tds.get(1).asXML(), "href=\"([^\"]+)\"");
-				String zipURL = combineURL(VER_URL, brackets.get(0));
-				String txtURL = combineURL(VER_URL, brackets.get(1));
-				String md5URL = combineURL(VER_URL, brackets.get(2));
-				String updateURL = combineURL(VER_URL, brackets.get(3));
+				String zipURL = combineURL(VER_MGR_URL, brackets.get(0));
+				String txtURL = combineURL(VER_MGR_URL, brackets.get(1));
+				String md5URL = combineURL(VER_MGR_URL, brackets.get(2));
+				String updateURL = combineURL(VER_MGR_URL, brackets.get(3));
 				
 				PatchInfo patchInfo = new PatchInfo();
 				patchInfo.setAppName(appName);
@@ -145,8 +145,14 @@ public class DownPatch {
 		return patchInfos;
 	}
 	
+	/**
+	 * FIXME  HTTP合并
+	 * @param prefix http://lyy289065406.gitee.io/auto-upgrader/
+	 * @param suffix ./foo/bar.suffix
+	 * @return
+	 */
 	private static String combineURL(String prefix, String suffix) {
-		return prefix.concat(suffix.replaceFirst("^\\.", "")).replace('\\', '/');
+		return prefix.concat(suffix).replace('\\', '/').replace("/./", "/");
 	}
 	
 	private static String toPatchName(String appName, String version) {
