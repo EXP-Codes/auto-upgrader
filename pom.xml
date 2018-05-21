@@ -297,12 +297,12 @@
 						<configuration>
 							<mavenRepository>D:\mavenRepository</mavenRepository>
 							<verClass>exp.au.Version</verClass>
-							<mainClass>exp.au.Main</mainClass>
+							<mainClass>exp.au.PatchInstaller</mainClass>
 							<mainArgs></mainArgs>
 							<charset>UTF-8</charset>
 							<jdkPath>java</jdkPath>
 							<xms>32m</xms>
-							<xmx>64m</xmx>
+							<xmx>256m</xmx>
 							<jdkParams></jdkParams>
 							<noVerJarRegex>exp-?libs-.*</noVerJarRegex> <!-- 不使用版本号的依赖构件(正则式) -->
 							<proguard>false</proguard>  <!-- 是否使用混淆包(需配置混淆打包插件) -->

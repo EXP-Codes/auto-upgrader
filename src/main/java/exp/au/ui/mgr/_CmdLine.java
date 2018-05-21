@@ -1,4 +1,4 @@
-package exp.au.ui.server;
+package exp.au.ui.mgr;
 
 import java.awt.BorderLayout;
 import java.awt.event.ItemEvent;

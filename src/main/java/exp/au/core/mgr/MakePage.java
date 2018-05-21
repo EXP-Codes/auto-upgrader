@@ -1,4 +1,4 @@
-package exp.au.core.server;
+package exp.au.core.mgr;
 
 import java.io.File;
 import java.util.LinkedList;

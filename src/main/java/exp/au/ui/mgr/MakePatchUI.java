@@ -1,4 +1,4 @@
-package exp.au.ui.server;
+package exp.au.ui.mgr;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
@@ -17,7 +17,7 @@ import javax.swing.JTextField;
 import org.jb2011.lnf.beautyeye.ch3_button.BEButtonUI.NormalColor;
 
 import exp.au.Config;
-import exp.au.core.server.MakePage;
+import exp.au.core.mgr.MakePage;
 import exp.au.envm.CmdType;
 import exp.au.envm.Params;
 import exp.au.utils.UIUtils;
