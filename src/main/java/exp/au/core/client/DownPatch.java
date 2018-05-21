@@ -17,7 +17,6 @@ import exp.au.bean.UpdateCmd;
 import exp.au.bean.Version;
 import exp.au.envm.CmdType;
 import exp.au.envm.Params;
-import exp.libs.envm.Charset;
 import exp.libs.utils.encode.CryptoUtils;
 import exp.libs.utils.format.TXTUtils;
 import exp.libs.utils.format.XmlUtils;
@@ -47,21 +46,28 @@ public class DownPatch {
 	/** 私有化构造函数 */
 	protected DownPatch() {}
 	
-	public static void main(String[] args) {
-		testDown();
-	}
-	
-	private static void testDown() {
+	public static void download() {
+		
+		// 提取应用程序最后的版本信息
+		List<String> lines = FileUtils.readLines(
+				Config.LAST_VER_PATH, Config.DEFAULT_CHARSET);
+		if(lines.size() == 2) {
+			return;
+		}
+		
+		final String APP_NAME = lines.get(0).trim();
+		final Version LAST_VER = new Version(lines.get(1).trim());
+		
+		
 		// 获取指定应用的升级补丁列表
 		String pageSource = HttpURLUtils.doGet(VER_MGR_URL);
-		List<PatchInfo> patchInfos = getPatchInfos(pageSource, "bilibili-plugin");
+		List<PatchInfo> patchInfos = getPatchInfos(pageSource, APP_NAME);
 		
 		// 根据当前版本号筛选升级列表
-		final Version CUR_VER = new Version(4, 0);
 		Iterator<PatchInfo> patchInfoIts = patchInfos.iterator();
 		while(patchInfoIts.hasNext()) {
 			PatchInfo patchInfo = patchInfoIts.next();
-			if(CUR_VER.compareTo(patchInfo.getVersion()) >= 0) {
+			if(LAST_VER.compareTo(patchInfo.getVersion()) >= 0) {
 				patchInfoIts.remove();
 			}
 		}
@@ -230,7 +236,7 @@ public class DownPatch {
 		List<UpdateCmd> updateSteps = new LinkedList<UpdateCmd>();
 		boolean isOk = HttpURLUtils.downloadByGet(updatePath, updateURL);
 		if(isOk == true) {
-			String xml = FileUtils.read(updatePath, Charset.UTF8);
+			String xml = FileUtils.read(updatePath, Config.DEFAULT_CHARSET);
 			try {
 				Document doc = DocumentHelper.parseText(xml);
 				Element root = doc.getRootElement();

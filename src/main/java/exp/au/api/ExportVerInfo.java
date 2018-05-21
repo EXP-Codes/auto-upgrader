@@ -3,7 +3,6 @@ package exp.au.api;
 import java.io.File;
 
 import exp.au.Config;
-import exp.libs.envm.Charset;
 import exp.libs.envm.Delimiter;
 import exp.libs.utils.io.FileUtils;
 import exp.libs.utils.other.StrUtils;
@@ -55,7 +54,7 @@ public class ExportVerInfo {
 		File verFile = FileUtils.createFile(Config.LAST_VER_PATH);
 		FileUtils.hide(verFile);
 		String data = StrUtils.concat(appName, Delimiter.CRLF, version);
-		return FileUtils.write(verFile, data, Charset.UTF8, false);
+		return FileUtils.write(verFile, data, Config.DEFAULT_CHARSET, false);
 	}
 	
 }

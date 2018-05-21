@@ -105,12 +105,12 @@ public class MakePatch {
 	 * @return
 	 */
 	private static boolean _toUpdateXml(String patchDir, String patchName) {
-		Template tmp = new Template(Config.UPDATE_TPL, Charset.UTF8);
+		Template tmp = new Template(Config.UPDATE_TPL, Config.DEFAULT_CHARSET);
 		tmp.set("patch-name", patchName);
 		tmp.set("cmds", MakePatchUI.getInstn().getXmlCmds());
 		
 		String savePath = PathUtils.combine(patchDir, Params.UPDATE_XML);
-		return FileUtils.write(savePath, tmp.getContent(), Charset.UTF8, false);
+		return FileUtils.write(savePath, tmp.getContent(), Config.DEFAULT_CHARSET, false);
 	}
 	
 	/**
