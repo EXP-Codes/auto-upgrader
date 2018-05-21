@@ -3,7 +3,7 @@ package exp.au.core.client;
 import java.util.List;
 
 import exp.au.bean.PatchInfo;
-import exp.au.bean.Step;
+import exp.au.bean.UpdateCmd;
 import exp.au.bean.Version;
 import exp.au.envm.CmdType;
 import exp.libs.utils.io.FileUtils;
@@ -12,7 +12,7 @@ import exp.libs.utils.other.StrUtils;
 
 //客户端步骤2：安装升级包 
 // (升级前先检查每一个步骤的文件是否存在(推衍)， 若升级失败，则回滚到最后一个成功的备份版本)
-public class Install {
+public class InstallPatch {
 
 	public static void install(Version curVer, List<PatchInfo> patchInfos) {
 		Version lastVer = patchInfos.get(patchInfos.size() - 1).getVersion();
@@ -38,7 +38,7 @@ public class Install {
 		Version installVer = null;
 		for(PatchInfo patchInfo : patchInfos) {
 			int step = toDo(patchInfo);
-			if(step < patchInfo.getUpdateSteps().size()) {
+			if(step < patchInfo.getUpdateCmds().size()) {
 				boolean isOk = rollback(patchInfo, step);
 				break;
 				
@@ -59,7 +59,7 @@ public class Install {
 		String appBaseDir = "./";
 		
 		int step = 0;
-		for(Step updateStep : patchInfo.getUpdateSteps()) {
+		for(UpdateCmd updateStep : patchInfo.getUpdateCmds()) {
 			
 			boolean isOk = false;
 			if(CmdType.ADD == updateStep.getCmdType() || 
@@ -134,9 +134,9 @@ public class Install {
 		String appBaseDir = "./";
 		
 		boolean isAllOk = true;
-		List<Step> updateSteps = patchInfo.getUpdateSteps();
+		List<UpdateCmd> updateSteps = patchInfo.getUpdateCmds();
 		for(int i = step - 1; i >= 0; i--) {
-			Step updateStep = updateSteps.get(i);
+			UpdateCmd updateStep = updateSteps.get(i);
 			
 			boolean isOk = false;
 			if(CmdType.ADD == updateStep.getCmdType() || 

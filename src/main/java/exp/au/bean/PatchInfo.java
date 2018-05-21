@@ -7,28 +7,51 @@ import exp.au.Config;
 import exp.au.envm.Params;
 import exp.libs.utils.other.StrUtils;
 
+/**
+ * <PRE>
+ * 升级补丁参数对象
+ * </PRE>
+ * <B>PROJECT：</B> auto-upgrade-plugin
+ * <B>SUPPORT：</B> EXP
+ * @version   1.0 2018-05-20
+ * @author    EXP: 272629724@qq.com
+ * @since     jdk版本：jdk1.6
+ */
 public class PatchInfo implements Comparable<PatchInfo> {
 
+	/** 应用名称 */
 	private String appName;
 	
+	/** 补丁版本 */
 	private Version version;
 	
+	/** 补丁发布时间 */
 	private String time;
 	
+	/** 补丁校验MD5 */
 	private String MD5;
 	
+	/** zip格式补丁的下载路径 */
 	private String zipURL;
 	
+	/** zip格式补丁的名称 */
 	private String zipName;
 	
+	/** txt格式补丁的下载路径 */
 	private String txtURL;
 	
+	/** txt格式补丁的名称 */
 	private String txtName;
 	
+	/** 升级步骤文件的下载路径 */
 	private String updateURL;
 	
-	private List<Step> updateSteps;
+	/** 升级步骤命令集 */
+	private List<UpdateCmd> updateCmds;
 	
+	/**
+	 * 构造函数
+	 */
 	public PatchInfo() {
 		this.appName = "";
 		this.version = Version.NULL;
@@ -40,7 +63,7 @@ public class PatchInfo implements Comparable<PatchInfo> {
 		this.txtURL = "";
 		this.txtName = "";
 		this.updateURL = "";
-		this.updateSteps = new LinkedList<Step>();
+		this.updateCmds = new LinkedList<UpdateCmd>();
 	}
 
 	public String getAppName() {
@@ -125,12 +148,12 @@ public class PatchInfo implements Comparable<PatchInfo> {
 		this.updateURL = updateURL;
 	}
 
-	public List<Step> getUpdateSteps() {
-		return updateSteps;
+	public List<UpdateCmd> getUpdateCmds() {
+		return updateCmds;
 	}
 
-	public void setUpdateSteps(List<Step> updateSteps) {
-		this.updateSteps = updateSteps;
+	public void setUpdateCmds(List<UpdateCmd> updateCmds) {
+		this.updateCmds = updateCmds;
 	}
 
 	@Override
@@ -152,8 +175,8 @@ public class PatchInfo implements Comparable<PatchInfo> {
 		sb.append("TXT_NAME : ").append(getTxtName()).append("\r\n");
 		sb.append("UPDATE_URL : ").append(getUpdateURL()).append("\r\n");
 		sb.append("UPDATE_STEP : \r\n");
-		for(Step updateStep : updateSteps) {
-			sb.append("  ").append(updateStep.toString()).append("\r\n");
+		for(UpdateCmd updateCmd : updateCmds) {
+			sb.append("  ").append(updateCmd.toString()).append("\r\n");
 		}
 		return sb.toString();
 	}

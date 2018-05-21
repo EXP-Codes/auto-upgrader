@@ -13,7 +13,7 @@ import org.slf4j.LoggerFactory;
 
 import exp.au.Config;
 import exp.au.bean.PatchInfo;
-import exp.au.bean.Step;
+import exp.au.bean.UpdateCmd;
 import exp.au.bean.Version;
 import exp.au.envm.CmdType;
 import exp.au.envm.Params;
@@ -27,10 +27,10 @@ import exp.libs.utils.verify.RegexUtils;
 import exp.libs.warp.net.http.HttpURLUtils;
 
 // 客户端步骤1：下载升级补丁
-public class Down {
+public class DownPatch {
 	
 	/** 日志器 */
-	private final static Logger log = LoggerFactory.getLogger(Down.class);
+	private final static Logger log = LoggerFactory.getLogger(DownPatch.class);
 	
 	private final static String VER_URL = Config.getInstn().VERSION_URL();
 	
@@ -41,7 +41,7 @@ public class Down {
 	 * 4.检查MD5
 	 * 5.根据升级指导文件升级（删除、增加、替换文件）
 	 */
-	protected Down() {}
+	protected DownPatch() {}
 	
 	public static void main(String[] args) {
 		testDown();
@@ -150,9 +150,8 @@ public class Down {
 	}
 	
 	private static String toPatchName(String appName, String version) {
-		return StrUtils.concat(appName, "-patch-", version, ".zip");
+		return StrUtils.concat(appName, Params.PATCH_TAG, version, Params.ZIP_SUFFIX);
 	}
-	
 	
 	private static boolean download(List<PatchInfo> patchInfos) {
 		int cnt = 0;
@@ -181,8 +180,8 @@ public class Down {
 			// 下载升级步骤
 			if(isOk == true) {
 				String updatePath = saveDir.concat(Params.UPDATE_XML);
-				List<Step> updateSteps = downXML(patchInfo.getUpdateURL(), updatePath);
-				patchInfo.setUpdateSteps(updateSteps);
+				List<UpdateCmd> updateCmds = downXML(patchInfo.getUpdateURL(), updatePath);
+				patchInfo.setUpdateCmds(updateCmds);
 			}
 			
 			// 补丁包计数
@@ -217,8 +216,8 @@ public class Down {
 		return isOk;
 	}
 	
-	private static List<Step> downXML(String updateURL, String updatePath) {
-		List<Step> updateSteps = new LinkedList<Step>();
+	private static List<UpdateCmd> downXML(String updateURL, String updatePath) {
+		List<UpdateCmd> updateSteps = new LinkedList<UpdateCmd>();
 		boolean isOk = HttpURLUtils.downloadByGet(updatePath, updateURL);
 		if(isOk == true) {
 			String xml = FileUtils.read(updatePath, Charset.UTF8);
@@ -233,7 +232,7 @@ public class Down {
 					String from = XmlUtils.getAttribute(cmd, "from");
 					String to = XmlUtils.getAttribute(cmd, "to");
 					
-					Step step = new Step(type, from , to);
+					UpdateCmd step = new UpdateCmd(type, from , to);
 					updateSteps.add(step);
 				}
 			} catch (Exception e) {

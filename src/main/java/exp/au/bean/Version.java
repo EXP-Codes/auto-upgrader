@@ -6,8 +6,19 @@ import exp.libs.utils.num.NumUtils;
 import exp.libs.utils.other.StrUtils;
 import exp.libs.utils.verify.RegexUtils;
 
+/**
+ * <PRE>
+ * 版本对象
+ * </PRE>
+ * <B>PROJECT：</B> auto-upgrade-plugin
+ * <B>SUPPORT：</B> EXP
+ * @version   1.0 2018-05-20
+ * @author    EXP: 272629724@qq.com
+ * @since     jdk版本：jdk1.6
+ */
 public class Version implements Comparable<Version> {
 
+	/** 默认版本号 */
 	public final static Version NULL = new Version(0, 0);
 	
 	/** 版本号的正则式 */
