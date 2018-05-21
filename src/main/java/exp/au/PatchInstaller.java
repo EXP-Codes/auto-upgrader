@@ -7,7 +7,7 @@ package exp.au;
  * -----------------------------------------
  *   此方法需在指定应用的根目录下运行.
  * </PRE>
- * <B>PROJECT：</B> auto-upgrade-plugin
+ * <B>PROJECT：</B> auto-upgrader
  * <B>SUPPORT：</B> EXP
  * @version   1.0 2018-05-20
  * @author    EXP: 272629724@qq.com

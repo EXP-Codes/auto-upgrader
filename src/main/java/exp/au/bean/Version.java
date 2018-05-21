@@ -10,7 +10,7 @@ import exp.libs.utils.verify.RegexUtils;
  * <PRE>
  * 版本对象
  * </PRE>
- * <B>PROJECT：</B> auto-upgrade-plugin
+ * <B>PROJECT：</B> auto-upgrader
  * <B>SUPPORT：</B> EXP
  * @version   1.0 2018-05-20
  * @author    EXP: 272629724@qq.com

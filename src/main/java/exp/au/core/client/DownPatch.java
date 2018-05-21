@@ -26,21 +26,25 @@ import exp.libs.utils.other.StrUtils;
 import exp.libs.utils.verify.RegexUtils;
 import exp.libs.warp.net.http.HttpURLUtils;
 
-// 客户端步骤1：下载升级补丁
+/**
+ * <PRE>
+ * 根据应用程序最后的版本信息下载升级补丁
+ * </PRE>
+ * <B>PROJECT：</B> auto-upgrader
+ * <B>SUPPORT：</B> EXP
+ * @version   1.0 2018-05-20
+ * @author    EXP: 272629724@qq.com
+ * @since     jdk版本：jdk1.6
+ */
 public class DownPatch {
 	
 	/** 日志器 */
 	private final static Logger log = LoggerFactory.getLogger(DownPatch.class);
 	
+	/** 版本管理页面 */
 	private final static String VER_MGR_URL = Config.getInstn().VER_MGR_URL();
 	
-	/*
-	 * 1.先检查是否存在新版本
-	 * 2.检查版本跨度
-	 * 3.下载升级包
-	 * 4.检查MD5
-	 * 5.根据升级指导文件升级（删除、增加、替换文件）
-	 */
+	/** 私有化构造函数 */
 	protected DownPatch() {}
 	
 	public static void main(String[] args) {

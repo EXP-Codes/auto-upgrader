@@ -12,13 +12,13 @@ import exp.libs.warp.ver.VersionMgr;
 
 /**
  * <PRE>
- * 导出应用的当前版本信息(接口端用).
+ * 导出应用的当前版本信息.
  * -----------------------------------------
- *  此方法需植入到应用程序的 main 方法中, 使得每次启动时可以生成当前版本信息.
- *  客户端则根据当前版本信息对应用程序进行升级 (若没有当前版本信息则不执行升级操作)
+ *  此方法需植入到被升级的应用程序的 main 方法中, 使得该应用程序每次启动时可以生成当前版本信息.
+ *  客户端则根据所生成的当前版本信息对该应用程序进行升级 (若没有当前版本信息则不执行升级操作)
  *  
  * </PRE>
- * <B>PROJECT：</B> auto-upgrade-plugin
+ * <B>PROJECT：</B> auto-upgrader
  * <B>SUPPORT：</B> EXP
  * @version   1.0 2018-05-20
  * @author    EXP: 272629724@qq.com
@@ -53,6 +53,7 @@ public class ExportVerInfo {
 		String version = RegexUtils.findFirst(verInfo, "版本号[ |]*([\\d|\\.]+)");
 		
 		File verFile = FileUtils.createFile(Config.LAST_VER_PATH);
+		FileUtils.hide(verFile);
 		String data = StrUtils.concat(appName, Delimiter.CRLF, version);
 		return FileUtils.write(verFile, data, Charset.UTF8, false);
 	}

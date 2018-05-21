@@ -19,7 +19,7 @@ import exp.libs.warp.ui.SwingUtils;
  * <PRE>
  * 命令行组件
  * </PRE>
- * <B>PROJECT：</B> auto-upgrade-plugin
+ * <B>PROJECT：</B> auto-upgrader
  * <B>SUPPORT：</B> EXP
  * @version   1.0 2018-05-20
  * @author    EXP: 272629724@qq.com
