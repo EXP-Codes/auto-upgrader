@@ -28,6 +28,7 @@ import exp.libs.envm.Delimiter;
 import exp.libs.utils.os.OSUtils;
 import exp.libs.utils.other.StrUtils;
 import exp.libs.utils.time.TimeUtils;
+import exp.libs.warp.thread.ThreadPool;
 import exp.libs.warp.ui.BeautyEyeUtils;
 import exp.libs.warp.ui.SwingUtils;
 import exp.libs.warp.ui.cpt.pnl.ADPanel;
@@ -82,6 +83,8 @@ public class MakePatchUI extends MainWindow {
 	private JRadioButton[] stepPB;
 	
 	private JButton generateBtn;
+	
+	private ThreadPool tp;
 	
 	private static volatile MakePatchUI instance;
 	
@@ -142,6 +145,8 @@ public class MakePatchUI extends MainWindow {
 		this.generateBtn = new JButton("一 键 生 成 补 丁");
 		BeautyEyeUtils.setButtonStyle(NormalColor.lightBlue, generateBtn);
 		generateBtn.setForeground(Colors.BLACK.COLOR());
+		
+		this.tp = new ThreadPool(2);
 	}
 	
 	private JComboBox initAppNames() {
@@ -272,15 +277,15 @@ public class MakePatchUI extends MainWindow {
 				}
 				generateBtn.setEnabled(false);
 				
-				// 异步执行
-				new Thread() {
+				tp.execute(new Runnable() {
+					
+					@Override
 					public void run() {
 						MakePatch.generate(patchDirTF.getText(), 
 								appNameTF.getText(), verTF.getText());
 						generateBtn.setEnabled(true);
-					};
-				}.start();
-				
+					}
+				});
 			}
 		});
 	}
@@ -409,8 +414,7 @@ public class MakePatchUI extends MainWindow {
 
 	@Override
 	protected void beforeExit() {
-		// TODO Auto-generated method stub
-		
+		tp.shutdown();
 	}
 	
 	/**

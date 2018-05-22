@@ -12,13 +12,14 @@ import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
 
-import org.apache.commons.lang.Validate;
 import org.jb2011.lnf.beautyeye.ch3_button.BEButtonUI.NormalColor;
 
 import exp.au.Config;
+import exp.au.bean.PatchInfo;
 import exp.au.utils.UIUtils;
 import exp.libs.envm.Colors;
 import exp.libs.utils.io.FileUtils;
+import exp.libs.warp.thread.ThreadPool;
 import exp.libs.warp.ui.BeautyEyeUtils;
 import exp.libs.warp.ui.SwingUtils;
 import exp.libs.warp.ui.cpt.win.MainWindow;
@@ -59,6 +60,8 @@ public class UpgradeUI extends MainWindow {
 	
 	private JButton upgradeBtn;
 	
+	private ThreadPool tp;
+	
 	private static volatile UpgradeUI instance;
 	
 	private UpgradeUI() {
@@ -97,6 +100,8 @@ public class UpgradeUI extends MainWindow {
 		this.upgradeBtn = new JButton("一 键 升 级");
 		BeautyEyeUtils.setButtonStyle(NormalColor.lightBlue, upgradeBtn);
 		upgradeBtn.setForeground(Colors.BLACK.COLOR());
+		
+		this.tp = new ThreadPool(2);
 	}
 	
 	@Override
@@ -136,11 +141,18 @@ public class UpgradeUI extends MainWindow {
 			public void actionPerformed(ActionEvent e) {
 				
 				// FIXME
-				verPanel.add(new JTextField("1"));
+				verPanel.add(newPatchLine(null));
 				scrollPanel.validate();	// 重构内容面板
 				scrollPanel.repaint();	// 重绘内容面板
+				
+				// FIXME 自动到底部
 			}
 		});
+	}
+	
+	private _PatchLine newPatchLine(PatchInfo patchInfo) {
+		_PatchLine line = new _PatchLine("  pb-patch-4.1  ");	// FIXME: 去掉后缀
+		return line;
 	}
 
 	@Override
@@ -176,8 +188,7 @@ public class UpgradeUI extends MainWindow {
 
 	@Override
 	protected void beforeExit() {
-		// TODO Auto-generated method stub
-		
+		tp.shutdown();
 	}
 
 	/**
