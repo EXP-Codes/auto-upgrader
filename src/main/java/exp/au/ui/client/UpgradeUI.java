@@ -1,13 +1,20 @@
 package exp.au.ui.client;
 
+import java.awt.BorderLayout;
 import java.util.List;
 
 import javax.swing.JButton;
+import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
 
+import org.jb2011.lnf.beautyeye.ch3_button.BEButtonUI.NormalColor;
+
 import exp.au.Config;
+import exp.au.utils.UIUtils;
+import exp.libs.envm.Colors;
 import exp.libs.utils.io.FileUtils;
+import exp.libs.warp.ui.BeautyEyeUtils;
 import exp.libs.warp.ui.SwingUtils;
 import exp.libs.warp.ui.cpt.win.MainWindow;
 
@@ -65,14 +72,31 @@ public class UpgradeUI extends MainWindow {
 		this.appVerTF = new JTextField();
 		appVerTF.setEditable(false);
 		
+		this.checkBtn = new JButton("检 查 版 本");
+		BeautyEyeUtils.setButtonStyle(NormalColor.lightBlue, checkBtn);
+		checkBtn.setForeground(Colors.BLACK.COLOR());
 		
-		
+		this.upgradeBtn = new JButton("一 键 升 级");
+		BeautyEyeUtils.setButtonStyle(NormalColor.lightBlue, upgradeBtn);
+		upgradeBtn.setForeground(Colors.BLACK.COLOR());
 	}
 	
 	@Override
 	protected void setComponentsLayout(JPanel rootPanel) {
-		// TODO Auto-generated method stub
-		
+		rootPanel.add(getNorthPanel(), BorderLayout.NORTH);
+	}
+	
+	private JPanel getNorthPanel() {
+		return SwingUtils.getEBorderPanel(
+				SwingUtils.getVGridPanel(
+						newLabel(),
+						SwingUtils.getWEBorderPanel(
+								new JLabel("    [应用名称] : "), appNameTF, newLabel()),
+						newLabel(),
+						SwingUtils.getWEBorderPanel(
+								new JLabel("    [当前版本] : "), appVerTF, newLabel()),
+						newLabel()
+				), SwingUtils.getHGridPanel(checkBtn, newLabel()));
 	}
 
 	@Override
@@ -118,6 +142,12 @@ public class UpgradeUI extends MainWindow {
 		
 	}
 
-	
+	/**
+	 * 创建占位用的Label
+	 * @return
+	 */
+	private JLabel newLabel() {
+		return UIUtils.newLabel(4);
+	}
 	
 }
