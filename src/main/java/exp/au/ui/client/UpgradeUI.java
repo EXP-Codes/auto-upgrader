@@ -1,13 +1,18 @@
 package exp.au.ui.client;
 
 import java.awt.BorderLayout;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.util.List;
 
 import javax.swing.JButton;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
+import javax.swing.JScrollPane;
+import javax.swing.JTextArea;
 import javax.swing.JTextField;
 
+import org.apache.commons.lang.Validate;
 import org.jb2011.lnf.beautyeye.ch3_button.BEButtonUI.NormalColor;
 
 import exp.au.Config;
@@ -17,6 +22,7 @@ import exp.libs.utils.io.FileUtils;
 import exp.libs.warp.ui.BeautyEyeUtils;
 import exp.libs.warp.ui.SwingUtils;
 import exp.libs.warp.ui.cpt.win.MainWindow;
+import exp.libs.warp.ui.layout.VFlowLayout;
 
 //升级包管理&安装UI
 // 若程序没有启动过导致没有生成当前版本信息, 则不进行升级
@@ -45,6 +51,12 @@ public class UpgradeUI extends MainWindow {
 	
 	private JButton checkBtn;
 	
+	private JScrollPane scrollPanel;
+	
+	private JPanel verPanel;
+	
+	private JTextArea consoleTA;
+	
 	private JButton upgradeBtn;
 	
 	private static volatile UpgradeUI instance;
@@ -72,9 +84,15 @@ public class UpgradeUI extends MainWindow {
 		this.appVerTF = new JTextField();
 		appVerTF.setEditable(false);
 		
-		this.checkBtn = new JButton("检 查 版 本");
-		BeautyEyeUtils.setButtonStyle(NormalColor.lightBlue, checkBtn);
+		this.checkBtn = new JButton("   检 查 版 本   ");
+		BeautyEyeUtils.setButtonStyle(NormalColor.green, checkBtn);
 		checkBtn.setForeground(Colors.BLACK.COLOR());
+		
+		this.verPanel = new JPanel(new VFlowLayout());
+		this.scrollPanel = SwingUtils.addAutoScroll(verPanel);
+		
+		this.consoleTA = new JTextArea();
+		consoleTA.setEditable(false);
 		
 		this.upgradeBtn = new JButton("一 键 升 级");
 		BeautyEyeUtils.setButtonStyle(NormalColor.lightBlue, upgradeBtn);
@@ -84,25 +102,45 @@ public class UpgradeUI extends MainWindow {
 	@Override
 	protected void setComponentsLayout(JPanel rootPanel) {
 		rootPanel.add(getNorthPanel(), BorderLayout.NORTH);
+		rootPanel.add(getCenterPanel(), BorderLayout.CENTER);
 	}
 	
 	private JPanel getNorthPanel() {
-		return SwingUtils.getEBorderPanel(
-				SwingUtils.getVGridPanel(
-						newLabel(),
-						SwingUtils.getWEBorderPanel(
-								new JLabel("    [应用名称] : "), appNameTF, newLabel()),
-						newLabel(),
-						SwingUtils.getWEBorderPanel(
-								new JLabel("    [当前版本] : "), appVerTF, newLabel()),
+		return SwingUtils.addBorder(
+				SwingUtils.getNSBorderPanel(
+						newLabel(), 
+						SwingUtils.getEBorderPanel(
+								SwingUtils.getVGridPanel(
+									SwingUtils.getPairsPanel("应用名称", appNameTF), 
+									SwingUtils.getPairsPanel("当前版本", appVerTF)
+						), checkBtn),
 						newLabel()
-				), SwingUtils.getHGridPanel(checkBtn, newLabel()));
+				), "版本检查");
 	}
-
+	
+	private JPanel getCenterPanel() {
+		return SwingUtils.addBorder(
+				SwingUtils.getVGridPanel(
+						scrollPanel, 
+						SwingUtils.getSBorderPanel(SwingUtils.addBorder(
+								SwingUtils.addAutoScroll(consoleTA), "升级日志"), 
+						upgradeBtn)
+				), "版本列表");
+	}
+	
 	@Override
 	protected void setComponentsListener(JPanel rootPanel) {
-		// TODO Auto-generated method stub
-		
+		checkBtn.addActionListener(new ActionListener() {
+			
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				
+				// FIXME
+				verPanel.add(new JTextField("1"));
+				scrollPanel.validate();	// 重构内容面板
+				scrollPanel.repaint();	// 重绘内容面板
+			}
+		});
 	}
 
 	@Override
