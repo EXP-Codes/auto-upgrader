@@ -1,7 +1,6 @@
 package exp.au.ui.mgr;
 
 import java.awt.BorderLayout;
-import java.awt.Color;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.ItemEvent;
@@ -15,6 +14,7 @@ import javax.swing.JEditorPane;
 import javax.swing.JFileChooser;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
+import javax.swing.JRadioButton;
 import javax.swing.JTextField;
 
 import org.jb2011.lnf.beautyeye.ch3_button.BEButtonUI.NormalColor;
@@ -23,6 +23,7 @@ import exp.au.Config;
 import exp.au.core.mgr.MakePatch;
 import exp.au.envm.CmdType;
 import exp.au.utils.UIUtils;
+import exp.libs.envm.Colors;
 import exp.libs.envm.Delimiter;
 import exp.libs.utils.os.OSUtils;
 import exp.libs.utils.other.StrUtils;
@@ -77,6 +78,9 @@ public class MakePatchUI extends MainWindow {
 	
 	private JEditorPane console;
 	
+	/** 模拟进度条的单选按钮 */
+	private JRadioButton[] stepPB;
+	
 	private JButton generateBtn;
 	
 	private static volatile MakePatchUI instance;
@@ -126,11 +130,20 @@ public class MakePatchUI extends MainWindow {
 		this.console = SwingUtils.getHtmlTextArea();
 		console.setEditable(false);
 		
+		this.stepPB = new JRadioButton[6]; {
+			stepPB[0] = newRadioButton("目录转移");
+			stepPB[1] = newRadioButton("生成步骤");
+			stepPB[2] = newRadioButton("补丁打包");
+			stepPB[3] = newRadioButton("补丁备份");
+			stepPB[4] = newRadioButton("生成校验");
+			stepPB[5] = newRadioButton("生成页面");
+		}
+		
 		this.generateBtn = new JButton("一 键 生 成 补 丁");
 		BeautyEyeUtils.setButtonStyle(NormalColor.lightBlue, generateBtn);
-		generateBtn.setForeground(Color.BLACK);
+		generateBtn.setForeground(Colors.BLACK.COLOR());
 	}
-
+	
 	private JComboBox initAppNames() {
 		JComboBox cb = new JComboBox();
 		cb.setToolTipText("已存在补丁的应用列表");
@@ -181,26 +194,15 @@ public class MakePatchUI extends MainWindow {
 	private JPanel getCenterPanel() {
 		return SwingUtils.getSBorderPanel(
 				SwingUtils.addBorder(adPanel.getJScrollPanel(), "配置升级步骤"), 
-				SwingUtils.getVGridPanel(console, generateBtn));
+				SwingUtils.getVGridPanel(console, _getProgressBar(), generateBtn));
 	}
 	
 	/**
-	 * 创建占位用的Label
+	 * 进度条面板
 	 * @return
 	 */
-	private JLabel newLabel() {
-		return UIUtils.newLabel(6);
-	}
-	
-	/**
-	 * 创建控制面板按钮
-	 * @param name
-	 * @return
-	 */
-	private JButton newButton(String name) {
-		JButton btn = new JButton(StrUtils.concat("  ", name, "  "));
-		btn.setForeground(Color.BLACK);
-		return btn;
+	private JPanel _getProgressBar() {
+		return SwingUtils.addBorder(SwingUtils.getHGridPanel(stepPB));
 	}
 	
 	@Override
@@ -265,10 +267,20 @@ public class MakePatchUI extends MainWindow {
 			
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				if(chechPatchParams()) {
-					MakePatch.generate(patchDirTF.getText(), 
-							appNameTF.getText(), verTF.getText());
+				if(!checkPatchParams()) {
+					return;
 				}
+				generateBtn.setEnabled(false);
+				
+				// 异步执行
+				new Thread() {
+					public void run() {
+						MakePatch.generate(patchDirTF.getText(), 
+								appNameTF.getText(), verTF.getText());
+						generateBtn.setEnabled(true);
+					};
+				}.start();
+				
 			}
 		});
 	}
@@ -277,7 +289,7 @@ public class MakePatchUI extends MainWindow {
 	 * 检查补丁生成参数
 	 * @return
 	 */
-	private boolean chechPatchParams() {
+	private boolean checkPatchParams() {
 		if(StrUtils.isEmpty(patchDirTF.getText())) {
 			SwingUtils.warn("[补丁目录] 不能为空");
 			return false;
@@ -342,6 +354,31 @@ public class MakePatchUI extends MainWindow {
 	}
 	
 	/**
+	 * 更新进度条面板的状态
+	 * @param step 执行步骤索引
+	 * @param isOk 是否执行成功
+	 */
+	public void updateProgressBar(int step, boolean isOk) {
+		if(step < 0 || step >= stepPB.length) {
+			return;
+		}
+		
+		stepPB[step].setSelected(true);
+		stepPB[step].setForeground(isOk ? 
+				Colors.SEA_GREEN.COLOR() : Colors.PURPLE.COLOR());
+	}
+	
+	/**
+	 * 还原进度条面板状态
+	 */
+	public void clearProgressBar() {
+		for(int i = 0; i < stepPB.length; i++) {
+			stepPB[i].setSelected(false);
+			stepPB[i].setForeground(Colors.BLACK.COLOR());
+		}
+	}
+	
+	/**
 	 * 打印信息到控制台
 	 * @param msgs
 	 */
@@ -374,6 +411,37 @@ public class MakePatchUI extends MainWindow {
 	protected void beforeExit() {
 		// TODO Auto-generated method stub
 		
+	}
+	
+	/**
+	 * 创建占位用的Label
+	 * @return
+	 */
+	private JLabel newLabel() {
+		return UIUtils.newLabel(6);
+	}
+	
+	/**
+	 * 创建控制面板按钮
+	 * @param name
+	 * @return
+	 */
+	private JButton newButton(String name) {
+		JButton btn = new JButton(StrUtils.concat("  ", name, "  "));
+		btn.setForeground(Colors.BLACK.COLOR());
+		return btn;
+	}
+	
+	/**
+	 * 创建进度条面板的单选按钮
+	 * @param name
+	 * @return
+	 */
+	private JRadioButton newRadioButton(String name) {
+		JRadioButton btn = new JRadioButton(name);
+		btn.setEnabled(false);
+		btn.setForeground(Colors.BLACK.COLOR());
+		return btn;
 	}
 	
 }

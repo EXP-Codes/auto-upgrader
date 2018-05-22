@@ -1,6 +1,7 @@
 package exp.au;
 
 import exp.au.ui.mgr.MakePatchUI;
+import exp.libs.utils.other.LogUtils;
 import exp.libs.warp.ui.BeautyEyeUtils;
 
 /**
@@ -19,6 +20,7 @@ import exp.libs.warp.ui.BeautyEyeUtils;
 public class PatchMaker {
 
 	public static void main(String[] args) {
+		LogUtils.loadLogBackConfig();
 		BeautyEyeUtils.init();
 		MakePatchUI.getInstn()._view();
 	}

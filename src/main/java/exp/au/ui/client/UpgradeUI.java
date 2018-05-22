@@ -1,12 +1,29 @@
 package exp.au.ui.client;
 
-import javax.swing.JPanel;
+import java.util.List;
 
+import javax.swing.JButton;
+import javax.swing.JPanel;
+import javax.swing.JTextField;
+
+import exp.au.Config;
+import exp.libs.utils.io.FileUtils;
+import exp.libs.warp.ui.SwingUtils;
 import exp.libs.warp.ui.cpt.win.MainWindow;
 
 //升级包管理&安装UI
 // 若程序没有启动过导致没有生成当前版本信息, 则不进行升级
 // 客户端要留一个命令行版本(用于linux)
+
+//检查版本
+//  版本列表 (历史版本标灰， 当前版本标红， 未升级版本标蓝)
+
+// 下载补丁
+//  版本列表 (历史版本标灰， 当前版本标红， 未升级版本标绿)
+//  版本列表新增两列：下载状态， 安装状态
+
+// 控制台日志(下载时需打印MD5校验情况)
+// 一键升级(升级过程中，当前版本标色变化)
 public class UpgradeUI extends MainWindow {
 
 	private static final long serialVersionUID = 1802740672496217291L;
@@ -15,24 +32,43 @@ public class UpgradeUI extends MainWindow {
 	
 	private final static int HEIGHT = 700;
 	
+	private JTextField appNameTF;
 	
-	// 检查版本
-	//  版本列表 (历史版本标灰， 当前版本标红， 未升级版本标蓝)
+	private JTextField appVerTF;
 	
-	// 下载补丁
-	//  版本列表 (历史版本标灰， 当前版本标红， 未升级版本标绿)
-	//  版本列表新增两列：下载状态， 安装状态
+	private JButton checkBtn;
 	
-	// 控制台日志(下载时需打印MD5校验情况)
-	// 一键升级(升级过程中，当前版本标色变化)
+	private JButton upgradeBtn;
 	
+	private static volatile UpgradeUI instance;
+	
+	private UpgradeUI() {
+		super("软件升级", WIDTH, HEIGHT);
+	}
+	
+	public static UpgradeUI getInstn() {
+		if(instance == null) {
+			synchronized (UpgradeUI.class) {
+				if(instance == null) {
+					instance = new UpgradeUI();
+				}
+			}
+		}
+		return instance;
+	}
 	
 	@Override
 	protected void initComponents(Object... args) {
-		// TODO Auto-generated method stub
+		this.appNameTF = new JTextField();
+		appNameTF.setEditable(false);
+		
+		this.appVerTF = new JTextField();
+		appVerTF.setEditable(false);
+		
+		
 		
 	}
-
+	
 	@Override
 	protected void setComponentsLayout(JPanel rootPanel) {
 		// TODO Auto-generated method stub
@@ -47,8 +83,27 @@ public class UpgradeUI extends MainWindow {
 
 	@Override
 	protected void AfterView() {
-		// TODO Auto-generated method stub
+		if(taskAppVerInfo() == false) {
+			SwingUtils.warn("提取当前版本信息失败, 无法升级\r\n(请确保程序至少运行过一次)");
+			System.exit(0);
+		}
+	}
+	
+	/**
+	 * 提取应用程序的当前版本信息
+	 * @return 是否提取成功
+	 */
+	private boolean taskAppVerInfo() {
+		List<String> lines = FileUtils.readLines(
+				Config.LAST_VER_PATH, Config.DEFAULT_CHARSET);
 		
+		boolean isOk = false;
+		if(lines.size() == 2) {
+			appNameTF.setText(lines.get(0).trim());
+			appVerTF.setText(lines.get(1).trim());
+			isOk = true;
+		}
+		return isOk;
 	}
 
 	@Override

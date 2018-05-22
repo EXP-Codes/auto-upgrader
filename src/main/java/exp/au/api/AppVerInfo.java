@@ -50,7 +50,6 @@ public class AppVerInfo {
 		String version = VersionMgr.getVersion();
 		
 		File verFile = FileUtils.createFile(Config.LAST_VER_PATH);
-		FileUtils.hide(verFile);
 		String data = StrUtils.concat(appName, Delimiter.CRLF, version);
 		return FileUtils.write(verFile, data, Config.DEFAULT_CHARSET, false);
 	}

@@ -1,5 +1,9 @@
 package exp.au;
 
+import exp.au.ui.client.UpgradeUI;
+import exp.libs.utils.other.LogUtils;
+import exp.libs.warp.ui.BeautyEyeUtils;
+
 
 /**
  * <PRE>
@@ -16,8 +20,9 @@ package exp.au;
 public class PatchInstaller {
 
 	public static void main(String[] args) {
-		// 下载
-		// 安装
+		LogUtils.loadLogBackConfig();
+		BeautyEyeUtils.init();
+		UpgradeUI.getInstn()._view();
 	}
 	
 }

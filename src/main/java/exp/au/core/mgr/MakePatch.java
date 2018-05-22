@@ -8,6 +8,7 @@ import exp.libs.utils.encode.CompressUtils;
 import exp.libs.utils.encode.CryptoUtils;
 import exp.libs.utils.format.TXTUtils;
 import exp.libs.utils.io.FileUtils;
+import exp.libs.utils.os.ThreadUtils;
 import exp.libs.utils.other.PathUtils;
 import exp.libs.utils.other.StrUtils;
 import exp.libs.warp.tpl.Template;
@@ -42,57 +43,70 @@ public class MakePatch {
 		final String PATCH_DIR = SNK_DIR.concat(PATCH_NAME);
 		final String PATCH_ZIP_PATH = SNK_DIR.concat(PATCH_ZIP_NAME);
 		
+		clearStepStatus();
 		if(FileUtils.exists(PATCH_ZIP_PATH) && 
 				!SwingUtils.confirm("补丁已存在, 是否覆盖 ? ")) {
 			return;
 		}
 		
+		
 		console("正在复制补丁目录到 [", PATCH_DIR, "] ...");
 		boolean isOk = FileUtils.copyDirectory(SRC_DIR, PATCH_DIR);
-		if(isOk == false) {
+		if(updateStepStatus(0, isOk) == false) {
 			console("复制补丁目录到 [", PATCH_DIR, "] 失败");
 			return;
 		}
+		stepSleep();
+		
 		
 		console("正在生成 [", Params.UPDATE_XML, "] 升级步骤文件...");
 		isOk = _toUpdateXml(PATCH_DIR, PATCH_ZIP_NAME);
-		if(isOk == false) {
+		if(updateStepStatus(1, isOk) == false) {
 			console("生成 [", Params.UPDATE_XML, "] 升级步骤文件失败");
 			return;
 		}
+		stepSleep();
+		
 		
 		console("正在生成补丁目录 [", PATCH_DIR, "] 的压缩文件...");
 		isOk = CompressUtils.toZip(PATCH_DIR, PATCH_ZIP_PATH);
 		isOk &= FileUtils.delete(PATCH_DIR);
-		if(isOk == false) {
+		if(updateStepStatus(2, isOk) == false) {
 			console("生成补丁目录 [", PATCH_ZIP_NAME, "] 的压缩文件失败");
 			return;
 		}
+		stepSleep();
+		
 
 		console("正在生成补丁文件 [", PATCH_ZIP_NAME, "] 的备份文件...");
 		String txtPath = PATCH_ZIP_PATH.concat(Params.TXT_SUFFIX);
 		isOk = TXTUtils.toTXT(PATCH_ZIP_PATH, txtPath);
-		if(isOk == false) {
+		if(updateStepStatus(3, isOk) == false) {
 			console("生成补丁文件 [", PATCH_ZIP_NAME, "] 的备份文件失败");
 			return;
 		}
+		stepSleep();
+		
 		
 		console("正在生成补丁文件 [", PATCH_ZIP_NAME, "] 的MD5校验码...");
 		String MD5 = CryptoUtils.toFileMD5(PATCH_ZIP_PATH);
 		MakePatchUI.getInstn().updatMD5(MD5);
 		String MD5Path = PathUtils.combine(SNK_DIR, Params.MD5_HTML);
 		isOk = FileUtils.write(MD5Path, MD5, Charset.ISO, false);
-		if(isOk == false) {
+		if(updateStepStatus(4, isOk) == false) {
 			console("生成补丁文件 [", PATCH_ZIP_NAME, "] 的MD5校验码失败");
 			return;
 		}
+		stepSleep();
+		
 		
 		console("正在更新补丁管理页面...");
 		isOk = MakePage.updatePage();
-		if(isOk == false) {
+		if(updateStepStatus(5, isOk) == false) {
 			console("更新补丁管理页面失败");
 			return;
 		}
+		
 		
 		console("生成应用程序 [", APP_NAME, "] 的升级补丁完成 (管理页面已更新)");
 		SwingUtils.info("生成补丁成功");
@@ -117,8 +131,34 @@ public class MakePatch {
 	 * 打印信息到界面
 	 * @param msgs
 	 */
-	public static void console(Object... msgs) {
+	private static void console(Object... msgs) {
 		MakePatchUI.getInstn().console(msgs);
+	}
+	
+	/**
+	 * 清空制作补丁步骤状态
+	 */
+	private static void clearStepStatus() {
+		MakePatchUI.getInstn().clearProgressBar();
+	}
+	
+	/**
+	 * 更新制作补丁步骤状态
+	 * @param step
+	 * @param isOk
+	 * @return
+	 */
+	private static boolean updateStepStatus(int step, boolean isOk) {
+		MakePatchUI.getInstn().updateProgressBar(step, isOk);
+		return isOk;
+	}
+	
+	/**
+	 * 制作补丁步骤之间的休眠
+	 *  (目的是可以在界面看到提示效果)
+	 */
+	private static void stepSleep() {
+		ThreadUtils.tSleep(200);
 	}
 	
 }
