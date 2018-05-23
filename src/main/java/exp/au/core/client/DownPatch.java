@@ -82,13 +82,23 @@ public class DownPatch {
 	}
 	
 	/**
+	 * 提取指定应用的补丁列表信息
+	 * @param appName
+	 * @return
+	 */
+	public static List<PatchInfo> getPatchInfos(String appName) {
+		String pageSource = HttpURLUtils.doGet(VER_MGR_URL);
+		return getPatchInfos(pageSource, appName);
+	}
+	
+	/**
 	 * 从页面提取应用补丁列表信息
 	 * @param pageSource 页面源码
 	 * @param appName 应用名称
 	 * @return 补丁列表信息
 	 */
 	@SuppressWarnings("unchecked")
-	public static List<PatchInfo> getPatchInfos(String pageSource, String appName) {
+	private static List<PatchInfo> getPatchInfos(String pageSource, String appName) {
 		List<PatchInfo> patchInfos = new LinkedList<PatchInfo>();
 		try {
 			Document doc = DocumentHelper.parseText(pageSource);
@@ -135,14 +145,12 @@ public class DownPatch {
 				String zipURL = combineURL(VER_MGR_URL, brackets.get(0));
 				String txtURL = combineURL(VER_MGR_URL, brackets.get(1));
 				String md5URL = combineURL(VER_MGR_URL, brackets.get(2));
-				String updateURL = combineURL(VER_MGR_URL, brackets.get(3));
 				
 				PatchInfo patchInfo = new PatchInfo();
 				patchInfo.setAppName(appName);
 				patchInfo.setVersion(version);
 				patchInfo.setTime(time);
 				patchInfo.setMD5(HttpURLUtils.doGet(md5URL));
-				patchInfo.setUpdateURL(updateURL);
 				patchInfo.setZipURL(zipURL);
 				patchInfo.setTxtURL(txtURL);
 				patchInfo.setPatchName(toPatchName(appName, version));
@@ -172,43 +180,44 @@ public class DownPatch {
 	private static boolean download(List<PatchInfo> patchInfos) {
 		int cnt = 0;
 		for(PatchInfo patchInfo : patchInfos) {
-			String saveDir = patchInfo.getPatchDir();
-			String zipSavePath = saveDir.concat(patchInfo.getZipName());
-			
-			boolean isOk = true;
-			if(!FileUtils.exists(zipSavePath)) {
-				
-				// 先下载zip版本升级包
-				FileUtils.createDir(saveDir);
-				isOk = downZIP(patchInfo.getZipURL(), 
-						zipSavePath, patchInfo.getMD5());
-				
-				// 若zip版本升级包下载失败, 则下载txt版本升级包
-				if(isOk == false) {
-					FileUtils.delete(zipSavePath);
-					String txtSavePath = saveDir.concat(patchInfo.getTxtName());
-					isOk = downTXT(patchInfo.getTxtURL(), 
-							txtSavePath, zipSavePath, patchInfo.getMD5());
-				}
-				
-			}
-			
-			// 下载升级步骤
-			if(isOk == true) {
-				String updatePath = saveDir.concat(Params.UPDATE_XML);
-				List<UpdateCmd> updateCmds = downXML(patchInfo.getUpdateURL(), updatePath);
-				patchInfo.setUpdateCmds(updateCmds);
-			}
-			
-			// 补丁包计数
-			if(isOk == true) {
-				cnt++;
-				
-			} else {
-				FileUtils.delete(saveDir);
-			}
+			cnt += download(patchInfo) ? 1 : 0;
 		}
 		return (cnt == patchInfos.size());
+	}
+	
+	public static boolean download(PatchInfo patchInfo) {
+		String saveDir = patchInfo.getPatchDir();
+		String zipSavePath = saveDir.concat(patchInfo.getZipName());
+		
+		boolean isOk = true;
+		if(!FileUtils.exists(zipSavePath)) {	// 若已存在则不再重复下载(用于断点)
+			
+			// 先下载zip版本升级包
+			FileUtils.createDir(saveDir);
+			isOk = downZIP(patchInfo.getZipURL(), 
+					zipSavePath, patchInfo.getMD5());
+			
+			// 若zip版本升级包下载失败, 则下载txt版本升级包
+			if(isOk == false) {
+				FileUtils.delete(zipSavePath);
+				String txtSavePath = saveDir.concat(patchInfo.getTxtName());
+				isOk = downTXT(patchInfo.getTxtURL(), 
+						txtSavePath, zipSavePath, patchInfo.getMD5());
+			}
+			
+		}
+		
+		// 下载升级步骤
+//		if(isOk == true) {
+//			String updatePath = saveDir.concat(Params.UPDATE_XML);
+//			List<UpdateCmd> updateCmds = downXML(patchInfo.getUpdateURL(), updatePath);
+//			patchInfo.setUpdateCmds(updateCmds);
+//		}
+		
+		if(isOk == false) {
+			FileUtils.delete(saveDir);
+		}
+		return isOk;
 	}
 	
 	private static boolean downZIP(String zipURL, String zipPath, String zipMD5) {

@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <update>
   
-  <name caption="升级补丁名称">@{patch-name}@</name>
+  <patchName caption="升级补丁名称">@{patch-name}@</patchName>
   <releaseTime caption="发布时间">@{release-time}@</releaseTime>
   
   <steps caption="自动升级步骤" hint="

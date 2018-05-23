@@ -3,7 +3,10 @@ package exp.au.ui.client;
 import java.awt.BorderLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.Iterator;
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 
 import javax.swing.JButton;
 import javax.swing.JLabel;
@@ -16,10 +19,13 @@ import org.jb2011.lnf.beautyeye.ch3_button.BEButtonUI.NormalColor;
 
 import exp.au.Config;
 import exp.au.bean.PatchInfo;
+import exp.au.bean.Version;
+import exp.au.core.client.DownPatch;
+import exp.au.envm.Params;
 import exp.au.utils.UIUtils;
 import exp.libs.envm.Colors;
 import exp.libs.utils.io.FileUtils;
-import exp.libs.utils.time.TimeUtils;
+import exp.libs.utils.other.StrUtils;
 import exp.libs.warp.thread.ThreadPool;
 import exp.libs.warp.ui.BeautyEyeUtils;
 import exp.libs.warp.ui.SwingUtils;
@@ -53,9 +59,11 @@ public class UpgradeUI extends MainWindow {
 	
 	private JButton checkBtn;
 	
+	private JPanel verPanel;
+	
 	private JScrollPane scrollPanel;
 	
-	private JPanel verPanel;
+	private Map<PatchInfo, _PatchLine> patches;
 	
 	private JTextArea consoleTA;
 	
@@ -88,7 +96,7 @@ public class UpgradeUI extends MainWindow {
 		this.appVerTF = new JTextField();
 		appVerTF.setEditable(false);
 		
-		this.checkBtn = new JButton("   检 查 版 本   ");
+		this.checkBtn = new JButton("   检 查 更 新   ");
 		BeautyEyeUtils.setButtonStyle(NormalColor.green, checkBtn);
 		checkBtn.setForeground(Colors.BLACK.COLOR());
 		
@@ -101,8 +109,10 @@ public class UpgradeUI extends MainWindow {
 		this.upgradeBtn = new JButton("一 键 升 级");
 		BeautyEyeUtils.setButtonStyle(NormalColor.lightBlue, upgradeBtn);
 		upgradeBtn.setForeground(Colors.BLACK.COLOR());
+		upgradeBtn.setEnabled(false);
 		
 		this.tp = new ThreadPool(2);
+		this.patches = new LinkedHashMap<PatchInfo, _PatchLine>();
 	}
 	
 	@Override
@@ -140,21 +150,107 @@ public class UpgradeUI extends MainWindow {
 			
 			@Override
 			public void actionPerformed(ActionEvent e) {
+				upgradeBtn.setEnabled(false);
 				
-				// FIXME
-				verPanel.add(newPatchLine(null));
+				tp.execute(new Runnable() {
+					
+					@Override
+					public void run() {
+						
+						updatePatches();	// 更新列表
+						filterPatches();	// 过滤旧版本补丁
+						
+						// 刷新补丁列表面板
+						SwingUtils.repaint(scrollPanel);
+						SwingUtils.toEnd(scrollPanel, true);
+						upgradeBtn.setEnabled(true);
+					}
+				});
+			}
+		});
+		
+		
+		upgradeBtn.addActionListener(new ActionListener() {
+			
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				if(patches.isEmpty()) {
+					SwingUtils.warn("已经是最新版本了");
+				}
 				
-				SwingUtils.repaint(scrollPanel);
-				SwingUtils.toEnd(scrollPanel, true);
+				upgradeBtn.setEnabled(false);
+				tp.execute(new Runnable() {
+					
+					@Override
+					public void run() {
+						downPatches();		// 下载补丁包
+						installPatches();	// 安装补丁包
+						
+						upgradeBtn.setEnabled(true);
+					}
+				});
 			}
 		});
 	}
 	
-	private _PatchLine newPatchLine(PatchInfo patchInfo) {
-		_PatchLine line = new _PatchLine("  pb-patch-4.1-" + TimeUtils.getSysDate());	// FIXME: 去掉后缀
-		return line;
+	/**
+	 * 更新补丁列表
+	 */
+	private void updatePatches() {
+		patches.clear();
+		verPanel.removeAll();
+		
+		List<PatchInfo> patchInfos = DownPatch.getPatchInfos(appNameTF.getText());
+		for(PatchInfo patchInfo : patchInfos) {
+			_PatchLine patchLine =newPatchLine(patchInfo);
+			
+			verPanel.add(patchLine);
+			patches.put(patchInfo, patchLine);
+		}
 	}
-
+	
+	/**
+	 * 根据当前版本号对旧补丁进行移除
+	 */
+	private void filterPatches() {
+		final Version CUR_VER = new Version(appVerTF.getText());
+		Iterator<PatchInfo> patchInfoIts = patches.keySet().iterator();
+		while(patchInfoIts.hasNext()) {
+			PatchInfo patchInfo = patchInfoIts.next();
+			
+			// 小于等于应用程序当前版本号的补丁, 进行标记并移除
+			if(CUR_VER.compareTo(patchInfo.getVersion()) >= 0) {
+				_PatchLine patchLine = patches.get(patchInfo);
+				patchLine.markDown();
+				patchLine.markInstall();
+				patchInfoIts.remove();	// 移除补丁信息
+			}
+		}
+	}
+	
+	/**
+	 * 下载补丁包
+	 */
+	private void downPatches() {
+		Iterator<PatchInfo> patchInfoIts = patches.keySet().iterator();
+		while(patchInfoIts.hasNext()) {
+			PatchInfo patchInfo = patchInfoIts.next();
+			
+			if(DownPatch.download(patchInfo)) {
+				_PatchLine patchLine = patches.get(patchInfo);
+				patchLine.markDown();
+			}
+		}
+	}
+	
+	/**
+	 * 安装补丁包
+	 */
+	private void installPatches() {
+		// FIXME: 若有一个失败, 则不再往后
+		// 一边安装一边更新当前版本
+	}
+	
 	@Override
 	protected void AfterView() {
 		if(taskAppVerInfo() == false) {
@@ -191,6 +287,40 @@ public class UpgradeUI extends MainWindow {
 		tp.shutdown();
 	}
 
+	/**
+	 * 标记补丁为已下载
+	 * @param patchInfo
+	 */
+	protected void markDown(PatchInfo patchInfo) {
+		_PatchLine patchLine = patches.get(patchInfo);
+		if(patchLine != null) {
+			patchLine.markDown();
+		}
+	}
+	
+	/**
+	 * 标记补丁为已安装
+	 * @param patchInfo
+	 */
+	protected void markInstall(PatchInfo patchInfo) {
+		_PatchLine patchLine = patches.get(patchInfo);
+		if(patchLine != null) {
+			patchLine.markInstall();
+		}
+	}
+	
+	/**
+	 * 创建补丁行组件
+	 * @param patchInfo 补丁信息
+	 * @return 补丁行组件
+	 */
+	private _PatchLine newPatchLine(PatchInfo patchInfo) {
+		String tagName = StrUtils.concat("[", patchInfo.getTime(), "]  ", 
+				patchInfo.getZipName().replace(Params.ZIP_SUFFIX, ""));
+		_PatchLine patchLine = new _PatchLine(tagName);
+		return patchLine;
+	}
+	
 	/**
 	 * 创建占位用的Label
 	 * @return

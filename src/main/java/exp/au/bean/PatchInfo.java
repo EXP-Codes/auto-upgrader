@@ -43,10 +43,7 @@ public class PatchInfo implements Comparable<PatchInfo> {
 	/** txt格式补丁的名称 */
 	private String txtName;
 	
-	/** 升级步骤文件的下载路径 */
-	private String updateURL;
-	
-	/** 升级步骤命令集 */
+	/** 升级步骤命令集(有序) */
 	private List<UpdateCmd> updateCmds;
 	
 	/**
@@ -57,12 +54,10 @@ public class PatchInfo implements Comparable<PatchInfo> {
 		this.version = Version.NULL;
 		this.time = "";
 		this.MD5 = "";
-		this.updateURL = "";
 		this.zipURL = "";
 		this.zipName = "";
 		this.txtURL = "";
 		this.txtName = "";
-		this.updateURL = "";
 		this.updateCmds = new LinkedList<UpdateCmd>();
 	}
 
@@ -140,14 +135,6 @@ public class PatchInfo implements Comparable<PatchInfo> {
 		this.txtName = txtName;
 	}
 	
-	public String getUpdateURL() {
-		return updateURL;
-	}
-
-	public void setUpdateURL(String updateURL) {
-		this.updateURL = updateURL;
-	}
-
 	public List<UpdateCmd> getUpdateCmds() {
 		return updateCmds;
 	}
@@ -173,7 +160,6 @@ public class PatchInfo implements Comparable<PatchInfo> {
 		sb.append("ZIP_NAME : ").append(getZipName()).append("\r\n");
 		sb.append("TXT_URL : ").append(getTxtURL()).append("\r\n");
 		sb.append("TXT_NAME : ").append(getTxtName()).append("\r\n");
-		sb.append("UPDATE_URL : ").append(getUpdateURL()).append("\r\n");
 		sb.append("UPDATE_STEP : \r\n");
 		for(UpdateCmd updateCmd : updateCmds) {
 			sb.append("  ").append(updateCmd.toString()).append("\r\n");
