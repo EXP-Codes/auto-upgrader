@@ -5,8 +5,10 @@ import java.util.LinkedList;
 import java.util.List;
 
 import exp.au.Config;
+import exp.au.envm.Params;
 import exp.libs.utils.io.FileUtils;
 import exp.libs.utils.other.ListUtils;
+import exp.libs.utils.other.PathUtils;
 import exp.libs.utils.other.StrUtils;
 import exp.libs.utils.time.TimeUtils;
 import exp.libs.warp.tpl.Template;
@@ -91,9 +93,15 @@ public class MakePage {
 				continue;
 			}
 			
+			String timePath = PathUtils.combine(verDir.getAbsolutePath(), Params.RELEASE_TIME);
+			String time = FileUtils.read(timePath, Config.DEFAULT_CHARSET).trim();
+			if(StrUtils.isEmpty(time)) {
+				time = TimeUtils.toStr(verDir.lastModified());
+			}
+			
 			tpl.set("app_name", appDir.getName());
 			tpl.set("version", verDir.getName());
-			tpl.set("time", TimeUtils.toStr(verDir.lastModified()));
+			tpl.set("time", time);
 			rows.add(tpl.getContent());
 		}
 		return ListUtils.reverse(rows);	// 版本倒序

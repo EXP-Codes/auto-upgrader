@@ -19,6 +19,7 @@ import exp.au.bean.PatchInfo;
 import exp.au.utils.UIUtils;
 import exp.libs.envm.Colors;
 import exp.libs.utils.io.FileUtils;
+import exp.libs.utils.time.TimeUtils;
 import exp.libs.warp.thread.ThreadPool;
 import exp.libs.warp.ui.BeautyEyeUtils;
 import exp.libs.warp.ui.SwingUtils;
@@ -142,16 +143,15 @@ public class UpgradeUI extends MainWindow {
 				
 				// FIXME
 				verPanel.add(newPatchLine(null));
-				scrollPanel.validate();	// 重构内容面板
-				scrollPanel.repaint();	// 重绘内容面板
 				
-				// FIXME 自动到底部
+				SwingUtils.repaint(scrollPanel);
+				SwingUtils.toEnd(scrollPanel, true);
 			}
 		});
 	}
 	
 	private _PatchLine newPatchLine(PatchInfo patchInfo) {
-		_PatchLine line = new _PatchLine("  pb-patch-4.1  ");	// FIXME: 去掉后缀
+		_PatchLine line = new _PatchLine("  pb-patch-4.1-" + TimeUtils.getSysDate());	// FIXME: 去掉后缀
 		return line;
 	}
 

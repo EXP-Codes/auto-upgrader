@@ -1,7 +1,6 @@
 package exp.au.ui.client;
 
 import java.awt.BorderLayout;
-import java.sql.Struct;
 
 import javax.swing.JLabel;
 import javax.swing.JPanel;
@@ -37,6 +36,7 @@ class _PatchLine extends JPanel {
 	private void initLayout() {
 		add(patchName, BorderLayout.CENTER);
 		add(SwingUtils.getHGridPanel(downBtn, installBtn), BorderLayout.EAST);
+		SwingUtils.addBorder(this);
 	}
 
 	private void initListener() {

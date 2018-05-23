@@ -25,7 +25,7 @@ import exp.libs.warp.ui.SwingUtils;
  * @author    EXP: 272629724@qq.com
  * @since     jdk版本：jdk1.6
  */
-class _CmdLine extends JPanel {
+public class _CmdLine extends JPanel {
 
 	private static final long serialVersionUID = -1015365465387409580L;
 
@@ -55,7 +55,7 @@ class _CmdLine extends JPanel {
 	
 	private JTextField toTF;
 	
-	protected _CmdLine() {
+	public _CmdLine() {
 		super(new BorderLayout());
 		
 		this.cmdCB = SwingUtils.getComboBox(

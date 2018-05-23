@@ -4,6 +4,8 @@ public class Params {
 	
 	public final static String PATCH_TAG = "-patch-";
 	
+	public final static String RELEASE_TIME = "release-time";
+	
 	public final static String MD5_HTML = "MD5.html";
 	
 	public final static String UPDATE_XML = "update.xml";

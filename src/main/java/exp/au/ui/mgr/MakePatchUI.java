@@ -119,7 +119,7 @@ public class MakePatchUI extends MainWindow {
 		this.verBtn = newButton("设置");
 		this.verWin = new _VerWin(appNameTF, verTF);
 		
-		this.timeTF = new JTextField(TimeUtils.getSysDate());
+		this.timeTF = new JTextField();
 		timeTF.setEditable(false);
 		this.timeBtn = newButton("更新");
 		
@@ -133,13 +133,14 @@ public class MakePatchUI extends MainWindow {
 		this.console = SwingUtils.getHtmlTextArea();
 		console.setEditable(false);
 		
-		this.stepPB = new JRadioButton[6]; {
+		this.stepPB = new JRadioButton[7]; {
 			stepPB[0] = newRadioButton("目录转移");
 			stepPB[1] = newRadioButton("生成步骤");
 			stepPB[2] = newRadioButton("补丁打包");
 			stepPB[3] = newRadioButton("补丁备份");
-			stepPB[4] = newRadioButton("生成校验");
-			stepPB[5] = newRadioButton("生成页面");
+			stepPB[4] = newRadioButton("时间水印");
+			stepPB[5] = newRadioButton("生成校验");
+			stepPB[6] = newRadioButton("生成页面");
 		}
 		
 		this.generateBtn = new JButton("一 键 生 成 补 丁");
@@ -252,7 +253,7 @@ public class MakePatchUI extends MainWindow {
 			
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				timeTF.setText(TimeUtils.getSysDate());
+				timeTF.setText(TimeUtils.getSysDate(TimeUtils.FORMAT_YMDHMS));
 			}
 		});
 		
@@ -281,8 +282,9 @@ public class MakePatchUI extends MainWindow {
 					
 					@Override
 					public void run() {
-						MakePatch.generate(patchDirTF.getText(), 
-								appNameTF.getText(), verTF.getText());
+						MakePatch.generate(
+								patchDirTF.getText(), appNameTF.getText(), 
+								verTF.getText(), timeTF.getText());
 						generateBtn.setEnabled(true);
 					}
 				});
@@ -402,8 +404,7 @@ public class MakePatchUI extends MainWindow {
 	
 	@Override
 	protected void AfterView() {
-		// TODO Auto-generated method stub
-		
+		timeBtn.doClick();
 	}
 
 	@Override
