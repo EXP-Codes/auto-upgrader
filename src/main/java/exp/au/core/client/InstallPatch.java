@@ -13,6 +13,7 @@ import exp.au.bean.PatchInfo;
 import exp.au.bean.UpdateCmd;
 import exp.au.bean.Version;
 import exp.au.envm.CmdType;
+import exp.libs.utils.encode.CompressUtils;
 import exp.libs.utils.format.XmlUtils;
 import exp.libs.utils.io.FileUtils;
 import exp.libs.utils.other.PathUtils;
@@ -83,6 +84,23 @@ public class InstallPatch {
 			}
 		}
 		return updateSteps;
+	}
+	
+	public static boolean install(PatchInfo patchInfo) {
+		String patchBaseDir = patchInfo.getPatchDir();
+		String zipPath = PathUtils.combine(patchBaseDir, patchInfo.getZipName());
+		
+		System.out.println(zipPath);
+		// ./patches/bilibili-plugin/2.4/bilibili-plugin-patch-2.4.zip
+		
+		if(CompressUtils.unZip(zipPath)) {
+			String patchDir = PathUtils.combine(patchBaseDir, patchInfo.getPatchName());
+			System.out.println(patchDir);
+			
+			// FIXME 提取update.xml步骤
+			// ./patches/bilibili-plugin/2.4/bilibili-plugin-patch-2.4
+		}
+		return true;
 	}
 	
 	/**

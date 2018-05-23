@@ -21,6 +21,7 @@ import exp.au.Config;
 import exp.au.bean.PatchInfo;
 import exp.au.bean.Version;
 import exp.au.core.client.DownPatch;
+import exp.au.core.client.InstallPatch;
 import exp.au.utils.UIUtils;
 import exp.libs.envm.Colors;
 import exp.libs.envm.DateFormat;
@@ -34,19 +35,16 @@ import exp.libs.warp.ui.SwingUtils;
 import exp.libs.warp.ui.cpt.win.MainWindow;
 import exp.libs.warp.ui.layout.VFlowLayout;
 
-//升级包管理&安装UI
-// 若程序没有启动过导致没有生成当前版本信息, 则不进行升级
-// 客户端要留一个命令行版本(用于linux)
-
-//检查版本
-//  版本列表 (历史版本标灰， 当前版本标红， 未升级版本标蓝)
-
-// 下载补丁
-//  版本列表 (历史版本标灰， 当前版本标红， 未升级版本标绿)
-//  版本列表新增两列：下载状态， 安装状态
-
-// 控制台日志(下载时需打印MD5校验情况)
-// 一键升级(升级过程中，当前版本标色变化)
+/**
+ * <PRE>
+ * 软件升级界面
+ * </PRE>
+ * <B>PROJECT：</B> auto-upgrader
+ * <B>SUPPORT：</B> EXP
+ * @version   1.0 2018-05-20
+ * @author    EXP: 272629724@qq.com
+ * @since     jdk版本：jdk1.6
+ */
 public class UpgradeUI extends MainWindow {
 
 	private static final long serialVersionUID = 1802740672496217291L;
@@ -255,6 +253,13 @@ public class UpgradeUI extends MainWindow {
 	private void installPatches() {
 		// FIXME: 若有一个失败, 则不再往后
 		// 一边安装一边更新当前版本
+		
+		Iterator<PatchInfo> patchInfoIts = patches.keySet().iterator();
+		while(patchInfoIts.hasNext()) {
+			PatchInfo patchInfo = patchInfoIts.next();
+			
+			InstallPatch.install(patchInfo);
+		}
 	}
 	
 	@Override

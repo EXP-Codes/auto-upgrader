@@ -16,6 +16,7 @@ import exp.au.utils.UIUtils;
 import exp.libs.utils.encode.CryptoUtils;
 import exp.libs.utils.format.TXTUtils;
 import exp.libs.utils.io.FileUtils;
+import exp.libs.utils.other.PathUtils;
 import exp.libs.utils.verify.RegexUtils;
 import exp.libs.warp.net.http.HttpURLUtils;
 
@@ -141,7 +142,7 @@ public class DownPatch {
 	 */
 	public static boolean download(PatchInfo patchInfo) {
 		String saveDir = patchInfo.getPatchDir();
-		String zipPath = saveDir.concat(patchInfo.getZipName());
+		String zipPath = PathUtils.combine(saveDir, patchInfo.getZipName());
 		
 		boolean isOk = true;
 		if(FileUtils.exists(zipPath)) {
@@ -157,7 +158,7 @@ public class DownPatch {
 			// 若zip版本升级包下载失败, 则下载txt版本升级包
 			if(isOk == false) {
 				FileUtils.delete(zipPath);
-				String txtPath = saveDir.concat(patchInfo.getTxtName());
+				String txtPath = PathUtils.combine(saveDir, patchInfo.getTxtName());
 				isOk = downTxtPatch(patchInfo.getTxtURL(), txtPath, zipPath, MD5);
 			}
 		}
