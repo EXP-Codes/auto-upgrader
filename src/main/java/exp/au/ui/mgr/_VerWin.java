@@ -160,19 +160,21 @@ class _VerWin extends PopChildWindow {
 		// 提取应用程序当前的补丁版本列表
 		File appDir = new File(Config.PATCH_PAGE_DIR.concat(APP_NAME));
 		File[] verDirs = appDir.listFiles();
-		List<Version> vers = new LinkedList<Version>();
-		for(File verDir : verDirs) {
-			if(verDir.isDirectory()) {
-				vers.add(new Version(verDir.getName()));
+		if(verDirs != null) {
+			List<Version> vers = new LinkedList<Version>();
+			for(File verDir : verDirs) {
+				if(verDir.isDirectory()) {
+					vers.add(new Version(verDir.getName()));
+				}
 			}
-		}
-		Collections.sort(vers);
-		
-		// 设置默认的版本号为最后一个版本+1
-		if(vers.size() > 0) {
-			Version last = vers.get(vers.size() - 1);
-			majorTF.setText(String.valueOf(last.MAJOR()));
-			minorTF.setText(String.valueOf(last.MINOR() + 1));
+			Collections.sort(vers);
+			
+			// 设置默认的版本号为最后一个版本+1
+			if(vers.size() > 0) {
+				Version last = vers.get(vers.size() - 1);
+				majorTF.setText(String.valueOf(last.MAJOR()));
+				minorTF.setText(String.valueOf(last.MINOR() + 1));
+			}
 		}
 	}
 

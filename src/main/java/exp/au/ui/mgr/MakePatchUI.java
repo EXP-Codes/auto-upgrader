@@ -50,7 +50,7 @@ public class MakePatchUI extends MainWindow {
 	/** 全局唯一ID */
 	private static final long serialVersionUID = 8994503171771453009L;
 
-	private final static int WIDTH = 700;
+	private final static int WIDTH = 800;
 	
 	private final static int HEIGHT = 700;
 	

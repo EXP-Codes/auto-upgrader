@@ -256,6 +256,7 @@ public class UpgradeUI extends MainWindow {
 		Iterator<PatchInfo> patchInfoIts = patches.keySet().iterator();
 		while(patchInfoIts.hasNext()) {
 			PatchInfo patchInfo = patchInfoIts.next();
+			markNextVerion(patchInfo);
 			
 			toConsole("正在安装补丁 [", patchInfo.getPatchName(), "] ...");
 			isOk &= InstallPatch.install(patchInfo);
@@ -329,10 +330,21 @@ public class UpgradeUI extends MainWindow {
 	}
 
 	/**
+	 * 标记为下一个待处理版本
+	 * @param patchInfo
+	 */
+	private void markNextVerion(PatchInfo patchInfo) {
+		_PatchLine patchLine = patches.get(patchInfo);
+		if(patchLine != null) {
+			patchLine.markNextVerion();
+		}
+	}
+	
+	/**
 	 * 标记补丁为已下载
 	 * @param patchInfo
 	 */
-	protected void markDown(PatchInfo patchInfo) {
+	private void markDown(PatchInfo patchInfo) {
 		_PatchLine patchLine = patches.get(patchInfo);
 		if(patchLine != null) {
 			patchLine.markDown();
@@ -343,7 +355,7 @@ public class UpgradeUI extends MainWindow {
 	 * 标记补丁为已安装
 	 * @param patchInfo
 	 */
-	protected void markInstall(PatchInfo patchInfo) {
+	private void markInstall(PatchInfo patchInfo) {
 		_PatchLine patchLine = patches.get(patchInfo);
 		if(patchLine != null) {
 			patchLine.markInstall();
