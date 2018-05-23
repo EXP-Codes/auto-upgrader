@@ -3,6 +3,7 @@ package exp.au.core.mgr;
 import exp.au.Config;
 import exp.au.envm.Params;
 import exp.au.ui.mgr.MakePatchUI;
+import exp.au.utils.PatchUtils;
 import exp.libs.utils.encode.CompressUtils;
 import exp.libs.utils.encode.CryptoUtils;
 import exp.libs.utils.format.TXTUtils;
@@ -37,7 +38,7 @@ public class MakePatch {
 	 */
 	public static void generate(final String SRC_DIR, final String APP_NAME, 
 			final String VERSION, final String RELEASE_TIME) {
-		final String PATCH_NAME = StrUtils.concat(APP_NAME, Params.PATCH_TAG, VERSION);
+		final String PATCH_NAME = PatchUtils.toPatchName(APP_NAME, VERSION);
 		final String PATCH_ZIP_NAME = PATCH_NAME.concat(Params.ZIP_SUFFIX);
 		final String SNK_DIR = StrUtils.concat(Config.PATCH_PAGE_DIR, APP_NAME, "/", VERSION, "/");
 		final String PATCH_DIR = SNK_DIR.concat(PATCH_NAME);
@@ -50,74 +51,74 @@ public class MakePatch {
 		}
 		
 		
-		console("正在复制补丁目录到 [", PATCH_DIR, "] ...");
+		toConsole("正在复制补丁目录到 [", PATCH_DIR, "] ...");
 		boolean isOk = FileUtils.copyDirectory(SRC_DIR, PATCH_DIR);
 		if(updateStepStatus(step++, isOk) == false) {
-			console("复制补丁目录到 [", PATCH_DIR, "] 失败");
+			toConsole("复制补丁目录到 [", PATCH_DIR, "] 失败");
 			return;
 		}
 		stepSleep();
 		
 		
-		console("正在生成 [", Params.UPDATE_XML, "] 升级步骤文件...");
+		toConsole("正在生成 [", Params.UPDATE_XML, "] 升级步骤文件...");
 		isOk = _toUpdateXml(PATCH_DIR, PATCH_ZIP_NAME, RELEASE_TIME);
 		if(updateStepStatus(step++, isOk) == false) {
-			console("生成 [", Params.UPDATE_XML, "] 升级步骤文件失败");
+			toConsole("生成 [", Params.UPDATE_XML, "] 升级步骤文件失败");
 			return;
 		}
 		stepSleep();
 		
 		
-		console("正在生成补丁目录 [", PATCH_DIR, "] 的压缩文件...");
+		toConsole("正在生成补丁目录 [", PATCH_DIR, "] 的压缩文件...");
 		isOk = CompressUtils.toZip(PATCH_DIR, PATCH_ZIP_PATH);
 		isOk &= FileUtils.delete(PATCH_DIR);
 		if(updateStepStatus(step++, isOk) == false) {
-			console("生成补丁目录 [", PATCH_ZIP_NAME, "] 的压缩文件失败");
+			toConsole("生成补丁目录 [", PATCH_ZIP_NAME, "] 的压缩文件失败");
 			return;
 		}
 		stepSleep();
 		
 
-		console("正在生成补丁文件 [", PATCH_ZIP_NAME, "] 的备份文件...");
+		toConsole("正在生成补丁文件 [", PATCH_ZIP_NAME, "] 的备份文件...");
 		String txtPath = PATCH_ZIP_PATH.concat(Params.TXT_SUFFIX);
 		isOk = TXTUtils.toTXT(PATCH_ZIP_PATH, txtPath);
 		if(updateStepStatus(step++, isOk) == false) {
-			console("生成补丁文件 [", PATCH_ZIP_NAME, "] 的备份文件失败");
+			toConsole("生成补丁文件 [", PATCH_ZIP_NAME, "] 的备份文件失败");
 			return;
 		}
 		stepSleep();
 		
 		
-		console("正在生成补丁文件 [", PATCH_ZIP_NAME, "] 的时间水印...");
+		toConsole("正在生成补丁文件 [", PATCH_ZIP_NAME, "] 的时间水印...");
 		String timePath = PathUtils.combine(SNK_DIR, Params.RELEASE_TIME);
 		isOk = FileUtils.write(timePath, RELEASE_TIME, Config.DEFAULT_CHARSET, false);
 		if(updateStepStatus(step++, isOk) == false) {
-			console("生成补丁文件 [", PATCH_ZIP_NAME, "] 的时间水印失败");
+			toConsole("生成补丁文件 [", PATCH_ZIP_NAME, "] 的时间水印失败");
 			return;
 		}
 		
 		
-		console("正在生成补丁文件 [", PATCH_ZIP_NAME, "] 的MD5校验码...");
+		toConsole("正在生成补丁文件 [", PATCH_ZIP_NAME, "] 的MD5校验码...");
 		String MD5 = CryptoUtils.toFileMD5(PATCH_ZIP_PATH);
 		MakePatchUI.getInstn().updatMD5(MD5);
 		String MD5Path = PathUtils.combine(SNK_DIR, Params.MD5_HTML);
 		isOk = FileUtils.write(MD5Path, MD5, Config.DEFAULT_CHARSET, false);
 		if(updateStepStatus(step++, isOk) == false) {
-			console("生成补丁文件 [", PATCH_ZIP_NAME, "] 的MD5校验码失败");
+			toConsole("生成补丁文件 [", PATCH_ZIP_NAME, "] 的MD5校验码失败");
 			return;
 		}
 		stepSleep();
 		
 		
-		console("正在更新补丁管理页面...");
+		toConsole("正在更新补丁管理页面...");
 		isOk = MakePage.updatePage();
 		if(updateStepStatus(step++, isOk) == false) {
-			console("更新补丁管理页面失败");
+			toConsole("更新补丁管理页面失败");
 			return;
 		}
 		
 		
-		console("生成应用程序 [", APP_NAME, "] 的升级补丁完成 (管理页面已更新)");
+		toConsole("生成应用程序 [", APP_NAME, "] 的升级补丁完成 (管理页面已更新)");
 		SwingUtils.info("生成补丁成功");
 	}
 	
@@ -139,11 +140,11 @@ public class MakePatch {
 	}
 	
 	/**
-	 * 打印信息到界面
+	 * 打印信息到界面控制台
 	 * @param msgs
 	 */
-	private static void console(Object... msgs) {
-		MakePatchUI.getInstn().console(msgs);
+	private static void toConsole(Object... msgs) {
+		MakePatchUI.getInstn().toConsole(msgs);
 	}
 	
 	/**

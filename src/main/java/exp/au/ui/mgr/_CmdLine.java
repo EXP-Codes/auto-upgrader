@@ -163,7 +163,7 @@ public class _CmdLine extends JPanel {
 	private void tips(CmdType cmdType, String... msgs) {
 		String cmd = StrUtils.concat("<font color='red'>【", cmdType.CH(), "】 命令: </font>");
 		String msg = StrUtils.concat(msgs);
-		MakePatchUI.getInstn().console(cmd, msg);
+		MakePatchUI.getInstn().toConsole(cmd, msg);
 	}
 	
 	protected CmdType getCmdType() {

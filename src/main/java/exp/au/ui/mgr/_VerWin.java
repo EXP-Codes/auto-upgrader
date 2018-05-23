@@ -4,6 +4,8 @@ import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.KeyEvent;
+import java.awt.event.KeyListener;
 import java.io.File;
 import java.util.Collections;
 import java.util.LinkedList;
@@ -94,8 +96,8 @@ class _VerWin extends PopChildWindow {
 
 	@Override
 	protected void setComponentsListener(JPanel rootPanel) {
-		UIUtils.limitNum(majorTF);
-		UIUtils.limitNum(minorTF);
+		limitNum(majorTF);
+		limitNum(minorTF);
 		
 		okBtn.addActionListener(new ActionListener() {
 			
@@ -103,6 +105,44 @@ class _VerWin extends PopChildWindow {
 			public void actionPerformed(ActionEvent e) {
 				_hide();
 			}
+		});
+	}
+	
+	/**
+	 * 限制文本框的输入内容为数字
+	 * @param textField
+	 */
+	private void limitNum(final JTextField textField) {
+		if(textField == null) {
+			return;
+		}
+		
+		textField.addKeyListener(new KeyListener() {
+
+		    @Override
+		    public void keyTyped(KeyEvent e) {
+		        String text = textField.getText();  // 当前输入框内容
+		        char ch = e.getKeyChar();   // 准备附加到输入框的字符
+
+		        // 限制不能输入非数字
+		        if(!(ch >= '0' && ch <= '9')) {
+		            e.consume();    // 销毁当前输入字符
+
+		        // 限制不能连续两个以上的0开头
+		        } else if("0".equals(text) && ch == '0') {   
+		            e.consume();
+		        }
+		    }
+
+		    @Override
+		    public void keyReleased(KeyEvent e) {
+		        // TODO Auto-generated method stub
+		    }
+
+		    @Override
+		    public void keyPressed(KeyEvent e) {
+		        // TODO Auto-generated method stub
+		    }
 		});
 	}
 

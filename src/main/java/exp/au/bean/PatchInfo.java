@@ -25,8 +25,11 @@ public class PatchInfo implements Comparable<PatchInfo> {
 	/** 补丁版本 */
 	private Version version;
 	
+	/** 补丁名称 */
+	private String patchName;
+	
 	/** 补丁发布时间 */
-	private String time;
+	private String releaseTime;
 	
 	/** 补丁校验MD5 */
 	private String MD5;
@@ -52,7 +55,8 @@ public class PatchInfo implements Comparable<PatchInfo> {
 	public PatchInfo() {
 		this.appName = "";
 		this.version = Version.NULL;
-		this.time = "";
+		this.patchName = "";
+		this.releaseTime = "";
 		this.MD5 = "";
 		this.zipURL = "";
 		this.zipName = "";
@@ -82,12 +86,22 @@ public class PatchInfo implements Comparable<PatchInfo> {
 				getAppName(), "/", getVersion().VER(), "/");
 	}
 	
-	public String getTime() {
-		return time;
+	public String getPatchName() {
+		return patchName;
+	}
+	
+	public void setPatchName(String patchName) {
+		this.patchName = patchName;
+		setZipName(patchName.concat(Params.ZIP_SUFFIX));
+		setTxtName(getZipName().concat(Params.TXT_SUFFIX));
+	}
+	
+	public String getReleaseTime() {
+		return releaseTime;
 	}
 
-	public void setTime(String time) {
-		this.time = time;
+	public void setReleaseTime(String releaseTime) {
+		this.releaseTime = releaseTime;
 	}
 
 	public String getMD5() {
@@ -114,11 +128,6 @@ public class PatchInfo implements Comparable<PatchInfo> {
 		this.txtURL = txtURL;
 	}
 	
-	public void setPatchName(String patchName) {
-		setZipName(patchName);
-		setTxtName(patchName.concat(Params.TXT_SUFFIX));
-	}
-
 	public String getZipName() {
 		return zipName;
 	}
@@ -152,15 +161,17 @@ public class PatchInfo implements Comparable<PatchInfo> {
 	@Override
 	public String toString() {
 		StringBuilder sb = new StringBuilder();
-		sb.append("APP_NAME : ").append(getAppName()).append("\r\n");
-		sb.append("TIME : ").append(getTime()).append("\r\n");
+		sb.append("APP-NAME : ").append(getAppName()).append("\r\n");
 		sb.append("VERSION : ").append(getVersion()).append("\r\n");
+		sb.append("PATCH-DIR : ").append(getPatchDir()).append("\r\n");
+		sb.append("PATCH-NAME : ").append(getPatchName()).append("\r\n");
+		sb.append("RELEAST-TIME : ").append(getReleaseTime()).append("\r\n");
 		sb.append("MD5 : ").append(getMD5()).append("\r\n");
-		sb.append("ZIP_URL : ").append(getZipURL()).append("\r\n");
-		sb.append("ZIP_NAME : ").append(getZipName()).append("\r\n");
-		sb.append("TXT_URL : ").append(getTxtURL()).append("\r\n");
-		sb.append("TXT_NAME : ").append(getTxtName()).append("\r\n");
-		sb.append("UPDATE_STEP : \r\n");
+		sb.append("ZIP-URL : ").append(getZipURL()).append("\r\n");
+		sb.append("ZIP-NAME : ").append(getZipName()).append("\r\n");
+		sb.append("TXT-URL : ").append(getTxtURL()).append("\r\n");
+		sb.append("TXT-NAME : ").append(getTxtName()).append("\r\n");
+		sb.append("UPDATE-STEP : \r\n");
 		for(UpdateCmd updateCmd : updateCmds) {
 			sb.append("  ").append(updateCmd.toString()).append("\r\n");
 		}

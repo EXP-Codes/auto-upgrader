@@ -24,6 +24,7 @@ import exp.au.core.mgr.MakePatch;
 import exp.au.envm.CmdType;
 import exp.au.utils.UIUtils;
 import exp.libs.envm.Colors;
+import exp.libs.envm.DateFormat;
 import exp.libs.envm.Delimiter;
 import exp.libs.utils.os.OSUtils;
 import exp.libs.utils.other.StrUtils;
@@ -253,7 +254,7 @@ public class MakePatchUI extends MainWindow {
 			
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				timeTF.setText(TimeUtils.getSysDate(TimeUtils.FORMAT_YMDHMS));
+				timeTF.setText(TimeUtils.getSysDate(DateFormat.YMDHMS));
 			}
 		});
 		
@@ -385,23 +386,6 @@ public class MakePatchUI extends MainWindow {
 		}
 	}
 	
-	/**
-	 * 打印信息到控制台
-	 * @param msgs
-	 */
-	public void console(Object... msgs) {
-		String msg = StrUtils.concat(msgs);
-		console.setText(StrUtils.concat(
-				"<html>", 
-				  "<body>", 
-				    "<pre>&nbsp;&nbsp;&nbsp;&nbsp;", 
-				      "<font color='blue' size='3'>", msg, "</font>", 
-				    "</pre>", 
-				  "</body>", 
-				"</html>"
-		));
-	}
-	
 	@Override
 	protected void AfterView() {
 		timeBtn.doClick();
@@ -416,6 +400,23 @@ public class MakePatchUI extends MainWindow {
 	@Override
 	protected void beforeExit() {
 		tp.shutdown();
+	}
+	
+	/**
+	 * 打印信息到控制台
+	 * @param msgs
+	 */
+	public void toConsole(Object... msgs) {
+		String msg = StrUtils.concat(msgs);
+		console.setText(StrUtils.concat(
+				"<html>", 
+				  "<body>", 
+				    "<pre>&nbsp;&nbsp;&nbsp;&nbsp;", 
+				      "<font color='blue' size='3'>", msg, "</font>", 
+				    "</pre>", 
+				  "</body>", 
+				"</html>"
+		));
 	}
 	
 	/**

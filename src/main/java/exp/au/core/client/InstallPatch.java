@@ -1,14 +1,23 @@
 package exp.au.core.client;
 
+import java.util.Iterator;
+import java.util.LinkedList;
 import java.util.List;
 
+import org.dom4j.Document;
+import org.dom4j.DocumentHelper;
+import org.dom4j.Element;
+
+import exp.au.Config;
 import exp.au.bean.PatchInfo;
 import exp.au.bean.UpdateCmd;
 import exp.au.bean.Version;
 import exp.au.envm.CmdType;
+import exp.libs.utils.format.XmlUtils;
 import exp.libs.utils.io.FileUtils;
 import exp.libs.utils.other.PathUtils;
 import exp.libs.utils.other.StrUtils;
+import exp.libs.warp.net.http.HttpURLUtils;
 
 //客户端步骤2：安装升级包 
 // (升级前先检查每一个步骤的文件是否存在(推衍)， 若升级失败，则回滚到最后一个成功的备份版本)
@@ -47,6 +56,33 @@ public class InstallPatch {
 			}
 		}
 		return installVer;
+	}
+	
+	private static List<UpdateCmd> taskUpdateCmd(String updateURL, String updatePath) {
+		List<UpdateCmd> updateSteps = new LinkedList<UpdateCmd>();
+		boolean isOk = HttpURLUtils.downloadByGet(updatePath, updateURL);
+		if(isOk == true) {
+			String xml = FileUtils.read(updatePath, Config.DEFAULT_CHARSET);
+			try {
+				Document doc = DocumentHelper.parseText(xml);
+				Element root = doc.getRootElement();
+				Element steps = root.element("steps");
+				Iterator<Element> cmds = steps.elementIterator();
+				while(cmds.hasNext()) {
+					Element cmd = cmds.next();
+					CmdType type = CmdType.toType(cmd.getName());
+					String from = XmlUtils.getAttribute(cmd, "from");
+					String to = XmlUtils.getAttribute(cmd, "to");
+					
+					UpdateCmd step = new UpdateCmd(type, from , to);
+					updateSteps.add(step);
+				}
+			} catch (Exception e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}
+		return updateSteps;
 	}
 	
 	/**

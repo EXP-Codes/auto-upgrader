@@ -21,11 +21,13 @@ import exp.au.Config;
 import exp.au.bean.PatchInfo;
 import exp.au.bean.Version;
 import exp.au.core.client.DownPatch;
-import exp.au.envm.Params;
 import exp.au.utils.UIUtils;
 import exp.libs.envm.Colors;
+import exp.libs.envm.DateFormat;
+import exp.libs.envm.Delimiter;
 import exp.libs.utils.io.FileUtils;
 import exp.libs.utils.other.StrUtils;
+import exp.libs.utils.time.TimeUtils;
 import exp.libs.warp.thread.ThreadPool;
 import exp.libs.warp.ui.BeautyEyeUtils;
 import exp.libs.warp.ui.SwingUtils;
@@ -157,8 +159,10 @@ public class UpgradeUI extends MainWindow {
 					@Override
 					public void run() {
 						
-						updatePatches();	// 更新列表
+						toConsole("正在从管理页面提取补丁列表信息...");
+						updatePatches();	// 更新补丁列表
 						filterPatches();	// 过滤旧版本补丁
+						toConsole("从管理页面提取补丁列表信息完成, 待升级补丁数: ", patches.size());
 						
 						// 刷新补丁列表面板
 						SwingUtils.repaint(scrollPanel);
@@ -175,7 +179,9 @@ public class UpgradeUI extends MainWindow {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				if(patches.isEmpty()) {
-					SwingUtils.warn("已经是最新版本了");
+					toConsole("已经是最新版本了, 无需升级");
+					SwingUtils.warn("已经是最新版本了, 无需升级");
+					return;
 				}
 				
 				upgradeBtn.setEnabled(false);
@@ -221,8 +227,8 @@ public class UpgradeUI extends MainWindow {
 			// 小于等于应用程序当前版本号的补丁, 进行标记并移除
 			if(CUR_VER.compareTo(patchInfo.getVersion()) >= 0) {
 				_PatchLine patchLine = patches.get(patchInfo);
-				patchLine.markDown();
-				patchLine.markInstall();
+				patchLine.markDown(false);
+				patchLine.markInstall(false);
 				patchInfoIts.remove();	// 移除补丁信息
 			}
 		}
@@ -238,7 +244,7 @@ public class UpgradeUI extends MainWindow {
 			
 			if(DownPatch.download(patchInfo)) {
 				_PatchLine patchLine = patches.get(patchInfo);
-				patchLine.markDown();
+				patchLine.markDown(true);
 			}
 		}
 	}
@@ -254,6 +260,7 @@ public class UpgradeUI extends MainWindow {
 	@Override
 	protected void AfterView() {
 		if(taskAppVerInfo() == false) {
+			toConsole("提取当前版本信息失败, 无法升级 (请确保程序至少运行过一次)");
 			SwingUtils.warn("提取当前版本信息失败, 无法升级\r\n(请确保程序至少运行过一次)");
 			System.exit(0);
 		}
@@ -286,6 +293,18 @@ public class UpgradeUI extends MainWindow {
 	protected void beforeExit() {
 		tp.shutdown();
 	}
+	
+	/**
+	 * 打印信息到控制台
+	 * @param msgs
+	 */
+	public void toConsole(Object... msgs) {
+		String time = StrUtils.concat("[", TimeUtils.getSysDate(DateFormat.HMS), "] ");
+		String msg = StrUtils.concat(msgs);
+		
+		consoleTA.append(StrUtils.concat(time, msg, Delimiter.CRLF));
+		SwingUtils.toEnd(consoleTA);
+	}
 
 	/**
 	 * 标记补丁为已下载
@@ -294,7 +313,7 @@ public class UpgradeUI extends MainWindow {
 	protected void markDown(PatchInfo patchInfo) {
 		_PatchLine patchLine = patches.get(patchInfo);
 		if(patchLine != null) {
-			patchLine.markDown();
+			patchLine.markDown(true);
 		}
 	}
 	
@@ -305,7 +324,7 @@ public class UpgradeUI extends MainWindow {
 	protected void markInstall(PatchInfo patchInfo) {
 		_PatchLine patchLine = patches.get(patchInfo);
 		if(patchLine != null) {
-			patchLine.markInstall();
+			patchLine.markInstall(true);
 		}
 	}
 	
@@ -315,9 +334,8 @@ public class UpgradeUI extends MainWindow {
 	 * @return 补丁行组件
 	 */
 	private _PatchLine newPatchLine(PatchInfo patchInfo) {
-		String tagName = StrUtils.concat("[", patchInfo.getTime(), "]  ", 
-				patchInfo.getZipName().replace(Params.ZIP_SUFFIX, ""));
-		_PatchLine patchLine = new _PatchLine(tagName);
+		_PatchLine patchLine = new _PatchLine(
+				patchInfo.getPatchName(), patchInfo.getReleaseTime());
 		return patchLine;
 	}
 	

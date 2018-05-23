@@ -8,26 +8,20 @@ import java.util.List;
 import org.dom4j.Document;
 import org.dom4j.DocumentHelper;
 import org.dom4j.Element;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import exp.au.Config;
 import exp.au.bean.PatchInfo;
-import exp.au.bean.UpdateCmd;
-import exp.au.bean.Version;
-import exp.au.envm.CmdType;
-import exp.au.envm.Params;
+import exp.au.utils.PatchUtils;
+import exp.au.utils.UIUtils;
 import exp.libs.utils.encode.CryptoUtils;
 import exp.libs.utils.format.TXTUtils;
-import exp.libs.utils.format.XmlUtils;
 import exp.libs.utils.io.FileUtils;
-import exp.libs.utils.other.StrUtils;
 import exp.libs.utils.verify.RegexUtils;
 import exp.libs.warp.net.http.HttpURLUtils;
 
 /**
  * <PRE>
- * 根据应用程序最后的版本信息下载升级补丁
+ * 根据应用信心下载对应的升级补丁列表
  * </PRE>
  * <B>PROJECT：</B> auto-upgrader
  * <B>SUPPORT：</B> EXP
@@ -37,68 +31,30 @@ import exp.libs.warp.net.http.HttpURLUtils;
  */
 public class DownPatch {
 	
-	/** 日志器 */
-	private final static Logger log = LoggerFactory.getLogger(DownPatch.class);
-	
 	/** 版本管理页面 */
 	private final static String VER_MGR_URL = Config.getInstn().VER_MGR_URL();
 	
 	/** 私有化构造函数 */
 	protected DownPatch() {}
 	
-	public static void download() {
-		
-		// 提取应用程序最后的版本信息
-		List<String> lines = FileUtils.readLines(
-				Config.LAST_VER_PATH, Config.DEFAULT_CHARSET);
-		if(lines.size() == 2) {
-			return;
-		}
-		
-		final String APP_NAME = lines.get(0).trim();
-		final Version LAST_VER = new Version(lines.get(1).trim());
-		
-		
-		// 获取指定应用的升级补丁列表
-		String pageSource = HttpURLUtils.doGet(VER_MGR_URL);
-		List<PatchInfo> patchInfos = getPatchInfos(pageSource, APP_NAME);
-		
-		// 根据当前版本号筛选升级列表
-		Iterator<PatchInfo> patchInfoIts = patchInfos.iterator();
-		while(patchInfoIts.hasNext()) {
-			PatchInfo patchInfo = patchInfoIts.next();
-			if(LAST_VER.compareTo(patchInfo.getVersion()) >= 0) {
-				patchInfoIts.remove();
-			}
-		}
-
-		// 下载升级补丁
-		boolean isOk = download(patchInfos);
-		System.out.println("下载全部补丁:" + isOk);
-		for(PatchInfo patchInfo : patchInfos) {
-			System.out.println(patchInfo);
-			System.out.println("=======");
-		}
-	}
-	
 	/**
 	 * 提取指定应用的补丁列表信息
-	 * @param appName
-	 * @return
+	 * @param APP_NAME 应用名称
+	 * @return 升级补丁列表信息
 	 */
-	public static List<PatchInfo> getPatchInfos(String appName) {
+	public static List<PatchInfo> getPatchInfos(final String APP_NAME) {
 		String pageSource = HttpURLUtils.doGet(VER_MGR_URL);
-		return getPatchInfos(pageSource, appName);
+		return getPatchInfos(APP_NAME, pageSource);
 	}
 	
 	/**
-	 * 从页面提取应用补丁列表信息
-	 * @param pageSource 页面源码
+	 * 从页面提取指定应用的补丁列表信息
 	 * @param appName 应用名称
-	 * @return 补丁列表信息
+	 * @param pageSource 页面源码
+	 * @return 升级补丁列表信息
 	 */
 	@SuppressWarnings("unchecked")
-	private static List<PatchInfo> getPatchInfos(String pageSource, String appName) {
+	private static List<PatchInfo> getPatchInfos(String appName, String pageSource) {
 		List<PatchInfo> patchInfos = new LinkedList<PatchInfo>();
 		try {
 			Document doc = DocumentHelper.parseText(pageSource);
@@ -115,11 +71,16 @@ public class DownPatch {
 				}
 			}
 		} catch (Exception e) {
-			log.error("从页面提取应用 [{}] 的补丁列表信息失败:\r\n{}", appName, pageSource, e);
+			UIUtils.toConsole("从管理页面提取补丁列表失败");
 		}
 		return patchInfos;
 	}
 	
+	/**
+	 * 把页面表单元素转换为升级补丁列表对象
+	 * @param table 页面表单元素
+	 * @return 升级补丁列表对象
+	 */
 	@SuppressWarnings("unchecked")
 	private static List<PatchInfo> toPatchInfos(Element table) {
 		List<PatchInfo> patchInfos = new LinkedList<PatchInfo>();
@@ -138,8 +99,9 @@ public class DownPatch {
 				
 			} else {
 				List<String> groups = RegexUtils.findGroups(key, REGEX);
-				String time = groups.get(1);
+				String releaseTime = groups.get(1);
 				String version = groups.get(2);
+				String patchName = PatchUtils.toPatchName(appName, version);
 				
 				List<String> brackets = RegexUtils.findBrackets(tds.get(1).asXML(), "href=\"([^\"]+)\"");
 				String zipURL = combineURL(VER_MGR_URL, brackets.get(0));
@@ -149,123 +111,99 @@ public class DownPatch {
 				PatchInfo patchInfo = new PatchInfo();
 				patchInfo.setAppName(appName);
 				patchInfo.setVersion(version);
-				patchInfo.setTime(time);
+				patchInfo.setPatchName(patchName);
+				patchInfo.setReleaseTime(releaseTime);
 				patchInfo.setMD5(HttpURLUtils.doGet(md5URL));
 				patchInfo.setZipURL(zipURL);
 				patchInfo.setTxtURL(txtURL);
-				patchInfo.setPatchName(toPatchName(appName, version));
-				
 				patchInfos.add(patchInfo);
 			}
 		}
 		
-		Collections.sort(patchInfos);
+		Collections.sort(patchInfos);	// 确保升级补丁列表按版本号排序
 		return patchInfos;
 	}
 	
 	/**
-	 * FIXME  HTTP合并
-	 * @param prefix http://lyy289065406.gitee.io/auto-upgrader/
-	 * @param suffix ./foo/bar.suffix
+	 * 合并URL路径
+	 * @param prefix 前缀路径， 如: http://lyy289065406.gitee.io/auto-upgrader/
+	 * @param suffix 后缀路径， 如: ./foo/bar.suffix
 	 * @return
 	 */
 	private static String combineURL(String prefix, String suffix) {
 		return prefix.concat(suffix).replace('\\', '/').replace("/./", "/");
 	}
 	
-	private static String toPatchName(String appName, String version) {
-		return StrUtils.concat(appName, Params.PATCH_TAG, version, Params.ZIP_SUFFIX);
-	}
-	
-	private static boolean download(List<PatchInfo> patchInfos) {
-		int cnt = 0;
-		for(PatchInfo patchInfo : patchInfos) {
-			cnt += download(patchInfo) ? 1 : 0;
-		}
-		return (cnt == patchInfos.size());
-	}
-	
+	/**
+	 * 下载单个补丁
+	 * @param patchInfo 补丁信息
+	 * @return 是否下载成功
+	 */
 	public static boolean download(PatchInfo patchInfo) {
 		String saveDir = patchInfo.getPatchDir();
-		String zipSavePath = saveDir.concat(patchInfo.getZipName());
+		String zipPath = saveDir.concat(patchInfo.getZipName());
 		
 		boolean isOk = true;
-		if(!FileUtils.exists(zipSavePath)) {	// 若已存在则不再重复下载(用于断点)
+		if(FileUtils.exists(zipPath)) {
+			// Undo 若已存在则不再重复下载
 			
-			// 先下载zip版本升级包
+		} else {
+			final String MD5 = patchInfo.getMD5();
 			FileUtils.createDir(saveDir);
-			isOk = downZIP(patchInfo.getZipURL(), 
-					zipSavePath, patchInfo.getMD5());
+			
+			// 下载zip版本升级包
+			isOk = downZipPatch(patchInfo.getZipURL(), zipPath, MD5);
 			
 			// 若zip版本升级包下载失败, 则下载txt版本升级包
 			if(isOk == false) {
-				FileUtils.delete(zipSavePath);
-				String txtSavePath = saveDir.concat(patchInfo.getTxtName());
-				isOk = downTXT(patchInfo.getTxtURL(), 
-						txtSavePath, zipSavePath, patchInfo.getMD5());
+				FileUtils.delete(zipPath);
+				String txtPath = saveDir.concat(patchInfo.getTxtName());
+				isOk = downTxtPatch(patchInfo.getTxtURL(), txtPath, zipPath, MD5);
 			}
-			
 		}
 		
-		// 下载升级步骤
-//		if(isOk == true) {
-//			String updatePath = saveDir.concat(Params.UPDATE_XML);
-//			List<UpdateCmd> updateCmds = downXML(patchInfo.getUpdateURL(), updatePath);
-//			patchInfo.setUpdateCmds(updateCmds);
-//		}
-		
+		// 若下载补丁失败, 则删除该补丁所在的目录
 		if(isOk == false) {
 			FileUtils.delete(saveDir);
 		}
 		return isOk;
 	}
 	
-	private static boolean downZIP(String zipURL, String zipPath, String zipMD5) {
+	/**
+	 * 下载zip格式的补丁包, 并校验MD5
+	 * @param zipURL zip补丁包的下载路径
+	 * @param zipPath zip补丁包的保存位置
+	 * @param patchMD5 补丁包校验码
+	 * @return
+	 */
+	private static boolean downZipPatch(String zipURL, String zipPath, String patchMD5) {
 		boolean isOk = HttpURLUtils.downloadByGet(zipPath, zipURL);
 		if(isOk == true) {
 			String MD5 = CryptoUtils.toFileMD5(zipPath);
-			isOk = zipMD5.equalsIgnoreCase(MD5);
+			isOk = patchMD5.equalsIgnoreCase(MD5);
 		}
 		return isOk;
 	}
 	
-	private static boolean downTXT(String txtURL, String txtPath, String zipPath, String zipMD5) {
+	/**
+	 * 下载txt格式的补丁包, 将其转换为zip格式, 并校验MD5
+	 * @param txtURL txt补丁包的下载路径
+	 * @param txtPath txt补丁包的保存位置
+	 * @param zipPath 转存zip补丁包的位置
+	 * @param patchMD5 补丁包校验码
+	 * @return
+	 */
+	private static boolean downTxtPatch(String txtURL, String txtPath, 
+			String zipPath, String patchMD5) {
 		boolean isOk = HttpURLUtils.downloadByGet(txtPath, txtURL);
 		if(isOk == true) {
 			isOk = TXTUtils.toFile(txtPath, zipPath);
 			if(isOk == true) {
 				String MD5 = CryptoUtils.toFileMD5(zipPath);
-				isOk = zipMD5.equalsIgnoreCase(MD5);
+				isOk = patchMD5.equalsIgnoreCase(MD5);
 			}
 		}
 		return isOk;
-	}
-	
-	private static List<UpdateCmd> downXML(String updateURL, String updatePath) {
-		List<UpdateCmd> updateSteps = new LinkedList<UpdateCmd>();
-		boolean isOk = HttpURLUtils.downloadByGet(updatePath, updateURL);
-		if(isOk == true) {
-			String xml = FileUtils.read(updatePath, Config.DEFAULT_CHARSET);
-			try {
-				Document doc = DocumentHelper.parseText(xml);
-				Element root = doc.getRootElement();
-				Element steps = root.element("steps");
-				Iterator<Element> cmds = steps.elementIterator();
-				while(cmds.hasNext()) {
-					Element cmd = cmds.next();
-					CmdType type = CmdType.toType(cmd.getName());
-					String from = XmlUtils.getAttribute(cmd, "from");
-					String to = XmlUtils.getAttribute(cmd, "to");
-					
-					UpdateCmd step = new UpdateCmd(type, from , to);
-					updateSteps.add(step);
-				}
-			} catch (Exception e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-		}
-		return updateSteps;
 	}
 	
 }
