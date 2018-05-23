@@ -55,6 +55,7 @@ public class InstallPatch {
 			UIUtils.toConsole("正在回滚...");
 			boolean isOk = rollback(patchInfo, step);
 			UIUtils.toConsole("回滚", (isOk ? "成功" : "失败"));
+			return false;
 		}
 		
 		return true;
@@ -314,6 +315,5 @@ public class InstallPatch {
 		}
 		return isOk;
 	}
-	
 	
 }

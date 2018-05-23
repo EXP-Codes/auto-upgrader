@@ -8,7 +8,6 @@ import exp.libs.utils.encode.CompressUtils;
 import exp.libs.utils.encode.CryptoUtils;
 import exp.libs.utils.format.TXTUtils;
 import exp.libs.utils.io.FileUtils;
-import exp.libs.utils.os.ThreadUtils;
 import exp.libs.utils.other.PathUtils;
 import exp.libs.utils.other.StrUtils;
 import exp.libs.warp.tpl.Template;
@@ -57,7 +56,7 @@ public class MakePatch {
 			toConsole("复制补丁目录到 [", PATCH_DIR, "] 失败");
 			return;
 		}
-		stepSleep();
+		PatchUtils.patchSleep();
 		
 		
 		toConsole("正在生成 [", Params.UPDATE_CMD, "] 升级步骤文件...");
@@ -66,7 +65,7 @@ public class MakePatch {
 			toConsole("生成 [", Params.UPDATE_CMD, "] 升级步骤文件失败");
 			return;
 		}
-		stepSleep();
+		PatchUtils.patchSleep();
 		
 		
 		toConsole("正在生成补丁目录 [", PATCH_DIR, "] 的压缩文件...");
@@ -76,7 +75,7 @@ public class MakePatch {
 			toConsole("生成补丁目录 [", PATCH_ZIP_NAME, "] 的压缩文件失败");
 			return;
 		}
-		stepSleep();
+		PatchUtils.patchSleep();
 		
 
 		toConsole("正在生成补丁文件 [", PATCH_ZIP_NAME, "] 的备份文件...");
@@ -86,7 +85,7 @@ public class MakePatch {
 			toConsole("生成补丁文件 [", PATCH_ZIP_NAME, "] 的备份文件失败");
 			return;
 		}
-		stepSleep();
+		PatchUtils.patchSleep();
 		
 		
 		toConsole("正在生成补丁文件 [", PATCH_ZIP_NAME, "] 的时间水印...");
@@ -107,7 +106,7 @@ public class MakePatch {
 			toConsole("生成补丁文件 [", PATCH_ZIP_NAME, "] 的MD5校验码失败");
 			return;
 		}
-		stepSleep();
+		PatchUtils.patchSleep();
 		
 		
 		toConsole("正在更新补丁管理页面...");
@@ -165,14 +164,6 @@ public class MakePatch {
 	private static boolean updateStepStatus(int step, boolean isOk) {
 		MakePatchUI.getInstn().updateProgressBar(step, isOk);
 		return isOk;
-	}
-	
-	/**
-	 * 制作补丁步骤之间的休眠
-	 *  (目的是可以在界面看到提示效果)
-	 */
-	private static void stepSleep() {
-		ThreadUtils.tSleep(200);
 	}
 	
 }

@@ -1,6 +1,7 @@
 package exp.au.utils;
 
 import exp.au.envm.Params;
+import exp.libs.utils.os.ThreadUtils;
 import exp.libs.utils.other.StrUtils;
 
 /**
@@ -26,6 +27,14 @@ public class PatchUtils {
 	 */
 	public static String toPatchName(String appName, String version) {
 		return StrUtils.concat(appName, Params.PATCH_TAG, version);
+	}
+	
+	/**
+	 * 执行补丁相关操作步骤之间的休眠
+	 *  (目的是可以在界面看到提示效果)
+	 */
+	public static void patchSleep() {
+		ThreadUtils.tSleep(200);
 	}
 	
 }

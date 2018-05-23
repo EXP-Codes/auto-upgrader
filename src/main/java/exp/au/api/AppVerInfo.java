@@ -29,7 +29,7 @@ public class AppVerInfo {
 	 * @return 是否导出成功
 	 */
 	public static boolean export() {
-		return export(null);
+		return export(null, null);
 	}
 	
 	/**
@@ -44,10 +44,27 @@ public class AppVerInfo {
 	 * @return 是否导出成功
 	 */
 	public static boolean export(String appName) {
+		return export(appName, null);
+	}
+	
+	/**
+	 * <pre>
+	 * 从版本库导出应用程序的当前版本信息.
+	 * -------------------------------------------
+	 *   不推荐使用此方法, 版本号最好还是由程序自动生成
+	 * </pre>
+	 * @param appName 强制指定应用名称
+	 * @param version 强制指定应用的当前版本
+	 * @return 是否导出成功
+	 */
+	public static boolean export(String appName, String version) {
 		if(StrUtils.isEmpty(appName)) {
 			appName = VersionMgr.getAppName();
 		}
-		String version = VersionMgr.getVersion();
+		
+		if(StrUtils.isEmpty(version)) {
+			version = VersionMgr.getVersion();
+		}
 		
 		File verFile = FileUtils.createFile(Config.LAST_VER_PATH);
 		String data = StrUtils.concat(appName, Delimiter.CRLF, version);

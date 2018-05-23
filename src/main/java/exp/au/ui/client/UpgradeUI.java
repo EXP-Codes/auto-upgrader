@@ -18,10 +18,12 @@ import javax.swing.JTextField;
 import org.jb2011.lnf.beautyeye.ch3_button.BEButtonUI.NormalColor;
 
 import exp.au.Config;
+import exp.au.api.AppVerInfo;
 import exp.au.bean.PatchInfo;
 import exp.au.bean.Version;
 import exp.au.core.client.DownPatch;
 import exp.au.core.client.InstallPatch;
+import exp.au.utils.PatchUtils;
 import exp.au.utils.UIUtils;
 import exp.libs.envm.Colors;
 import exp.libs.envm.DateFormat;
@@ -269,6 +271,7 @@ public class UpgradeUI extends MainWindow {
 			} else {
 				break;	// 若安装失败, 则不安装后续版本
 			}
+			PatchUtils.patchSleep();
 		}
 		
 		if(isOk == false) {
@@ -276,6 +279,7 @@ public class UpgradeUI extends MainWindow {
 			
 		} else {
 			toConsole("已升级到最新版本: ", appVerTF.getText());
+			AppVerInfo.export(appVerTF.getText(), appVerTF.getText());	// 导出最新的版本信息
 			FileUtils.delete(Config.PATCH_DOWN_DIR);	// 删除所有补丁
 		}
 	}
