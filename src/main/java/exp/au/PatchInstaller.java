@@ -23,6 +23,7 @@ public class PatchInstaller {
 		LogUtils.loadLogBackConfig();
 		BeautyEyeUtils.init();
 		UpgradeUI.getInstn()._view();
+		// FIXME 列表补丁名字颜色:区分已安装、当前、未安装
 	}
 	
 }

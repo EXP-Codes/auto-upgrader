@@ -108,6 +108,7 @@ public class InstallPatch {
 			isOk = true;
 			
 		} catch (Exception e) {
+			e.printStackTrace();
 			UIUtils.toConsole("提取补丁 [", patchInfo.getPatchName(), "] 的升级步骤失败");
 		}
 		return isOk;
