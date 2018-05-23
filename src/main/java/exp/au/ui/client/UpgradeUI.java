@@ -224,9 +224,7 @@ public class UpgradeUI extends MainWindow {
 			
 			// 小于等于应用程序当前版本号的补丁, 进行标记并移除
 			if(CUR_VER.compareTo(patchInfo.getVersion()) >= 0) {
-				_PatchLine patchLine = patches.get(patchInfo);
-				patchLine.markDown(false);
-				patchLine.markInstall(false);
+				markInstall(patchInfo);
 				patchInfoIts.remove();	// 移除补丁信息
 			}
 		}
@@ -241,8 +239,11 @@ public class UpgradeUI extends MainWindow {
 			PatchInfo patchInfo = patchInfoIts.next();
 			
 			if(DownPatch.download(patchInfo)) {
-				_PatchLine patchLine = patches.get(patchInfo);
-				patchLine.markDown(true);
+				markDown(patchInfo);
+				toConsole("下载补丁 [", patchInfo.getPatchName(), "] 成功");
+				
+			} else {
+				toConsole("下载补丁 [", patchInfo.getPatchName(), "] 失败");
 			}
 		}
 	}
@@ -251,14 +252,30 @@ public class UpgradeUI extends MainWindow {
 	 * 安装补丁包
 	 */
 	private void installPatches() {
-		// FIXME: 若有一个失败, 则不再往后
-		// 一边安装一边更新当前版本
-		
+		boolean isOk = true;
 		Iterator<PatchInfo> patchInfoIts = patches.keySet().iterator();
 		while(patchInfoIts.hasNext()) {
 			PatchInfo patchInfo = patchInfoIts.next();
 			
-			InstallPatch.install(patchInfo);
+			toConsole("正在安装补丁 [", patchInfo.getPatchName(), "] ...");
+			isOk &= InstallPatch.install(patchInfo);
+			
+			if(isOk == true) {
+				appVerTF.setText(patchInfo.getVersion().VER());
+				markInstall(patchInfo);
+				toConsole("安装补丁 [", patchInfo.getPatchName(), "] 成功");
+				
+			} else {
+				break;	// 若安装失败, 则不安装后续版本
+			}
+		}
+		
+		if(isOk == false) {
+			toConsole("升级失败 (请确保程序已停止运行)");
+			
+		} else {
+			toConsole("已升级到最新版本: ", appVerTF.getText());
+			FileUtils.delete(Config.PATCH_DOWN_DIR);	// 删除所有补丁
 		}
 	}
 	
@@ -318,7 +335,7 @@ public class UpgradeUI extends MainWindow {
 	protected void markDown(PatchInfo patchInfo) {
 		_PatchLine patchLine = patches.get(patchInfo);
 		if(patchLine != null) {
-			patchLine.markDown(true);
+			patchLine.markDown();
 		}
 	}
 	
@@ -329,7 +346,7 @@ public class UpgradeUI extends MainWindow {
 	protected void markInstall(PatchInfo patchInfo) {
 		_PatchLine patchLine = patches.get(patchInfo);
 		if(patchLine != null) {
-			patchLine.markInstall(true);
+			patchLine.markInstall();
 		}
 	}
 	

@@ -8,7 +8,7 @@ public class Params {
 	
 	public final static String MD5_HTML = "MD5.html";
 	
-	public final static String UPDATE_XML = "update.cmd";
+	public final static String UPDATE_CMD = "update.cmd";
 	
 	public final static String ZIP_SUFFIX = ".zip";
 	

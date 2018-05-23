@@ -25,6 +25,9 @@ public class PatchInfo implements Comparable<PatchInfo> {
 	/** 补丁版本 */
 	private Version version;
 	
+	/** 补丁目录 */
+	private String patchDir;
+	
 	/** 补丁名称 */
 	private String patchName;
 	
@@ -55,6 +58,7 @@ public class PatchInfo implements Comparable<PatchInfo> {
 	public PatchInfo() {
 		this.appName = "";
 		this.version = Version.NULL;
+		this.patchDir = "";
 		this.patchName = "";
 		this.releaseTime = "";
 		this.MD5 = "";
@@ -73,17 +77,16 @@ public class PatchInfo implements Comparable<PatchInfo> {
 		this.appName = appName;
 	}
 
-	public Version getVersion() {
-		return version;
-	}
-
-	public void setVersion(String version) {
-		this.version = new Version(version);
+	public String getPatchDir() {
+		if(StrUtils.isEmpty(patchDir)) {
+			patchDir = StrUtils.concat(Config.PATCH_DOWN_DIR, 
+					getAppName(), "/", getVersion().VER(), "/");
+		}
+		return patchDir;
 	}
 	
-	public String getPatchDir() {
-		return StrUtils.concat(Config.PATCH_DOWN_DIR, 
-				getAppName(), "/", getVersion().VER(), "/");
+	public void setPatchDir(String patchDir) {
+		this.patchDir = patchDir;
 	}
 	
 	public String getPatchName() {
@@ -94,6 +97,14 @@ public class PatchInfo implements Comparable<PatchInfo> {
 		this.patchName = patchName;
 		setZipName(patchName.concat(Params.ZIP_SUFFIX));
 		setTxtName(getZipName().concat(Params.TXT_SUFFIX));
+	}
+	
+	public Version getVersion() {
+		return version;
+	}
+
+	public void setVersion(String version) {
+		this.version = new Version(version);
 	}
 	
 	public String getReleaseTime() {
@@ -148,8 +159,8 @@ public class PatchInfo implements Comparable<PatchInfo> {
 		return updateCmds;
 	}
 
-	public void setUpdateCmds(List<UpdateCmd> updateCmds) {
-		this.updateCmds = updateCmds;
+	public void addUpdateCmd(UpdateCmd updateCmd) {
+		this.updateCmds.add(updateCmd);
 	}
 
 	@Override

@@ -60,10 +60,10 @@ public class MakePatch {
 		stepSleep();
 		
 		
-		toConsole("正在生成 [", Params.UPDATE_XML, "] 升级步骤文件...");
+		toConsole("正在生成 [", Params.UPDATE_CMD, "] 升级步骤文件...");
 		isOk = _toUpdateXml(PATCH_DIR, PATCH_ZIP_NAME, RELEASE_TIME);
 		if(updateStepStatus(step++, isOk) == false) {
-			toConsole("生成 [", Params.UPDATE_XML, "] 升级步骤文件失败");
+			toConsole("生成 [", Params.UPDATE_CMD, "] 升级步骤文件失败");
 			return;
 		}
 		stepSleep();
@@ -135,7 +135,7 @@ public class MakePatch {
 		tmp.set("release-time", releaseTime);
 		tmp.set("cmds", MakePatchUI.getInstn().getXmlCmds());
 		
-		String savePath = PathUtils.combine(patchDir, Params.UPDATE_XML);
+		String savePath = PathUtils.combine(patchDir, Params.UPDATE_CMD);
 		return FileUtils.write(savePath, tmp.getContent(), Config.DEFAULT_CHARSET, false);
 	}
 	

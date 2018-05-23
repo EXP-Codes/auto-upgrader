@@ -44,15 +44,15 @@ public class UpdateCmd {
 		}
 	}
 
-	public CmdType getCmdType() {
+	public CmdType TYPE() {
 		return cmdType;
 	}
 
-	public String getFromPath() {
+	public String FROM_PATH() {
 		return fromPath;
 	}
 
-	public String getToPath() {
+	public String TO_PATH() {
 		return toPath;
 	}
 	

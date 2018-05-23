@@ -22,7 +22,7 @@ import exp.libs.warp.net.http.HttpURLUtils;
 
 /**
  * <PRE>
- * 根据应用信心下载对应的升级补丁列表
+ * 根据应用信息下载对应的升级补丁列表
  * </PRE>
  * <B>PROJECT：</B> auto-upgrader
  * <B>SUPPORT：</B> EXP
