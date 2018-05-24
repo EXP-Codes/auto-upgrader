@@ -127,7 +127,13 @@ public class _CmdLine extends JPanel {
 					
 					String data = fromTF.getText();
 					char ch = e.getKeyChar();
-					toTF.setText(StrUtils.concat(data, ch));
+					if(ch < 32 || ch == 127) {
+						// UNDO: <32为控制信号字符, 127为Del
+						
+					} else {
+						data = data + ch;
+					}
+					toTF.setText(data);
 				}
 			}
 			

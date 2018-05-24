@@ -90,8 +90,9 @@ public class InstallPatch {
 	private static boolean takeUpdateCmds(PatchInfo patchInfo) {
 		String patchDir = patchInfo.getPatchDir();
 		String updatePath = PathUtils.combine(patchDir, Params.UPDATE_CMD);
+		System.out.println(updatePath);
 		String xml = FileUtils.read(updatePath, Config.DEFAULT_CHARSET);
-		
+		System.out.println(xml);
 		boolean isOk = false;
 		try {
 			Document doc = DocumentHelper.parseText(xml);
