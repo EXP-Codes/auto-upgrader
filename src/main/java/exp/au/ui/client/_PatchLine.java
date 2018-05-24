@@ -53,13 +53,6 @@ class _PatchLine extends JPanel {
 	}
 
 	/**
-	 * 标记为下一个待处理版本
-	 */
-	protected void markCurVerion() {
-		patchLabel.setForeground(Color.RED);
-	}
-	
-	/**
 	 * 标记为已下载
 	 * @param toLog 是否打印日志
 	 */

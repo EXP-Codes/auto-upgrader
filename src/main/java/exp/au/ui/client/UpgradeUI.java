@@ -225,15 +225,9 @@ public class UpgradeUI extends MainWindow {
 			PatchInfo patchInfo = patchInfoIts.next();
 			
 			// 小于等于应用程序当前版本号的补丁, 进行标记并移除
-			int rst = CUR_VER.compareTo(patchInfo.getVersion());
-			if(rst >= 0) {
+			if(CUR_VER.compareTo(patchInfo.getVersion()) >= 0) {
 				markInstall(patchInfo);
 				patchInfoIts.remove();	// 移除补丁信息
-				
-				if(rst == 0) {
-					markCurVerion(patchInfo);
-					break;
-				}
 			}
 		}
 	}
@@ -270,7 +264,7 @@ public class UpgradeUI extends MainWindow {
 			
 			if(isOk == true) {
 				markInstall(patchInfo);
-				markCurVerion(patchInfo);
+				updateCurVerion(patchInfo);
 				toConsole("安装补丁 [", patchInfo.getPatchName(), "] 成功");
 				
 			} else {
@@ -338,14 +332,12 @@ public class UpgradeUI extends MainWindow {
 	}
 
 	/**
-	 * 标记为当前版本
+	 * 更新当前版本
 	 * @param patchInfo
 	 */
-	private void markCurVerion(PatchInfo patchInfo) {
+	private void updateCurVerion(PatchInfo patchInfo) {
 		_PatchLine patchLine = patches.get(patchInfo);
 		if(patchLine != null) {
-			patchLine.markCurVerion();
-			
 			final String APP_NAME = appVerTF.getText();
 			final String CUR_VER = patchInfo.getVersion().VER();
 			appVerTF.setText(CUR_VER);
