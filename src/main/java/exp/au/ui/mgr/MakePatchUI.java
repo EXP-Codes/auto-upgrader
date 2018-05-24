@@ -283,9 +283,12 @@ public class MakePatchUI extends MainWindow {
 					
 					@Override
 					public void run() {
+						timeBtn.doClick();	// 自动刷新补丁的发布时间
+						
 						MakePatch.generate(
 								patchDirTF.getText(), appNameTF.getText(), 
 								verTF.getText(), timeTF.getText());
+						
 						generateBtn.setEnabled(true);
 					}
 				});

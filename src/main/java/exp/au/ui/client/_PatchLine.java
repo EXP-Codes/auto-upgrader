@@ -7,7 +7,6 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JRadioButton;
 
-import exp.libs.envm.Colors;
 import exp.libs.utils.other.StrUtils;
 import exp.libs.warp.ui.SwingUtils;
 
@@ -56,7 +55,7 @@ class _PatchLine extends JPanel {
 	/**
 	 * 标记为下一个待处理版本
 	 */
-	protected void markNextVerion() {
+	protected void markCurVerion() {
 		patchLabel.setForeground(Color.RED);
 	}
 	
@@ -78,7 +77,7 @@ class _PatchLine extends JPanel {
 		installBtn.setText(INSTALL);
 		installBtn.setSelected(true);
 		installBtn.setForeground(Color.BLUE);
-		patchLabel.setForeground(Colors.SEA_GREEN.COLOR());
+		patchLabel.setForeground(Color.BLUE);
 	}
 	
 }

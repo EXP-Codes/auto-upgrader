@@ -208,7 +208,7 @@ public class UpgradeUI extends MainWindow {
 		
 		List<PatchInfo> patchInfos = DownPatch.getPatchInfos(appNameTF.getText());
 		for(PatchInfo patchInfo : patchInfos) {
-			_PatchLine patchLine =newPatchLine(patchInfo);
+			_PatchLine patchLine = newPatchLine(patchInfo);
 			
 			verPanel.add(patchLine);
 			patches.put(patchInfo, patchLine);
@@ -225,9 +225,15 @@ public class UpgradeUI extends MainWindow {
 			PatchInfo patchInfo = patchInfoIts.next();
 			
 			// 小于等于应用程序当前版本号的补丁, 进行标记并移除
-			if(CUR_VER.compareTo(patchInfo.getVersion()) >= 0) {
+			int rst = CUR_VER.compareTo(patchInfo.getVersion());
+			if(rst >= 0) {
 				markInstall(patchInfo);
 				patchInfoIts.remove();	// 移除补丁信息
+				
+				if(rst == 0) {
+					markCurVerion(patchInfo);
+					break;
+				}
 			}
 		}
 	}
@@ -258,14 +264,13 @@ public class UpgradeUI extends MainWindow {
 		Iterator<PatchInfo> patchInfoIts = patches.keySet().iterator();
 		while(patchInfoIts.hasNext()) {
 			PatchInfo patchInfo = patchInfoIts.next();
-			markNextVerion(patchInfo);
 			
 			toConsole("正在安装补丁 [", patchInfo.getPatchName(), "] ...");
 			isOk &= InstallPatch.install(patchInfo);
 			
 			if(isOk == true) {
-				appVerTF.setText(patchInfo.getVersion().VER());
 				markInstall(patchInfo);
+				markCurVerion(patchInfo);
 				toConsole("安装补丁 [", patchInfo.getPatchName(), "] 成功");
 				
 			} else {
@@ -279,7 +284,6 @@ public class UpgradeUI extends MainWindow {
 			
 		} else {
 			toConsole("已升级到最新版本: ", appVerTF.getText());
-			AppVerInfo.export(appVerTF.getText(), appVerTF.getText());	// 导出最新的版本信息
 			FileUtils.delete(Config.PATCH_DOWN_DIR);	// 删除所有补丁
 		}
 	}
@@ -334,13 +338,18 @@ public class UpgradeUI extends MainWindow {
 	}
 
 	/**
-	 * 标记为下一个待处理版本
+	 * 标记为当前版本
 	 * @param patchInfo
 	 */
-	private void markNextVerion(PatchInfo patchInfo) {
+	private void markCurVerion(PatchInfo patchInfo) {
 		_PatchLine patchLine = patches.get(patchInfo);
 		if(patchLine != null) {
-			patchLine.markNextVerion();
+			patchLine.markCurVerion();
+			
+			final String APP_NAME = appVerTF.getText();
+			final String CUR_VER = patchInfo.getVersion().VER();
+			appVerTF.setText(CUR_VER);
+			AppVerInfo.export(APP_NAME, CUR_VER);	// 导出最新的版本信息
 		}
 	}
 	
@@ -353,6 +362,7 @@ public class UpgradeUI extends MainWindow {
 		if(patchLine != null) {
 			patchLine.markDown();
 		}
+		
 	}
 	
 	/**
