@@ -9,8 +9,8 @@ import org.dom4j.Document;
 import org.dom4j.DocumentHelper;
 import org.dom4j.Element;
 
-import exp.au.Config;
 import exp.au.bean.PatchInfo;
+import exp.au.ui.client.UpgradeUI;
 import exp.au.utils.PatchUtils;
 import exp.au.utils.UIUtils;
 import exp.libs.utils.encode.CryptoUtils;
@@ -32,9 +32,6 @@ import exp.libs.warp.net.http.HttpURLUtils;
  */
 public class DownPatch {
 	
-	/** 版本管理页面 */
-	private final static String VER_MGR_URL = Config.getInstn().TEST_SERVER();
-	
 	/** 私有化构造函数 */
 	protected DownPatch() {}
 	
@@ -44,7 +41,8 @@ public class DownPatch {
 	 * @return 升级补丁列表信息
 	 */
 	public static List<PatchInfo> getPatchInfos(final String APP_NAME) {
-		String pageSource = HttpURLUtils.doGet(VER_MGR_URL);
+		final String SERVER_URL = UpgradeUI.getInstn().getServerURL();
+		String pageSource = HttpURLUtils.doGet(SERVER_URL);
 		return getPatchInfos(APP_NAME, pageSource);
 	}
 	
@@ -85,6 +83,7 @@ public class DownPatch {
 	@SuppressWarnings("unchecked")
 	private static List<PatchInfo> toPatchInfos(Element table) {
 		List<PatchInfo> patchInfos = new LinkedList<PatchInfo>();
+		final String SERVER_URL = UpgradeUI.getInstn().getServerURL();
 		final String REGEX = "\\[([^\\]]+)\\] VERSIONS: (.*)";
 		String appName = "";
 		
@@ -105,9 +104,9 @@ public class DownPatch {
 				String patchName = PatchUtils.toPatchName(appName, version);
 				
 				List<String> brackets = RegexUtils.findBrackets(tds.get(1).asXML(), "href=\"([^\"]+)\"");
-				String zipURL = combineURL(VER_MGR_URL, brackets.get(0));
-				String txtURL = combineURL(VER_MGR_URL, brackets.get(1));
-				String md5URL = combineURL(VER_MGR_URL, brackets.get(2));
+				String zipURL = combineURL(SERVER_URL, brackets.get(0));
+				String txtURL = combineURL(SERVER_URL, brackets.get(1));
+				String md5URL = combineURL(SERVER_URL, brackets.get(2));
 				
 				PatchInfo patchInfo = new PatchInfo();
 				patchInfo.setAppName(appName);

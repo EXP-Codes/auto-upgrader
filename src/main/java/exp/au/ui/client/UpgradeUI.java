@@ -9,11 +9,13 @@ import java.util.List;
 import java.util.Map;
 
 import javax.swing.JButton;
+import javax.swing.JCheckBox;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
+import javax.swing.SwingConstants;
 
 import org.jb2011.lnf.beautyeye.ch3_button.BEButtonUI.NormalColor;
 
@@ -60,6 +62,8 @@ public class UpgradeUI extends MainWindow {
 	
 	private JTextField appVerTF;
 	
+	private JCheckBox serverCB;
+	
 	private JButton checkBtn;
 	
 	private JPanel verPanel;
@@ -99,6 +103,9 @@ public class UpgradeUI extends MainWindow {
 		this.appVerTF = new JTextField();
 		appVerTF.setEditable(false);
 		
+		this.serverCB = new JCheckBox("连接到测试服务器 (含测试版补丁)");
+		serverCB.setHorizontalAlignment(SwingConstants.RIGHT);
+		
 		this.checkBtn = new JButton("   检 查 更 新   ");
 		BeautyEyeUtils.setButtonStyle(NormalColor.green, checkBtn);
 		checkBtn.setForeground(Colors.BLACK.COLOR());
@@ -127,7 +134,7 @@ public class UpgradeUI extends MainWindow {
 	private JPanel getNorthPanel() {
 		return SwingUtils.addBorder(
 				SwingUtils.getNSBorderPanel(
-						newLabel(), 
+						serverCB, 
 						SwingUtils.getEBorderPanel(
 								SwingUtils.getVGridPanel(
 									SwingUtils.getPairsPanel("应用名称", appNameTF), 
@@ -198,6 +205,16 @@ public class UpgradeUI extends MainWindow {
 				});
 			}
 		});
+	}
+	
+	/**
+	 * 获取版本服务器URL
+	 * @return
+	 */
+	public String getServerURL() {
+		return serverCB.isSelected() ? 
+				Config.getInstn().TEST_SERVER() : 
+				Config.getInstn().OFFICIAL_SERVER();
 	}
 	
 	/**
