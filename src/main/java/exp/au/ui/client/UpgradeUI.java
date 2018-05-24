@@ -29,6 +29,7 @@ import exp.libs.envm.Colors;
 import exp.libs.envm.DateFormat;
 import exp.libs.envm.Delimiter;
 import exp.libs.utils.io.FileUtils;
+import exp.libs.utils.other.PathUtils;
 import exp.libs.utils.other.StrUtils;
 import exp.libs.utils.time.TimeUtils;
 import exp.libs.warp.thread.ThreadPool;
@@ -278,7 +279,8 @@ public class UpgradeUI extends MainWindow {
 			
 		} else {
 			toConsole("已升级到最新版本: ", appVerTF.getText());
-			FileUtils.delete(Config.PATCH_DOWN_DIR);	// 删除所有补丁
+			FileUtils.delete(PathUtils.combine(
+					Config.PATCH_DOWN_DIR, appNameTF.getText()));	// 删除所有补丁
 		}
 	}
 	
