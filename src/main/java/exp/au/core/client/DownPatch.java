@@ -72,7 +72,7 @@ public class DownPatch {
 				}
 			}
 		} catch (Exception e) {
-			UIUtils.toConsole("从管理页面提取补丁列表失败");
+			UIUtils.toConsole("连接到版本管理服务器失败");
 		}
 		return patchInfos;
 	}

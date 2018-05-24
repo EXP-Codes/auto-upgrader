@@ -160,10 +160,10 @@ public class UpgradeUI extends MainWindow {
 					@Override
 					public void run() {
 						
-						toConsole("正在从管理页面提取补丁列表信息...");
+						toConsole("正在连接到版本管理服务器...");
 						updatePatches();	// 更新补丁列表
 						filterPatches();	// 过滤旧版本补丁
-						toConsole("从管理页面提取补丁列表信息完成, 待升级补丁数: ", patches.size());
+						toConsole("从版本服务器提取补丁列表信息完成, 待升级补丁数: ", patches.size());
 						
 						// 刷新补丁列表面板
 						SwingUtils.repaint(scrollPanel);
