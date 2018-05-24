@@ -33,7 +33,7 @@ import exp.libs.warp.net.http.HttpURLUtils;
 public class DownPatch {
 	
 	/** 版本管理页面 */
-	private final static String VER_MGR_URL = Config.getInstn().VER_MGR_URL();
+	private final static String VER_MGR_URL = Config.getInstn().TEST_SERVER();
 	
 	/** 私有化构造函数 */
 	protected DownPatch() {}

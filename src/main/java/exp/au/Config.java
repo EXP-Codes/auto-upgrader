@@ -62,8 +62,12 @@ public class Config {
 		return instance;
 	}
 	
-	public String VER_MGR_URL() {
-		return xConf.getVal("verMgrURL");
+	public String TEST_SERVER() {
+		return xConf.getVal("testServer");
+	}
+	
+	public String OFFICIAL_SERVER() {
+		return xConf.getVal("officialServer");
 	}
 	
 }

@@ -1,6 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <config>
   
-  <verMgrURL caption="版本管理页面"><![CDATA[http://lyy289065406.gitee.io/auto-upgrader/]]></verMgrURL>
+  <testServer caption="版本管理页面: 测试服务器"><![CDATA[https://lyy289065406.github.io/auto-upgrader/]]></testServer>
+  
+  <officialServer caption="版本管理页面: 正式服务器"><![CDATA[http://lyy289065406.gitee.io/auto-upgrader/]]></officialServer>
   
 </config>
