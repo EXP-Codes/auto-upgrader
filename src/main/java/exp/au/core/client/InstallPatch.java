@@ -52,9 +52,9 @@ public class InstallPatch {
 		if(step < patchInfo.getUpdateCmds().size()) {
 			UIUtils.toConsole("安装补丁 [", patchInfo.getPatchName(), "] 失败 : 执行升级指令异常");
 			
-			UIUtils.toConsole("正在回滚...");
+			UIUtils.toConsole("正在回滚补丁 [", patchInfo.getPatchName(), "] ...");
 			boolean isOk = rollback(patchInfo, step);
-			UIUtils.toConsole("回滚", (isOk ? "成功" : "失败"));
+			UIUtils.toConsole("回滚补丁 [", patchInfo.getPatchName(), "] ", (isOk ? "成功" : "失败"));
 			return false;
 		}
 		
