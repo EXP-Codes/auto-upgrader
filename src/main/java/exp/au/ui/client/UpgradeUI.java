@@ -338,10 +338,9 @@ public class UpgradeUI extends MainWindow {
 	private void updateCurVerion(PatchInfo patchInfo) {
 		_PatchLine patchLine = patches.get(patchInfo);
 		if(patchLine != null) {
-			final String APP_NAME = appVerTF.getText();
 			final String CUR_VER = patchInfo.getVersion().VER();
 			appVerTF.setText(CUR_VER);
-			AppVerInfo.export(APP_NAME, CUR_VER);	// 导出最新的版本信息
+			AppVerInfo.export(appNameTF.getText(), CUR_VER);	// 导出最新的版本信息
 		}
 	}
 	
