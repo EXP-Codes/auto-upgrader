@@ -23,6 +23,7 @@ public class PatchInstaller {
 		LogUtils.loadLogBackConfig();
 		BeautyEyeUtils.init();
 		UpgradeUI.getInstn()._view();
+		// FIXME 检查版本时可以选择是否使用测试服务器
 	}
 	
 }
