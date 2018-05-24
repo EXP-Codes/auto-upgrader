@@ -1,5 +1,6 @@
 package exp.au;
 
+import exp.au.api.AppVerInfo;
 import exp.au.ui.mgr.MakePatchUI;
 import exp.libs.utils.other.LogUtils;
 import exp.libs.warp.ui.BeautyEyeUtils;
