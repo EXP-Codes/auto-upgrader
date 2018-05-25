@@ -74,7 +74,7 @@
 	</appender>
 	
 	<!-- 主程序日志 -->
-	<logger name="exp.aup" level="info" additivity="true">
+	<logger name="exp.au" level="info" additivity="true">
 		<appender-ref ref="app" />
 	</logger>
 	
