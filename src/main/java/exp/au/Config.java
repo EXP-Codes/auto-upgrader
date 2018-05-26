@@ -19,6 +19,9 @@ public class Config {
 	
 	public final static String DEFAULT_CHARSET = Charset.UTF8;
 	
+	/** 应用名称(由于此项目是被引用的接口, 因此有些地方不能从版本库取应用名称) */
+	public final static String APP_NAME = "auto-upgrader";
+	
 	private final static String APP_PATH = "/exp/au/au_conf.xml";
 	
 	private final static String USER_PATH = "./conf/au_conf.xml";

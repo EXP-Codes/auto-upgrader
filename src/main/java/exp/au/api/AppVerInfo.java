@@ -82,13 +82,9 @@ public class AppVerInfo {
 		boolean isOk = false;
 		if(isRunByScript()) {
 			isOk = exportAppVersion(appName, version);
-			if(isOk == false) {
-				System.err.println("[auto-upgrader] : 导出版本信息失败");
-			}
-			
 			isOk &= exportStartFile();
 			if(isOk == false) {
-				System.err.println("[auto-upgrader] : 导出启动脚本失败");
+				System.err.println("[auto-upgrader] : 导出版本信息失败");
 			}
 		}
 		return isOk;
@@ -107,9 +103,9 @@ public class AppVerInfo {
 		String[] jars = libDir.list();
 		if(jars != null) {
 			for(String jar : jars) {
-				if(jar.endsWith(".jar") && 
-						jar.startsWith(VersionMgr.getAppName())) {
+				if(jar.startsWith(Config.APP_NAME) && jar.endsWith(".jar")) {
 					isRunByScript = true;
+					break;
 				}
 			}
 		}
