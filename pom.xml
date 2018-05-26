@@ -11,7 +11,7 @@
 
 	<name>auto-upgrader</name>
 	<description>软件自动升级插件</description>
-	<url>项目SVN路径(可选)</url>
+	<url>https://github.com/lyy289065406/auto-upgrader/trunk</url>
 	<inceptionYear>2018-04-28</inceptionYear>
 
 	<!--项目的问题管理系统(可选)-->
@@ -29,9 +29,9 @@
 	<!-- 软件配置管理 -->
 	<scm>
 		<!-- 项目SVN主干目录（需保证目录已存在） -->
-		<connection>scm:svn:http://127.0.0.1:81/svn/release/???/trunk</connection>
-		<developerConnection>scm:svn:http://127.0.0.1:81/svn/release/???/trunk</developerConnection>
-		<url>scm:svn:http://127.0.0.1:81/svn/release/???/trunk</url>
+		<connection>scm:svn:https://github.com/lyy289065406/auto-upgrader/trunk</connection>
+		<developerConnection>scm:svn:https://github.com/lyy289065406/auto-upgrader/trunk</developerConnection>
+		<url>scm:svn:https://github.com/lyy289065406/auto-upgrader/trunk</url>
 	</scm>
 
 	<!-- 变量定义 -->
@@ -288,7 +288,7 @@
 				<version>2.3.2</version>
 				<configuration>
 					<!-- 项目的SVN基线目录（需保证目录已存在） -->
-					<tagBase>http://127.0.0.1:81/svn/release/???/tags</tagBase>
+					<tagBase>https://github.com/lyy289065406/auto-upgrader/tags</tagBase>
 				</configuration>
 			</plugin>
 
@@ -329,16 +329,6 @@
 								<echo>拷贝项目配置文件</echo>
 								<copy todir="${release.dir}/conf">
 									<fileset dir="conf" />
-								</copy>
-								<echo>拷贝文档</echo>
-								<copy todir="${release.dir}/doc/04_维护文档">
-									<fileset dir="doc/04_维护文档" />
-								</copy>
-								<copy todir="${release.dir}/doc/06_使用文档">
-									<fileset dir="doc/06_使用文档" />
-								</copy>
-								<copy todir="${release.dir}/doc/07_演示文档">
-									<fileset dir="doc/07_演示文档" />
 								</copy>
 							</target>
 						</configuration>
