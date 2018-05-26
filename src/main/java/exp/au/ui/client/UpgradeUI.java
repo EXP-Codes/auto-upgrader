@@ -254,11 +254,13 @@ public class UpgradeUI extends MainWindow {
 	 * 下载补丁包
 	 */
 	private void downPatches() {
+		boolean isOk = true;
 		Iterator<PatchInfo> patchInfoIts = patches.keySet().iterator();
 		while(patchInfoIts.hasNext()) {
 			PatchInfo patchInfo = patchInfoIts.next();
 			
-			if(DownPatch.download(patchInfo)) {
+			isOk &= DownPatch.download(patchInfo);
+			if(isOk == true) {
 				markDown(patchInfo);
 				toConsole("下载补丁 [", patchInfo.getPatchName(), "] 成功");
 				

@@ -1,7 +1,6 @@
 package exp.au;
 
 import exp.au.ui.client.UpgradeUI;
-import exp.libs.utils.other.LogUtils;
 import exp.libs.warp.ui.BeautyEyeUtils;
 
 
@@ -20,10 +19,8 @@ import exp.libs.warp.ui.BeautyEyeUtils;
 public class PatchInstaller {
 
 	public static void main(String[] args) {
-		LogUtils.loadLogBackConfig();
 		BeautyEyeUtils.init();
 		UpgradeUI.getInstn()._view();
-		// FIXME 检查版本时可以选择是否使用测试服务器
 	}
 	
 }
