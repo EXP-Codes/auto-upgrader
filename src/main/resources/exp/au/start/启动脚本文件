@@ -1,0 +1,4 @@
+提前准备好启动脚本即可.
+因为使用auto-upgrader的项目, 必须要在pom引入auto-upgrader的所有依赖构件,
+换而言之改项目打包后, lib目录下都可以找到auto-upgrader的所有依赖构件,
+因此提前准备好启动脚本, 使用前从jar包拷贝出来即可

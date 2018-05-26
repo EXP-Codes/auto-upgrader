@@ -26,7 +26,7 @@ import exp.libs.warp.ver.VersionMgr;
  * @since     jdk版本：jdk1.6
  */
 public class AppVerInfo {
-
+	
 	/** 启动文件的包目录位置 */
 	private final static String PACKAGE_PATH = "/exp/au/start/";
 	
@@ -79,9 +79,41 @@ public class AppVerInfo {
 	 * @return 是否导出成功
 	 */
 	public static boolean export(String appName, String version) {
-		boolean isOk = exportAppVersion(appName, version);
-		isOk &= exportStartFile();
+		boolean isOk = false;
+		if(isRunByScript()) {
+			isOk = exportAppVersion(appName, version);
+			if(isOk == false) {
+				System.err.println("[auto-upgrader] : 导出版本信息失败");
+			}
+			
+			isOk &= exportStartFile();
+			if(isOk == false) {
+				System.err.println("[auto-upgrader] : 导出启动脚本失败");
+			}
+		}
 		return isOk;
+	}
+	
+	/**
+	 * <PRE>
+	 * 检查当前程序是否通过 dox/unix 启动脚本启动。
+	 * 原理是检测lib目录下是否存在 auto-upgrader-*.jar 文件 (在Eclipse中运行时lib文件夹不会存在项目jar包)
+	 * </PRE>
+	 * @return true:通过启动脚本启动; false:通过Eclipse等编译软件启动
+	 */
+	public static boolean isRunByScript() {
+		boolean isRunByScript = false;
+		File libDir = new File("./lib");
+		String[] jars = libDir.list();
+		if(jars != null) {
+			for(String jar : jars) {
+				if(jar.endsWith(".jar") && 
+						jar.startsWith(VersionMgr.getAppName())) {
+					isRunByScript = true;
+				}
+			}
+		}
+		return isRunByScript;
 	}
 	
 	/**
@@ -109,6 +141,7 @@ public class AppVerInfo {
 	}
 	
 	/**
+	 * FIXME 编译环境下不生成
 	 * 从Jar包导出 [软件升级入口的启动文件]
 	 * @return 是否导出成功
 	 */
