@@ -33,4 +33,10 @@ public class Params {
 	/** 备份升级文件的目录名*/
 	public final static String TMP_DIR = "tmp";
 	
+	/** jar依赖库目录 */
+	public final static String LIB_DIR = "./lib";
+	
+	/** jar文件后缀 */
+	public final static String JAR_SUFFIX = ".jar";
+	
 }

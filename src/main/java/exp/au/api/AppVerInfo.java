@@ -3,6 +3,7 @@ package exp.au.api;
 import java.io.File;
 
 import exp.au.Config;
+import exp.au.envm.Params;
 import exp.libs.envm.Delimiter;
 import exp.libs.utils.io.FileUtils;
 import exp.libs.utils.io.JarUtils;
@@ -99,14 +100,28 @@ public class AppVerInfo {
 	 */
 	public static boolean isRunByScript() {
 		boolean isRunByScript = false;
-		File libDir = new File("./lib");
-		String[] jars = libDir.list();
-		if(jars != null) {
-			for(String jar : jars) {
-				if(jar.startsWith(Config.APP_NAME) && jar.endsWith(".jar")) {
-					isRunByScript = true;
-					break;
-				}
+		File libDir = new File(Params.LIB_DIR);
+		File[] jars = libDir.listFiles();
+		if(jars == null) {
+			return isRunByScript;
+		}
+		
+		for(File jar : jars) {
+			if(jar.isDirectory()) {
+				continue;
+			}
+			
+			if(jar.getName().startsWith(Config.APP_NAME) && 
+					jar.getName().endsWith(Params.JAR_SUFFIX)) {
+				isRunByScript = true;
+				
+				// 复制一个无版本号的 auto-upgrader.jar 供软件升级的启动脚本使用 
+				// (启动脚本的依赖中没有带版本号, 并不是所有引入自动升级的应用都会主动在pom的配置中去掉其版本号)
+				String copyPath = PathUtils.combine(
+						jar.getParentFile().getAbsolutePath(), 
+						StrUtils.concat(Config.APP_NAME, Params.JAR_SUFFIX));
+				FileUtils.copyFile(jar.getAbsolutePath(), copyPath);
+				break;
 			}
 		}
 		return isRunByScript;
