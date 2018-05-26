@@ -5,12 +5,15 @@ import java.io.File;
 import exp.au.Config;
 import exp.libs.envm.Delimiter;
 import exp.libs.utils.io.FileUtils;
+import exp.libs.utils.io.JarUtils;
+import exp.libs.utils.os.OSUtils;
+import exp.libs.utils.other.PathUtils;
 import exp.libs.utils.other.StrUtils;
 import exp.libs.warp.ver.VersionMgr;
 
 /**
  * <PRE>
- * 导出应用的当前版本信息.
+ * 导出应用的 [当前版本信息] 以及 [软件升级入口的启动文件].
  * -----------------------------------------
  *  此方法需植入到被升级的应用程序的 main 方法中, 使得该应用程序每次启动时可以生成当前版本信息.
  *  客户端则根据所生成的当前版本信息对该应用程序进行升级 (若没有当前版本信息则不执行升级操作)
@@ -24,8 +27,26 @@ import exp.libs.warp.ver.VersionMgr;
  */
 public class AppVerInfo {
 
+	/** 启动文件的包目录位置 */
+	private final static String PACKAGE_PATH = "/exp/au/start/";
+	
+	/** 复制启动文件的目标位置 */
+	private final static String TARGET_DIR = PathUtils.getProjectRootPath();
+	
+	/** exe启动文件名称 */
+	private final static String EXE_FILE_NAME = "软件升级.exe";
+	
+	/** bat启动文件位置 */
+	private final static String BAT_FILE_NAME = "update.bat";
+	
+	/** sh启动文件位置 */
+	private final static String SH_FILE_NAME = "update.sh";
+	
+	/** 私有化构造函数 */
+	protected AppVerInfo() {}
+	
 	/**
-	 * 从版本库导出应用程序的当前版本信息.
+	 * 从版本库导出应用程序的 [当前版本信息] 以及 [软件升级入口的启动文件].
 	 * @return 是否导出成功
 	 */
 	public static boolean export() {
@@ -34,7 +55,7 @@ public class AppVerInfo {
 	
 	/**
 	 * <pre>
-	 * 从版本库导出应用程序的当前版本信息.
+	 * 从版本库导出应用程序的 [当前版本信息] 以及 [软件升级入口的启动文件].
 	 * -------------------------------------------
 	 *  由于版本库中的应用名称并没有做硬性格式要求, 
 	 *  同样在制作升级包时也没有对应用名称并没有做硬性格式要求, 
@@ -49,7 +70,7 @@ public class AppVerInfo {
 	
 	/**
 	 * <pre>
-	 * 从版本库导出应用程序的当前版本信息.
+	 * 从版本库导出应用程序的 [当前版本信息] 以及 [软件升级入口的启动文件].
 	 * -------------------------------------------
 	 *   不推荐使用此方法, 版本号最好还是由程序自动生成
 	 * </pre>
@@ -58,6 +79,22 @@ public class AppVerInfo {
 	 * @return 是否导出成功
 	 */
 	public static boolean export(String appName, String version) {
+		boolean isOk = exportAppVersion(appName, version);
+		isOk &= exportStartFile();
+		return isOk;
+	}
+	
+	/**
+	 * <pre>
+	 * 从版本库导出应用程序的 [当前版本信息].
+	 * -------------------------------------------
+	 *   不推荐使用此方法, 版本号最好还是由程序自动生成
+	 * </pre>
+	 * @param appName 强制指定应用名称
+	 * @param version 强制指定应用的当前版本
+	 * @return 是否导出成功
+	 */
+	private static boolean exportAppVersion(String appName, String version) {
 		if(StrUtils.isEmpty(appName)) {
 			appName = VersionMgr.getAppName();
 		}
@@ -69,6 +106,28 @@ public class AppVerInfo {
 		File verFile = FileUtils.createFile(Config.LAST_VER_PATH);
 		String data = StrUtils.concat(appName, Delimiter.CRLF, version);
 		return FileUtils.write(verFile, data, Config.DEFAULT_CHARSET, false);
+	}
+	
+	/**
+	 * 从Jar包导出 [软件升级入口的启动文件]
+	 * @return 是否导出成功
+	 */
+	private static boolean exportStartFile() {
+		boolean isOk = true;
+		if(OSUtils.isWin()) {
+			isOk &= JarUtils.copyFile(
+					PACKAGE_PATH.concat(EXE_FILE_NAME), 
+					TARGET_DIR.concat(EXE_FILE_NAME));
+//			isOk &= JarUtils.copyFile(
+//					PACKAGE_PATH.concat(BAT_FILE_NAME), 
+//					TARGET_DIR.concat(BAT_FILE_NAME));
+			
+		} else {
+			isOk &= JarUtils.copyFile(
+					PACKAGE_PATH.concat(SH_FILE_NAME), 
+					TARGET_DIR.concat(SH_FILE_NAME));
+		}
+		return isOk;
 	}
 	
 }

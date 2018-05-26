@@ -10,6 +10,16 @@ import javax.swing.JRadioButton;
 import exp.libs.utils.other.StrUtils;
 import exp.libs.warp.ui.SwingUtils;
 
+/**
+ * <PRE>
+ * 补丁升级步骤的命令行配置组件
+ * </PRE>
+ * <B>PROJECT：</B> auto-upgrader
+ * <B>SUPPORT：</B> EXP
+ * @version   1.0 2018-05-20
+ * @author    EXP: 272629724@qq.com
+ * @since     jdk版本：jdk1.6
+ */
 class _PatchLine extends JPanel {
 
 	private static final long serialVersionUID = 3115712607344507109L;

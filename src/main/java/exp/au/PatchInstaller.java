@@ -1,6 +1,7 @@
 package exp.au;
 
 import exp.au.ui.client.UpgradeUI;
+import exp.libs.utils.os.OSUtils;
 import exp.libs.warp.ui.BeautyEyeUtils;
 
 
@@ -19,8 +20,13 @@ import exp.libs.warp.ui.BeautyEyeUtils;
 public class PatchInstaller {
 
 	public static void main(String[] args) {
-		BeautyEyeUtils.init();
-		UpgradeUI.getInstn()._view();
+		if(OSUtils.isWin()) {
+			BeautyEyeUtils.init();
+			UpgradeUI.getInstn()._view();
+			
+		} else {
+			// TODO unix版本
+		}
 	}
 	
 }
