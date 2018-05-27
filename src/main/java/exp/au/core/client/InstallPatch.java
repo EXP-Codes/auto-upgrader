@@ -165,7 +165,7 @@ public class InstallPatch {
 	}
 	
 	/**
-	 * 执行 add(添加) 命令
+	 * 执行 add(添加) 命令： [新文件/目录] from [补丁包相对位置] to [应用程序相对位置] (若存在则替换,不存在则新增)
 	 * @param src 源位置
 	 * @param snk 目标位置
 	 * @return
@@ -185,7 +185,7 @@ public class InstallPatch {
 	}
 	
 	/**
-	 * 执行  rpl(替换) 命令
+	 * 执行  rpl(替换) 命令： [新文件/目录] from [补丁包相对位置] to [应用程序相对位置] (仅存在时替换,不存在不操作)
 	 * @param src 源位置
 	 * @param snk 目标位置
 	 * @return
@@ -193,19 +193,23 @@ public class InstallPatch {
 	private static boolean _execRpl(String src, String snk) {
 		boolean isOk = false;
 		
-		if(FileUtils.exists(src) && FileUtils.exists(snk)) {
-			if(FileUtils.isFile(src)) {
-				isOk = FileUtils.copyFile(src, snk);
-				
-			} else if(FileUtils.isDirectory(src)) {
-				isOk = FileUtils.copyDirectory(src, snk);
+		if(FileUtils.exists(src)) {
+			isOk = true;
+			
+			if(FileUtils.exists(snk)) {
+				if(FileUtils.isFile(src)) {
+					isOk = FileUtils.copyFile(src, snk);
+					
+				} else if(FileUtils.isDirectory(src)) {
+					isOk = FileUtils.copyDirectory(src, snk);
+				}
 			}
 		}
 		return isOk;
 	}
 	
 	/**
-	 * 执行 mov(移动) 命令
+	 * 执行 mov(移动) 命令： [原文件/目录] from [应用程序相对位置(旧)] to [应用程序相对位置(新)]
 	 * @param src 源位置
 	 * @param snk 目标位置
 	 * @return
@@ -225,9 +229,8 @@ public class InstallPatch {
 	}
 	
 	/**
-	 * 执行 del(删除) 命令
+	 * 执行 del(删除) 命令： [原文件/目录] from [应用程序相对位置] 删除
 	 * @param src 源位置
-	 * @param bak 备份位置
 	 * @return
 	 */
 	private static boolean _execDel(String src) {

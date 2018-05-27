@@ -197,8 +197,11 @@ public class UpgradeUI extends MainWindow {
 					
 					@Override
 					public void run() {
+						filterPatches();	// 过滤已安装补丁 (主要处理中途安装失败时不必重装已成功的补丁)
 						downPatches();		// 下载补丁包
 						installPatches();	// 安装补丁包
+						
+						upgradeBtn.setEnabled(true);
 					}
 				});
 			}
