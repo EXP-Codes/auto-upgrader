@@ -36,12 +36,6 @@ public class UpdateCmd {
 		this.cmdType = (cmdType == null ? CmdType.UNKNOW : cmdType);
 		this.fromPath = (fromPath == null ? "" : fromPath.trim());
 		this.toPath = (toPath == null ? "" : toPath.trim());
-		
-		// 删除命令的目标路径用于备份被删除的文件（回滚用）
-		if(CmdType.DEL == this.cmdType) {
-			this.toPath = StrUtils.concat(Params.TMP_DIR, "/", 
-					FileUtils.getName(this.fromPath));
-		}
 	}
 
 	public CmdType TYPE() {

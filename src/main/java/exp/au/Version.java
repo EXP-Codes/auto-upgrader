@@ -1,6 +1,5 @@
 package exp.au;
 
-import exp.au.api.AppVerInfo;
 import exp.libs.utils.other.LogUtils;
 import exp.libs.warp.ver.VersionMgr;
 
@@ -26,8 +25,6 @@ public class Version {
 	public static void main(String[] args) {
 		LogUtils.loadLogBackConfig();
 		VersionMgr.exec(args);
-		
-		AppVerInfo.export();	// 仅用于测试
 	}
 	
 }

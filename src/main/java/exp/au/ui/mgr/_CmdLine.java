@@ -64,12 +64,12 @@ public class _CmdLine extends JPanel {
 		
 		this.fromTipsLabel = new JLabel(FROM_TIPS);
 		this.fromLabel = new JLabel(PATCH_DIR);
-		this.fromTF = new JTextField();
+		this.fromTF = new JTextField(20);	// 限制长度, 避免其根据内容自动延展
 		fromTF.setToolTipText(getToolTips(PATCH_DIR_TIPS));
 		
 		this.toTipsLabel = new JLabel(TO_TIPS);
 		this.toLabel = new JLabel(APP_DIR);
-		this.toTF = new JTextField();
+		this.toTF = new JTextField(20);		// 限制长度, 避免其根据内容自动延展
 		toTF.setToolTipText(getToolTips(APP_DIR_TIPS));
 		
 		initLayout();
@@ -97,11 +97,17 @@ public class _CmdLine extends JPanel {
 				}
 				
 	            CmdType cmdType = CmdType.toType((String) e.getItem());
-	            if(cmdType == CmdType.ADD || cmdType == CmdType.RPL) {
+	            if(cmdType == CmdType.ADD) {
 	            	updateFromTips(true);
 	            	updateToTips(false);
 	            	tips(cmdType, "从 ", PATCH_DIR_TIPS, " 移动一个 [文件/目录] 到 ", 
-	            			APP_DIR_TIPS, " 的相同位置 (存在则覆盖)");
+	            			APP_DIR_TIPS, " 的相同位置 (若存在则替换,不存在则新增)");
+	            	
+	            } else if(cmdType == CmdType.RPL) {
+		            	updateFromTips(true);
+		            	updateToTips(false);
+		            	tips(cmdType, "从 ", PATCH_DIR_TIPS, " 移动一个 [文件/目录] 到 ", 
+		            			APP_DIR_TIPS, " 的相同位置 (仅存在时替换,不存在不操作)");
 	            	
 	            } else if(cmdType == CmdType.MOV) {
 	            	updateFromTips(false);

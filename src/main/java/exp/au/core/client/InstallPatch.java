@@ -17,7 +17,6 @@ import exp.libs.utils.encode.CompressUtils;
 import exp.libs.utils.format.XmlUtils;
 import exp.libs.utils.io.FileUtils;
 import exp.libs.utils.other.PathUtils;
-import exp.libs.utils.other.StrUtils;
 
 /**
  * <PRE>
@@ -52,9 +51,9 @@ public class InstallPatch {
 		if(step < patchInfo.getUpdateCmds().size()) {
 			UIUtils.toConsole("安装补丁 [", patchInfo.getPatchName(), "] 失败 : 执行升级指令异常");
 			
-			UIUtils.toConsole("正在回滚补丁 [", patchInfo.getPatchName(), "] ...");
-			boolean isOk = rollback(patchInfo, step);
-			UIUtils.toConsole("回滚补丁 [", patchInfo.getPatchName(), "] ", (isOk ? "成功" : "失败"));
+//			UIUtils.toConsole("正在回滚补丁 [", patchInfo.getPatchName(), "] ...");
+//			boolean isOk = rollback(patchInfo, step);
+//			UIUtils.toConsole("回滚补丁 [", patchInfo.getPatchName(), "] ", (isOk ? "成功" : "失败"));
 			return false;
 		}
 		
@@ -125,10 +124,15 @@ public class InstallPatch {
 		for(UpdateCmd cmd : patchInfo.getUpdateCmds()) {
 			
 			boolean isOk = false;
-			if(CmdType.ADD == cmd.TYPE() || CmdType.RPL == cmd.TYPE()) {
+			if(CmdType.ADD == cmd.TYPE()) {
 				String src = PathUtils.combine(patchDir, cmd.FROM_PATH());
 				String snk = PathUtils.combine(appDir, cmd.TO_PATH());
-				isOk = _execAddOrRpl(src, snk);
+				isOk = _execAdd(src, snk);
+				
+			} else if(CmdType.RPL == cmd.TYPE()) {
+				String src = PathUtils.combine(appDir, cmd.FROM_PATH());
+				String snk = PathUtils.combine(appDir, cmd.TO_PATH());
+				isOk = _execRpl(src, snk);
 				
 			} else if(CmdType.MOV == cmd.TYPE()) {
 				String src = PathUtils.combine(appDir, cmd.FROM_PATH());
@@ -155,15 +159,35 @@ public class InstallPatch {
 	}
 	
 	/**
-	 * 执行 add(添加) 或 rpl(替换) 命令
+	 * 执行 add(添加) 命令
 	 * @param src 源位置
 	 * @param snk 目标位置
 	 * @return
 	 */
-	private static boolean _execAddOrRpl(String src, String snk) {
+	private static boolean _execAdd(String src, String snk) {
 		boolean isOk = false;
 		
 		if(FileUtils.exists(src)) {
+			if(FileUtils.isFile(src)) {
+				isOk = FileUtils.copyFile(src, snk);
+				
+			} else if(FileUtils.isDirectory(src)) {
+				isOk = FileUtils.copyDirectory(src, snk);
+			}
+		}
+		return isOk;
+	}
+	
+	/**
+	 * 执行  rpl(替换) 命令
+	 * @param src 源位置
+	 * @param snk 目标位置
+	 * @return
+	 */
+	private static boolean _execRpl(String src, String snk) {
+		boolean isOk = false;
+		
+		if(FileUtils.exists(src) && FileUtils.exists(snk)) {
 			if(FileUtils.isFile(src)) {
 				isOk = FileUtils.copyFile(src, snk);
 				
@@ -224,7 +248,8 @@ public class InstallPatch {
 	}
 	
 	/**
-	 * 升级回滚
+	 * 升级回滚: 
+	 *   FIXME 暂时没有好的回滚手段, 暂不回滚
 	 * @param patchInfo
 	 * @param step
 	 * @return
@@ -238,24 +263,17 @@ public class InstallPatch {
 			UpdateCmd cmd = cmds.get(step);
 			
 			boolean isOk = false;
-			if(CmdType.ADD == cmd.TYPE() || CmdType.RPL == cmd.TYPE()) {
-				String snk = PathUtils.combine(appDir, cmd.TO_PATH());
-				isOk = _rollbackAddOrRpl(snk);
+			if(CmdType.ADD == cmd.TYPE()) {
+				isOk = true;
+				
+			} else if(CmdType.RPL == cmd.TYPE()) {
+				isOk = true;
 				
 			} else if(CmdType.MOV == cmd.TYPE()) {
-				String src = PathUtils.combine(appDir, cmd.FROM_PATH());
-				String snk = PathUtils.combine(appDir, cmd.TO_PATH());
-				isOk = _rollbackMov(src, snk);
+				isOk = true;
 				
 			} else if(CmdType.DEL == cmd.TYPE()) {
-				if(StrUtils.isTrimEmpty(cmd.TO_PATH())) {
-					isOk = true;	// 所删除的文件本来就不存在(因此备份路径为空)
-					
-				} else {
-					String src = PathUtils.combine(appDir, cmd.FROM_PATH());
-					String bak = PathUtils.combine(patchDir, cmd.TO_PATH());
-					isOk = _rollbackDel(src, bak);
-				}
+				isOk = true;
 				
 			} else {
 				isOk = true;
@@ -269,12 +287,23 @@ public class InstallPatch {
 	}
 	
 	/**
-	 * 回滚 add(添加) 或 rpl(替换) 命令
+	 * 回滚 add(添加)命令
 	 * @param snk 目标位置
 	 * @return
 	 */
-	private static boolean _rollbackAddOrRpl(String snk) {
-		return FileUtils.delete(snk);
+	private static boolean _rollbackAdd(String snk) {
+		// TODO
+		return true;
+	}
+	
+	/**
+	 * 回滚 rpl(替换) 命令
+	 * @param snk 目标位置
+	 * @return
+	 */
+	private static boolean _rollbackRpl(String snk) {
+		// TODO
+		return true;
 	}
 	
 	/**
@@ -302,18 +331,8 @@ public class InstallPatch {
 	 * @return
 	 */
 	private static boolean _rollbackDel(String src, String bak) {
-		boolean isOk = false;
-		
-		if(FileUtils.exists(bak)) {
-			
-			if(FileUtils.isFile(bak)) {
-				isOk = FileUtils.copyFile(bak, src);
-				
-			} else if(FileUtils.isDirectory(bak)) {
-				isOk = FileUtils.copyDirectory(bak, src);
-			}
-		}
-		return isOk;
+		// TODO
+		return true;
 	}
 	
 }

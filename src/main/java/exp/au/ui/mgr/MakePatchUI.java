@@ -52,7 +52,7 @@ public class MakePatchUI extends MainWindow {
 
 	private final static int WIDTH = 800;
 	
-	private final static int HEIGHT = 700;
+	private final static int HEIGHT = 750;
 	
 	private JTextField patchDirTF;
 	
@@ -121,7 +121,6 @@ public class MakePatchUI extends MainWindow {
 		this.verWin = new _VerWin(appNameTF, verTF);
 		
 		this.timeTF = new JTextField();
-		timeTF.setEditable(false);
 		this.timeBtn = newButton("更新");
 		
 		this.MD5TF = new JTextField();
@@ -283,8 +282,6 @@ public class MakePatchUI extends MainWindow {
 					
 					@Override
 					public void run() {
-						timeBtn.doClick();	// 自动刷新补丁的发布时间
-						
 						MakePatch.generate(
 								patchDirTF.getText(), appNameTF.getText(), 
 								verTF.getText(), timeTF.getText());

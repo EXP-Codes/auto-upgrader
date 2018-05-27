@@ -87,6 +87,8 @@ public class AppVerInfo {
 			if(isOk == false) {
 				System.err.println("[auto-upgrader] : 导出版本信息失败");
 			}
+		} else {
+			System.err.println("[auto-upgrader] : 编译环境下禁止导出版本信息");
 		}
 		return isOk;
 	}
