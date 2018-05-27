@@ -17,7 +17,6 @@ import exp.libs.utils.encode.CompressUtils;
 import exp.libs.utils.format.XmlUtils;
 import exp.libs.utils.io.FileUtils;
 import exp.libs.utils.other.PathUtils;
-import exp.libs.utils.other.StrUtils;
 
 /**
  * <PRE>
@@ -153,11 +152,10 @@ public class InstallPatch {
 			
 			if(isOk == true) {
 				step++;
+				UIUtils.toConsole(" -> ", cmd.TYPE().CH(), "文件 : ", src);
 				
 			} else {
-				System.err.println(StrUtils.concat(
-						"[auto-upgrader] [ERR] [", cmd.TYPE().EN(), "] [SETP:", 
-						(step + 1), "] : [", src, "] => [", snk, "]"));
+				UIUtils.toConsole(" -> [失败] ", cmd.TYPE().CH(), "文件 : ", src);
 				break;
 			}
 		}

@@ -169,9 +169,10 @@ public class AppVerInfo {
 //					TARGET_DIR.concat(BAT_FILE_NAME));
 			
 		} else {
-			isOk &= JarUtils.copyFile(
-					PACKAGE_PATH.concat(SH_FILE_NAME), 
-					TARGET_DIR.concat(SH_FILE_NAME));
+			// TODO 暂不支持linux版本
+//			isOk &= JarUtils.copyFile(
+//					PACKAGE_PATH.concat(SH_FILE_NAME), 
+//					TARGET_DIR.concat(SH_FILE_NAME));
 		}
 		return isOk;
 	}
