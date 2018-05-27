@@ -17,6 +17,7 @@ import exp.libs.utils.encode.CompressUtils;
 import exp.libs.utils.format.XmlUtils;
 import exp.libs.utils.io.FileUtils;
 import exp.libs.utils.other.PathUtils;
+import exp.libs.utils.other.StrUtils;
 
 /**
  * <PRE>
@@ -124,25 +125,27 @@ public class InstallPatch {
 		for(UpdateCmd cmd : patchInfo.getUpdateCmds()) {
 			
 			boolean isOk = false;
+			String src = "";
+			String snk = "";
+			
 			if(CmdType.ADD == cmd.TYPE()) {
-				String src = PathUtils.combine(patchDir, cmd.FROM_PATH());
-				String snk = PathUtils.combine(appDir, cmd.TO_PATH());
+				src = PathUtils.combine(patchDir, cmd.FROM_PATH());
+				snk = PathUtils.combine(appDir, cmd.TO_PATH());
 				isOk = _execAdd(src, snk);
 				
 			} else if(CmdType.RPL == cmd.TYPE()) {
-				String src = PathUtils.combine(appDir, cmd.FROM_PATH());
-				String snk = PathUtils.combine(appDir, cmd.TO_PATH());
+				src = PathUtils.combine(patchDir, cmd.FROM_PATH());
+				snk = PathUtils.combine(appDir, cmd.TO_PATH());
 				isOk = _execRpl(src, snk);
 				
 			} else if(CmdType.MOV == cmd.TYPE()) {
-				String src = PathUtils.combine(appDir, cmd.FROM_PATH());
-				String snk = PathUtils.combine(appDir, cmd.TO_PATH());
+				src = PathUtils.combine(appDir, cmd.FROM_PATH());
+				snk = PathUtils.combine(appDir, cmd.TO_PATH());
 				isOk = _execMov(src, snk);
 				
 			} else if(CmdType.DEL == cmd.TYPE()) {
-				String src = PathUtils.combine(appDir, cmd.FROM_PATH());
-				String bak = PathUtils.combine(patchDir, cmd.TO_PATH());
-				isOk = _execDel(src, bak);
+				src = PathUtils.combine(appDir, cmd.FROM_PATH());
+				isOk = _execDel(src);
 				
 			} else {
 				isOk = true;
@@ -152,6 +155,9 @@ public class InstallPatch {
 				step++;
 				
 			} else {
+				System.err.println(StrUtils.concat(
+						"[auto-upgrader] [ERR] [", cmd.TYPE().EN(), "] [SETP:", 
+						(step + 1), "] : [", src, "] => [", snk, "]"));
 				break;
 			}
 		}
@@ -224,27 +230,8 @@ public class InstallPatch {
 	 * @param bak 备份位置
 	 * @return
 	 */
-	private static boolean _execDel(String src, String bak) {
-		boolean isOk = false;
-		
-		if(FileUtils.exists(src)) {
-			
-			if(FileUtils.isFile(src)) {
-				isOk = FileUtils.copyFile(src, bak);
-				
-			} else if(FileUtils.isDirectory(src)) {
-				isOk = FileUtils.copyDirectory(src, bak);
-				
-			} else {
-				isOk = true;
-			}
-			
-			isOk &= FileUtils.delete(src);
-			
-		} else {
-			isOk = true;
-		}
-		return isOk;
+	private static boolean _execDel(String src) {
+		return FileUtils.delete(src);
 	}
 	
 	/**

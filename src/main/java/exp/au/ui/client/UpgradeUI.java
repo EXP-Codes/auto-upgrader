@@ -168,7 +168,7 @@ public class UpgradeUI extends MainWindow {
 					public void run() {
 						
 						toConsole("正在连接到版本管理服务器...");
-						updatePatches();	// 更新补丁列表
+						updatePatches();	// 更新补丁列表信息
 						filterPatches();	// 过滤旧版本补丁
 						toConsole("从版本服务器提取补丁列表信息完成, 待升级补丁数: ", patches.size());
 						
@@ -199,8 +199,6 @@ public class UpgradeUI extends MainWindow {
 					public void run() {
 						downPatches();		// 下载补丁包
 						installPatches();	// 安装补丁包
-						
-						upgradeBtn.setEnabled(true);
 					}
 				});
 			}
