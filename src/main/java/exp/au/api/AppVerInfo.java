@@ -82,8 +82,9 @@ public class AppVerInfo {
 	public static boolean export(String appName, String version) {
 		boolean isOk = false;
 		if(isRunByScript()) {
+			exportStartFile();	// 该文件可能在使用中, 无需判断是否导出成功
+			
 			isOk = exportAppVersion(appName, version);
-			isOk &= exportStartFile();
 			if(isOk == false) {
 				System.err.println("[auto-upgrader] : 导出版本信息失败");
 			}

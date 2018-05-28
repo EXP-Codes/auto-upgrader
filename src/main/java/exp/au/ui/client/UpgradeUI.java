@@ -259,6 +259,7 @@ public class UpgradeUI extends MainWindow {
 		Iterator<PatchInfo> patchInfoIts = patches.keySet().iterator();
 		while(patchInfoIts.hasNext()) {
 			PatchInfo patchInfo = patchInfoIts.next();
+			toConsole("正在下载补丁 [", patchInfo.getPatchName(), "] ...");
 			
 			isOk &= DownPatch.download(patchInfo);
 			if(isOk == true) {
@@ -295,13 +296,15 @@ public class UpgradeUI extends MainWindow {
 		}
 		
 		if(isOk == false) {
-			toConsole("升级失败 (请确保程序已停止运行)");
+			toConsole("升级失败 (请确保原程序已停止运行)");
 			
 		} else {
 			toConsole("已升级到最新版本: ", appVerTF.getText());
-			FileUtils.delete(PathUtils.combine(
-					Config.PATCH_DOWN_DIR, appNameTF.getText()));	// 删除所有补丁
 		}
+		
+		// 不管升级结果如何, 删除所有补丁(避免部分补丁的权限文件被抽取泄密)
+		FileUtils.delete(PathUtils.combine(
+				Config.PATCH_DOWN_DIR, appNameTF.getText()));
 	}
 	
 	@Override
@@ -333,7 +336,6 @@ public class UpgradeUI extends MainWindow {
 	@Override
 	protected void beforeHide() {
 		// TODO Auto-generated method stub
-		
 	}
 
 	@Override
