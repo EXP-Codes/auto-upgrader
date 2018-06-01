@@ -161,6 +161,7 @@ public class UpgradeUI extends MainWindow {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				upgradeBtn.setEnabled(false);
+				checkBtn.setEnabled(false);
 				
 				tp.execute(new Runnable() {
 					
@@ -176,6 +177,7 @@ public class UpgradeUI extends MainWindow {
 						SwingUtils.repaint(scrollPanel);
 						SwingUtils.toEnd(scrollPanel, true);
 						upgradeBtn.setEnabled(true);
+						checkBtn.setEnabled(true);
 					}
 				});
 			}
