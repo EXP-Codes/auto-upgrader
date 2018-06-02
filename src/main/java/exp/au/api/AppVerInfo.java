@@ -1,8 +1,13 @@
 package exp.au.api;
 
 import java.io.File;
+import java.util.Iterator;
+import java.util.List;
 
 import exp.au.Config;
+import exp.au.bean.PatchInfo;
+import exp.au.bean.Version;
+import exp.au.core.client.DownPatch;
 import exp.au.envm.Params;
 import exp.libs.envm.Delimiter;
 import exp.libs.utils.io.FileUtils;
@@ -45,6 +50,48 @@ public class AppVerInfo {
 	
 	/** 私有化构造函数 */
 	protected AppVerInfo() {}
+	
+	/**
+	 * 检查是否存在更新的版本
+	 * @return 若不存在新版本则返回null; 否则返回最新的一个版本号
+	 */
+	public static Version existNewVersion() {
+		return existNewVersion(null);
+	}
+	
+	/**
+	 * <pre>
+	 * 检查是否存在更新的版本
+	 * -------------------------------------------
+	 *  由于版本库中的应用名称并没有做硬性格式要求, 
+	 *  同样在制作升级包时也没有对应用名称并没有做硬性格式要求, 
+	 *  因此此处允许覆写应用名称, 使之与制作升级包时填写的应用名称一致即可.
+	 * </pre>
+	 * @param appName 强制指定应用名称
+	 * @return 若不存在新版本则返回null; 否则返回最新的一个版本号
+	 */
+	public static Version existNewVersion(String appName) {
+		if(StrUtils.isEmpty(appName)) {
+			appName = VersionMgr.getAppName();
+		}
+		
+		final Version CUR_VER = new Version(VersionMgr.getVersion());
+		Version newVer = null;
+		
+		List<PatchInfo> patches = DownPatch.getPatchInfos(appName);
+		for(PatchInfo patch : patches) {
+			if(CUR_VER.compareTo(patch.getVersion()) < 0) {
+				
+				if(newVer == null) {
+					newVer = patch.getVersion();
+					
+				} else if(newVer.compareTo(patch.getVersion()) < 0) {
+					newVer = patch.getVersion();
+				}
+			}
+		}
+		return newVer;
+	}
 	
 	/**
 	 * 从版本库导出应用程序的 [当前版本信息] 以及 [软件升级入口的启动文件].
@@ -101,7 +148,7 @@ public class AppVerInfo {
 	 * </PRE>
 	 * @return true:通过启动脚本启动; false:通过Eclipse等编译软件启动
 	 */
-	public static boolean isRunByScript() {
+	private static boolean isRunByScript() {
 		boolean isRunByScript = false;
 		File libDir = new File(Params.LIB_DIR);
 		File[] jars = libDir.listFiles();
