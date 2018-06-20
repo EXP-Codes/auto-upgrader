@@ -133,6 +133,10 @@
 	          <artifactId>cxf-rt-transports-http</artifactId>
 	        </exclusion>
 	        <exclusion>
+              <groupId>org.apache.cxf</groupId>
+              <artifactId>cxf-rt-transports-http-jetty</artifactId>
+            </exclusion>
+	        <exclusion>
 	          <groupId>net.webservices.client</groupId>
 	          <artifactId>wsdl4j</artifactId>
 	        </exclusion>
