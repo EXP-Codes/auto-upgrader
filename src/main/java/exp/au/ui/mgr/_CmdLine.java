@@ -22,7 +22,7 @@ import exp.libs.warp.ui.SwingUtils;
  * <B>PROJECT：</B> auto-upgrader
  * <B>SUPPORT：</B> EXP
  * @version   1.0 2018-05-20
- * @author    EXP: 272629724@qq.com
+ * @author    EXP: <a href="http://www.exp-blog.com">www.exp-blog.com</a>
  * @since     jdk版本：jdk1.6
  */
 public class _CmdLine extends JPanel {
