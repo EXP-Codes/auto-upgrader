@@ -4,7 +4,7 @@
  <head> 
   <meta charset="UTF-8" />
   <meta name="robots" content="noarchive" /> 
-  <meta name="author" content="EXP" /> 
+  <meta name="author" content="EXP: www.exp-blog.com" /> 
   <link rel="stylesheet" type="text/css" href="./css/page.css" /> 
   <title>EXP-SOFTWARE-PATCHES</title> 
  </head> 
