@@ -31,10 +31,10 @@ import exp.libs.warp.ui.cpt.win.PopChildWindow;
  * <PRE>
  * 版本设置窗口
  * </PRE>
- * <B>PROJECT：</B> auto-upgrader
- * <B>SUPPORT：</B> EXP
- * @version   1.0 2018-05-20
- * @author    EXP: <a href="http://www.exp-blog.com">www.exp-blog.com</a>
+ * <B>PROJECT : </B> auto-upgrader
+ * <B>SUPPORT : </B> <a href="http://www.exp-blog.com" target="_blank">www.exp-blog.com</a>
+ * @version   1.0 # 2018-05-20
+ * @author    EXP: 272629724@qq.com
  * @since     jdk版本：jdk1.6
  */
 class _VerWin extends PopChildWindow {
@@ -56,7 +56,7 @@ class _VerWin extends PopChildWindow {
 	private JTextField verTF;
 	
 	protected _VerWin(JTextField appNameTF, JTextField verTF) {
-		super("版本号设置", WIDTH, HEIGHT, false, appNameTF, verTF);
+		super("版本号设�?", WIDTH, HEIGHT, false, appNameTF, verTF);
 	}
 	
 	@Override
@@ -64,7 +64,7 @@ class _VerWin extends PopChildWindow {
 		this.majorTF = new JTextField();
 		this.minorTF = new JTextField();
 		
-		this.okBtn = new JButton("确 认");
+		this.okBtn = new JButton("�? �?");
 		BeautyEyeUtils.setButtonStyle(NormalColor.green, okBtn);
 		okBtn.setForeground(Color.BLACK);
 		
@@ -109,7 +109,7 @@ class _VerWin extends PopChildWindow {
 	}
 	
 	/**
-	 * 限制文本框的输入内容为数字
+	 * 限制文本框的输入内容为数�?
 	 * @param textField
 	 */
 	private void limitNum(final JTextField textField) {
@@ -121,14 +121,14 @@ class _VerWin extends PopChildWindow {
 
 		    @Override
 		    public void keyTyped(KeyEvent e) {
-		        String text = textField.getText();  // 当前输入框内容
-		        char ch = e.getKeyChar();   // 准备附加到输入框的字符
+		        String text = textField.getText();  // 当前输入框内�?
+		        char ch = e.getKeyChar();   // 准备附加到输入框的字�?
 
-		        // 限制不能输入非数字
+		        // 限制不能输入非数�?
 		        if(!(ch >= '0' && ch <= '9')) {
-		            e.consume();    // 销毁当前输入字符
+		            e.consume();    // 销毁当前输入字�?
 
-		        // 限制不能连续两个以上的0开头
+		        // 限制不能连续两个以上�?0开�?
 		        } else if("0".equals(text) && ch == '0') {   
 		            e.consume();
 		        }
@@ -157,7 +157,7 @@ class _VerWin extends PopChildWindow {
 			return;
 		}
 		
-		// 提取应用程序当前的补丁版本列表
+		// 提取应用程序当前的补丁版本列�?
 		File appDir = new File(Config.PATCH_PAGE_DIR.concat(APP_NAME));
 		File[] verDirs = appDir.listFiles();
 		if(verDirs != null) {
@@ -169,7 +169,7 @@ class _VerWin extends PopChildWindow {
 			}
 			Collections.sort(vers);
 			
-			// 设置默认的版本号为最后一个版本+1
+			// 设置默认的版本号为最后一个版�?+1
 			if(vers.size() > 0) {
 				Version last = vers.get(vers.size() - 1);
 				majorTF.setText(String.valueOf(last.MAJOR()));
@@ -183,7 +183,7 @@ class _VerWin extends PopChildWindow {
 		int major = NumUtils.toInt(majorTF.getText(), 0);
 		int minor = NumUtils.toInt(minorTF.getText(), 0);
 		Version version = new Version(major, minor);
-		verTF.setText(version.VER());	// 回传版本号
+		verTF.setText(version.VER());	// 回传版本�?
 	}
 	
 }

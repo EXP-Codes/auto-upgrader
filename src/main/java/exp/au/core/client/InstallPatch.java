@@ -22,10 +22,10 @@ import exp.libs.utils.other.PathUtils;
  * <PRE>
  * 根据升级步骤安装补丁
  * </PRE>
- * <B>PROJECT：</B> auto-upgrader
- * <B>SUPPORT：</B> EXP
- * @version   1.0 2018-05-20
- * @author    EXP: <a href="http://www.exp-blog.com">www.exp-blog.com</a>
+ * <B>PROJECT : </B> auto-upgrader
+ * <B>SUPPORT : </B> <a href="http://www.exp-blog.com" target="_blank">www.exp-blog.com</a>
+ * @version   1.0 # 2018-05-20
+ * @author    EXP: 272629724@qq.com
  * @since     jdk版本：jdk1.6
  */
 public class InstallPatch {
@@ -61,7 +61,7 @@ public class InstallPatch {
 	}
 	
 	/**
-	 * 解压补丁包
+	 * 解压补丁�?
 	 * @param patchInfo
 	 * @return 是否解压成功
 	 */
@@ -72,7 +72,7 @@ public class InstallPatch {
 		boolean isOk = CompressUtils.unZip(zipPath);
 		if(isOk == true) {
 			patchDir = PathUtils.combine(patchDir, patchInfo.getPatchName());
-			patchInfo.setPatchDir(patchDir);	// 解压后修正补丁目录
+			patchInfo.setPatchDir(patchDir);	// 解压后修正补丁目�?
 			
 		} else {
 			UIUtils.toConsole("解压补丁 [", patchInfo.getPatchName(), "] 失败");
@@ -163,8 +163,8 @@ public class InstallPatch {
 	}
 	
 	/**
-	 * 执行 add(添加) 命令： [新文件/目录] from [补丁包相对位置] to [应用程序相对位置] (若存在则替换,不存在则新增)
-	 * @param src 源位置
+	 * 执行 add(添加) 命令�? [新文�?/目录] from [补丁包相对位置] to [应用程序相对位置] (若存在则替换,不存在则新增)
+	 * @param src 源位�?
 	 * @param snk 目标位置
 	 * @return
 	 */
@@ -183,8 +183,8 @@ public class InstallPatch {
 	}
 	
 	/**
-	 * 执行  rpl(替换) 命令： [新文件/目录] from [补丁包相对位置] to [应用程序相对位置] (仅存在时替换,不存在不操作)
-	 * @param src 源位置
+	 * 执行  rpl(替换) 命令�? [新文�?/目录] from [补丁包相对位置] to [应用程序相对位置] (仅存在时替换,不存在不操作)
+	 * @param src 源位�?
 	 * @param snk 目标位置
 	 * @return
 	 */
@@ -207,8 +207,8 @@ public class InstallPatch {
 	}
 	
 	/**
-	 * 执行 mov(移动) 命令： [原文件/目录] from [应用程序相对位置(旧)] to [应用程序相对位置(新)]
-	 * @param src 源位置
+	 * 执行 mov(移动) 命令�? [原文�?/目录] from [应用程序相对位置(�?)] to [应用程序相对位置(�?)]
+	 * @param src 源位�?
 	 * @param snk 目标位置
 	 * @return
 	 */
@@ -227,8 +227,8 @@ public class InstallPatch {
 	}
 	
 	/**
-	 * 执行 del(删除) 命令： [原文件/目录] from [应用程序相对位置] 删除
-	 * @param src 源位置
+	 * 执行 del(删除) 命令�? [原文�?/目录] from [应用程序相对位置] 删除
+	 * @param src 源位�?
 	 * @return
 	 */
 	private static boolean _execDel(String src) {
@@ -296,7 +296,7 @@ public class InstallPatch {
 	
 	/**
 	 * 回滚 mov(移动) 命令
-	 * @param src 源位置
+	 * @param src 源位�?
 	 * @param snk 目标位置
 	 * @return
 	 */
@@ -314,7 +314,7 @@ public class InstallPatch {
 	
 	/**
 	 * 回滚 del(删除) 命令
-	 * @param src 源位置
+	 * @param src 源位�?
 	 * @param bak 备份位置
 	 * @return
 	 */

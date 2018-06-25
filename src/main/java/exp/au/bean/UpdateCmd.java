@@ -9,10 +9,10 @@ import exp.libs.utils.other.StrUtils;
  * <PRE>
  * 升级命令对象
  * </PRE>
- * <B>PROJECT：</B> auto-upgrader
- * <B>SUPPORT：</B> EXP
- * @version   1.0 2018-05-20
- * @author    EXP: <a href="http://www.exp-blog.com">www.exp-blog.com</a>
+ * <B>PROJECT : </B> auto-upgrader
+ * <B>SUPPORT : </B> <a href="http://www.exp-blog.com" target="_blank">www.exp-blog.com</a>
+ * @version   1.0 # 2018-05-20
+ * @author    EXP: 272629724@qq.com
  * @since     jdk版本：jdk1.6
  */
 public class UpdateCmd {
@@ -23,14 +23,14 @@ public class UpdateCmd {
 	/** 命令控制的源路径 */
 	private String fromPath;
 	
-	/** 命令控制的目标路径 */
+	/** 命令控制的目标路�? */
 	private String toPath;
 	
 	/**
-	 * 构造函数
+	 * 构造函�?
 	 * @param cmdType 命令类型
 	 * @param fromPath 命令控制的源路径
-	 * @param toPath 命令控制的目标路径
+	 * @param toPath 命令控制的目标路�?
 	 */
 	public UpdateCmd(CmdType cmdType, String fromPath, String toPath) {
 		this.cmdType = (cmdType == null ? CmdType.UNKNOW : cmdType);
