@@ -45,7 +45,7 @@ import exp.libs.warp.ui.layout.VFlowLayout;
  * 软件升级界面
  * </PRE>
  * <B>PROJECT : </B> auto-upgrader
- * <B>SUPPORT : </B> <a href="http://www.exp-blog.com" target="_blank">www.exp-blog.com</a>
+ * <B>SUPPORT : </B> <a href="http://www.exp-blog.com" target="_blank">www.exp-blog.com</a> 
  * @version   1.0 # 2018-05-20
  * @author    EXP: 272629724@qq.com
  * @since     jdk版本：jdk1.6
@@ -106,7 +106,7 @@ public class UpgradeUI extends MainWindow {
 		this.serverCB = new JCheckBox("连接到测试服务器 (含测试版补丁)");
 		serverCB.setHorizontalAlignment(SwingConstants.RIGHT);
 		
-		this.checkBtn = new JButton("   检 �? �? �?   ");
+		this.checkBtn = new JButton("   检 查 更 新   ");
 		BeautyEyeUtils.setButtonStyle(NormalColor.green, checkBtn);
 		checkBtn.setForeground(Colors.BLACK.COLOR());
 		
@@ -116,7 +116,7 @@ public class UpgradeUI extends MainWindow {
 		this.consoleTA = new JTextArea();
 		consoleTA.setEditable(false);
 		
-		this.upgradeBtn = new JButton("一 �? �? �?");
+		this.upgradeBtn = new JButton("一 键 升 级");
 		BeautyEyeUtils.setButtonStyle(NormalColor.lightBlue, upgradeBtn);
 		upgradeBtn.setForeground(Colors.BLACK.COLOR());
 		upgradeBtn.setEnabled(false);
@@ -141,7 +141,7 @@ public class UpgradeUI extends MainWindow {
 									SwingUtils.getPairsPanel("当前版本", appVerTF)
 						), checkBtn),
 						newLabel()
-				), "版本检�?");
+				), "版本检查");
 	}
 	
 	private JPanel getCenterPanel() {
@@ -170,7 +170,7 @@ public class UpgradeUI extends MainWindow {
 						
 						toConsole("正在连接到版本管理服务器...");
 						updatePatches();	// 更新补丁列表信息
-						filterPatches();	// 过滤旧版本补�?
+						filterPatches();	// 过滤旧版本补丁
 						toConsole("从版本服务器提取补丁列表信息完成, 待升级补丁数: ", patches.size());
 						
 						// 刷新补丁列表面板
@@ -199,9 +199,9 @@ public class UpgradeUI extends MainWindow {
 					
 					@Override
 					public void run() {
-						filterPatches();	// 过滤已安装补�? (主要处理中途安装失败时不必重装已成功的补丁)
-						downPatches();		// 下载补丁�?
-						installPatches();	// 安装补丁�?
+						filterPatches();	// 过滤已安装补丁 (主要处理中途安装失败时不必重装已成功的补丁)
+						downPatches();		// 下载补丁包
+						installPatches();	// 安装补丁包
 						
 						upgradeBtn.setEnabled(true);
 					}
@@ -237,7 +237,7 @@ public class UpgradeUI extends MainWindow {
 	}
 	
 	/**
-	 * 根据当前版本号对旧补丁进行移�?
+	 * 根据当前版本号对旧补丁进行移除
 	 */
 	private void filterPatches() {
 		final Version CUR_VER = new Version(appVerTF.getText());
@@ -245,7 +245,7 @@ public class UpgradeUI extends MainWindow {
 		while(patchInfoIts.hasNext()) {
 			PatchInfo patchInfo = patchInfoIts.next();
 			
-			// 小于等于应用程序当前版本号的补丁, 进行标记并移�?
+			// 小于等于应用程序当前版本号的补丁, 进行标记并移除
 			if(CUR_VER.compareTo(patchInfo.getVersion()) >= 0) {
 				markInstall(patchInfo);
 				patchInfoIts.remove();	// 移除补丁信息
@@ -254,7 +254,7 @@ public class UpgradeUI extends MainWindow {
 	}
 	
 	/**
-	 * 下载补丁�?
+	 * 下载补丁包
 	 */
 	private void downPatches() {
 		boolean isOk = true;
@@ -275,7 +275,7 @@ public class UpgradeUI extends MainWindow {
 	}
 	
 	/**
-	 * 安装补丁�?
+	 * 安装补丁包
 	 */
 	private void installPatches() {
 		boolean isOk = true;
@@ -292,19 +292,19 @@ public class UpgradeUI extends MainWindow {
 				toConsole("安装补丁 [", patchInfo.getPatchName(), "] 成功");
 				
 			} else {
-				break;	// 若安装失�?, 则不安装后续版本
+				break;	// 若安装失败, 则不安装后续版本
 			}
 			PatchUtils.patchSleep();
 		}
 		
 		if(isOk == false) {
-			toConsole("升级失败 (请确保原程序已停止运�?)");
+			toConsole("升级失败 (请确保原程序已停止运行)");
 			
 		} else {
-			toConsole("已升级到最新版�?: ", appVerTF.getText());
+			toConsole("已升级到最新版本: ", appVerTF.getText());
 		}
 		
-		// 不管升级结果如何, 删除所有补�?(避免部分补丁的权限文件被抽取泄密)
+		// 不管升级结果如何, 删除所有补丁(避免部分补丁的权限文件被抽取泄密)
 		FileUtils.delete(PathUtils.combine(
 				Config.PATCH_DOWN_DIR, appNameTF.getText()));
 	}
@@ -312,14 +312,14 @@ public class UpgradeUI extends MainWindow {
 	@Override
 	protected void AfterView() {
 		if(taskAppVerInfo() == false) {
-			toConsole("提取当前版本信息失败, 无法升级 (请确保程序至少运行过一�?)");
-			SwingUtils.warn("提取当前版本信息失败, 无法升级\r\n(请确保程序至少运行过一�?)");
+			toConsole("提取当前版本信息失败, 无法升级 (请确保程序至少运行过一次)");
+			SwingUtils.warn("提取当前版本信息失败, 无法升级\r\n(请确保程序至少运行过一次)");
 			System.exit(0);
 		}
 	}
 	
 	/**
-	 * 提取应用程序的当前版本信�?
+	 * 提取应用程序的当前版本信息
 	 * @return 是否提取成功
 	 */
 	private boolean taskAppVerInfo() {
@@ -394,9 +394,9 @@ public class UpgradeUI extends MainWindow {
 	}
 	
 	/**
-	 * 创建补丁行组�?
+	 * 创建补丁行组件
 	 * @param patchInfo 补丁信息
-	 * @return 补丁行组�?
+	 * @return 补丁行组件
 	 */
 	private _PatchLine newPatchLine(PatchInfo patchInfo) {
 		_PatchLine patchLine = new _PatchLine(

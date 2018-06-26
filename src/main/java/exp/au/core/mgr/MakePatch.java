@@ -18,19 +18,19 @@ import exp.libs.warp.ui.SwingUtils;
  * 根据补丁参数制作补丁, 并放置到补丁管理目录
  * </PRE>
  * <B>PROJECT : </B> auto-upgrader
- * <B>SUPPORT : </B> <a href="http://www.exp-blog.com" target="_blank">www.exp-blog.com</a>
+ * <B>SUPPORT : </B> <a href="http://www.exp-blog.com" target="_blank">www.exp-blog.com</a> 
  * @version   1.0 # 2018-05-20
  * @author    EXP: 272629724@qq.com
  * @since     jdk版本：jdk1.6
  */
 public class MakePatch {
 
-	/** 私有化构造函�? */
+	/** 私有化构造函数 */
 	protected MakePatch() {}
 	
 	/**
 	 * 生成升级补丁
-	 * @param SRC_DIR 选择的原始补丁目�?
+	 * @param SRC_DIR 选择的原始补丁目录
 	 * @param APP_NAME 应用名称
 	 * @param VERSION 补丁版本
 	 * @param RELEASE_TIME 发布时间
@@ -45,15 +45,15 @@ public class MakePatch {
 		
 		int step = clearStepStatus();
 		if(FileUtils.exists(PATCH_ZIP_PATH) && 
-				!SwingUtils.confirm("补丁已存�?, 是否覆盖 ? ")) {
+				!SwingUtils.confirm("补丁已存在, 是否覆盖 ? ")) {
 			return;
 		}
 		
 		
-		toConsole("正在复制补丁目录�? [", PATCH_DIR, "] ...");
+		toConsole("正在复制补丁目录到 [", PATCH_DIR, "] ...");
 		boolean isOk = FileUtils.copyDirectory(SRC_DIR, PATCH_DIR);
 		if(updateStepStatus(step++, isOk) == false) {
-			toConsole("复制补丁目录�? [", PATCH_DIR, "] 失败");
+			toConsole("复制补丁目录到 [", PATCH_DIR, "] 失败");
 			return;
 		}
 		PatchUtils.patchSleep();
@@ -68,42 +68,42 @@ public class MakePatch {
 		PatchUtils.patchSleep();
 		
 		
-		toConsole("正在生成补丁目录 [", PATCH_DIR, "] 的压缩文�?...");
+		toConsole("正在生成补丁目录 [", PATCH_DIR, "] 的压缩文件...");
 		isOk = CompressUtils.toZip(PATCH_DIR, PATCH_ZIP_PATH);
 		isOk &= FileUtils.delete(PATCH_DIR);
 		if(updateStepStatus(step++, isOk) == false) {
-			toConsole("生成补丁目录 [", PATCH_ZIP_NAME, "] 的压缩文件失�?");
+			toConsole("生成补丁目录 [", PATCH_ZIP_NAME, "] 的压缩文件失败");
 			return;
 		}
 		PatchUtils.patchSleep();
 		
 
-		toConsole("正在生成补丁文件 [", PATCH_ZIP_NAME, "] 的备份文�?...");
+		toConsole("正在生成补丁文件 [", PATCH_ZIP_NAME, "] 的备份文件...");
 		String txtPath = PATCH_ZIP_PATH.concat(Params.TXT_SUFFIX);
 		isOk = TXTUtils.toTXT(PATCH_ZIP_PATH, txtPath);
 		if(updateStepStatus(step++, isOk) == false) {
-			toConsole("生成补丁文件 [", PATCH_ZIP_NAME, "] 的备份文件失�?");
+			toConsole("生成补丁文件 [", PATCH_ZIP_NAME, "] 的备份文件失败");
 			return;
 		}
 		PatchUtils.patchSleep();
 		
 		
-		toConsole("正在生成补丁文件 [", PATCH_ZIP_NAME, "] 的时间水�?...");
+		toConsole("正在生成补丁文件 [", PATCH_ZIP_NAME, "] 的时间水印...");
 		String timePath = PathUtils.combine(SNK_DIR, Params.RELEASE_TIME);
 		isOk = FileUtils.write(timePath, RELEASE_TIME, Config.DEFAULT_CHARSET, false);
 		if(updateStepStatus(step++, isOk) == false) {
-			toConsole("生成补丁文件 [", PATCH_ZIP_NAME, "] 的时间水印失�?");
+			toConsole("生成补丁文件 [", PATCH_ZIP_NAME, "] 的时间水印失败");
 			return;
 		}
 		
 		
-		toConsole("正在生成补丁文件 [", PATCH_ZIP_NAME, "] 的MD5校验�?...");
+		toConsole("正在生成补丁文件 [", PATCH_ZIP_NAME, "] 的MD5校验码...");
 		String MD5 = CryptoUtils.toFileMD5(PATCH_ZIP_PATH);
 		MakePatchUI.getInstn().updatMD5(MD5);
 		String MD5Path = PathUtils.combine(SNK_DIR, Params.MD5_HTML);
 		isOk = FileUtils.write(MD5Path, MD5, Config.DEFAULT_CHARSET, false);
 		if(updateStepStatus(step++, isOk) == false) {
-			toConsole("生成补丁文件 [", PATCH_ZIP_NAME, "] 的MD5校验码失�?");
+			toConsole("生成补丁文件 [", PATCH_ZIP_NAME, "] 的MD5校验码失败");
 			return;
 		}
 		PatchUtils.patchSleep();
@@ -117,7 +117,7 @@ public class MakePatch {
 		}
 		
 		
-		toConsole("生成应用程序 [", APP_NAME, "] 的升级补丁完�? (管理页面已更�?)");
+		toConsole("生成应用程序 [", APP_NAME, "] 的升级补丁完成 (管理页面已更新)");
 		SwingUtils.info("生成补丁成功");
 	}
 	
@@ -147,7 +147,7 @@ public class MakePatch {
 	}
 	
 	/**
-	 * 清空制作补丁步骤状�?
+	 * 清空制作补丁步骤状态
 	 * @return 初始步骤索引
 	 */
 	private static int clearStepStatus() {
@@ -156,7 +156,7 @@ public class MakePatch {
 	}
 	
 	/**
-	 * 更新制作补丁步骤状�?
+	 * 更新制作补丁步骤状态
 	 * @param step
 	 * @param isOk
 	 * @return

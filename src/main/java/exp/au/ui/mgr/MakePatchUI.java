@@ -40,7 +40,7 @@ import exp.libs.warp.ui.cpt.win.MainWindow;
  * 升级包制作界面
  * </PRE>
  * <B>PROJECT : </B> auto-upgrader
- * <B>SUPPORT : </B> <a href="http://www.exp-blog.com" target="_blank">www.exp-blog.com</a>
+ * <B>SUPPORT : </B> <a href="http://www.exp-blog.com" target="_blank">www.exp-blog.com</a> 
  * @version   1.0 # 2018-05-20
  * @author    EXP: 272629724@qq.com
  * @since     jdk版本：jdk1.6
@@ -80,7 +80,7 @@ public class MakePatchUI extends MainWindow {
 	
 	private JEditorPane console;
 	
-	/** 模拟进度条的单选按�? */
+	/** 模拟进度条的单选按钮 */
 	private JRadioButton[] stepPB;
 	
 	private JButton generateBtn;
@@ -90,7 +90,7 @@ public class MakePatchUI extends MainWindow {
 	private static volatile MakePatchUI instance;
 	
 	private MakePatchUI() {
-		super("升级包制�?", WIDTH, HEIGHT);
+		super("升级包制作", WIDTH, HEIGHT);
 	}
 	
 	public static MakePatchUI getInstn() {
@@ -116,7 +116,7 @@ public class MakePatchUI extends MainWindow {
 		
 		this.verTF = new JTextField();
 		verTF.setEditable(false);
-		verTF.setToolTipText("补丁版本, 格式要求�?: \"主版�?.次版本\" (�?: 3.4)");
+		verTF.setToolTipText("补丁版本, 格式要求为: \"主版本.次版本\" (如: 3.4)");
 		this.verBtn = newButton("设置");
 		this.verWin = new _VerWin(appNameTF, verTF);
 		
@@ -143,7 +143,7 @@ public class MakePatchUI extends MainWindow {
 			stepPB[6] = newRadioButton("生成页面");
 		}
 		
-		this.generateBtn = new JButton("一 �? �? �? �? �?");
+		this.generateBtn = new JButton("一 键 生 成 补 丁");
 		BeautyEyeUtils.setButtonStyle(NormalColor.lightBlue, generateBtn);
 		generateBtn.setForeground(Colors.BLACK.COLOR());
 		
@@ -172,7 +172,7 @@ public class MakePatchUI extends MainWindow {
 	}
 	
 	/**
-	 * (�?)控制面板
+	 * (北)控制面板
 	 * @return
 	 */
 	private JPanel getNorthPanel() {
@@ -204,7 +204,7 @@ public class MakePatchUI extends MainWindow {
 	}
 	
 	/**
-	 * 进度条面�?
+	 * 进度条面板
 	 * @return
 	 */
 	private JPanel _getProgressBar() {
@@ -294,7 +294,7 @@ public class MakePatchUI extends MainWindow {
 	}
 	
 	/**
-	 * 检查补丁生成参�?
+	 * 检查补丁生成参数
 	 * @return
 	 */
 	private boolean checkPatchParams() {
@@ -319,19 +319,19 @@ public class MakePatchUI extends MainWindow {
 			CmdType cmdType = cmdLine.getCmdType();
 			if(CmdType.DEL == cmdType) {
 				if(StrUtils.isTrimEmpty(cmdLine.getFromPath())) {
-					SwingUtils.warn("�? [", i, "] �? [", cmdType.CH(), "] 命令的源目录不能为空");
+					SwingUtils.warn("第 [", i, "] 条 [", cmdType.CH(), "] 命令的源目录不能为空");
 					isOk = false;
 					break;
 				}
 				
 			} else {
 				if(StrUtils.isTrimEmpty(cmdLine.getFromPath())) {
-					SwingUtils.warn("�? [", i, "] �? [", cmdType.CH(), "] 命令的源目录不能为空");
+					SwingUtils.warn("第 [", i, "] 条 [", cmdType.CH(), "] 命令的源目录不能为空");
 					isOk = false;
 					break;
 					
 				} else if(StrUtils.isTrimEmpty(cmdLine.getToPath())) {
-					SwingUtils.warn("�? [", i, "] �? [", cmdType.CH(), "] 命令的目标目录不能为�?");
+					SwingUtils.warn("第 [", i, "] 条 [", cmdType.CH(), "] 命令的目标目录不能为空");
 					isOk = false;
 					break;
 				}
@@ -341,7 +341,7 @@ public class MakePatchUI extends MainWindow {
 	}
 	
 	/**
-	 * 提取xml格式的命令列�?
+	 * 提取xml格式的命令列表
 	 * @return
 	 */
 	public String getXmlCmds() {
@@ -354,7 +354,7 @@ public class MakePatchUI extends MainWindow {
 	}
 	
 	/**
-	 * 更新MD5�?
+	 * 更新MD5值
 	 * @param MD5
 	 */
 	public void updatMD5(String MD5) {
@@ -362,7 +362,7 @@ public class MakePatchUI extends MainWindow {
 	}
 	
 	/**
-	 * 更新进度条面板的状�?
+	 * 更新进度条面板的状态
 	 * @param step 执行步骤索引
 	 * @param isOk 是否执行成功
 	 */
@@ -377,7 +377,7 @@ public class MakePatchUI extends MainWindow {
 	}
 	
 	/**
-	 * 还原进度条面板状�?
+	 * 还原进度条面板状态
 	 */
 	public void clearProgressBar() {
 		for(int i = 0; i < stepPB.length; i++) {
@@ -439,7 +439,7 @@ public class MakePatchUI extends MainWindow {
 	}
 	
 	/**
-	 * 创建进度条面板的单选按�?
+	 * 创建进度条面板的单选按钮
 	 * @param name
 	 * @return
 	 */

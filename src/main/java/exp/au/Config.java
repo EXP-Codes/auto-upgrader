@@ -10,7 +10,7 @@ import exp.libs.warp.conf.xml.XConfigFactory;
  * 程序配置
  * </PRE>
  * <B>PROJECT : </B> auto-upgrader
- * <B>SUPPORT : </B> <a href="http://www.exp-blog.com" target="_blank">www.exp-blog.com</a>
+ * <B>SUPPORT : </B> <a href="http://www.exp-blog.com" target="_blank">www.exp-blog.com</a> 
  * @version   1.0 # 2018-05-20
  * @author    EXP: 272629724@qq.com
  * @since     jdk版本：jdk1.6
@@ -19,7 +19,7 @@ public class Config {
 	
 	public final static String DEFAULT_CHARSET = Charset.UTF8;
 	
-	/** 应用名称(由于此项目是被引用的接口, 因此有些地方不能从版本库取应用名�?) */
+	/** 应用名称(由于此项目是被引用的接口, 因此有些地方不能从版本库取应用名称) */
 	public final static String APP_NAME = "auto-upgrader";
 	
 	private final static String APP_PATH = "/exp/au/au_conf.xml";

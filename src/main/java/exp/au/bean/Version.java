@@ -11,21 +11,21 @@ import exp.libs.utils.verify.RegexUtils;
  * 版本对象
  * </PRE>
  * <B>PROJECT : </B> auto-upgrader
- * <B>SUPPORT : </B> <a href="http://www.exp-blog.com" target="_blank">www.exp-blog.com</a>
+ * <B>SUPPORT : </B> <a href="http://www.exp-blog.com" target="_blank">www.exp-blog.com</a> 
  * @version   1.0 # 2018-05-20
  * @author    EXP: 272629724@qq.com
  * @since     jdk版本：jdk1.6
  */
 public class Version implements Comparable<Version> {
 
-	/** 默认版本�? */
+	/** 默认版本号 */
 	public final static Version NULL = new Version(0, 0);
 	
-	/** 版本号的正则�? */
+	/** 版本号的正则式 */
 	private final static String REGEX = "(\\d+)\\.(\\d+)";
 	
 	/**
-	 * 版本�?
+	 * 版本号
 	 *  格式: major.minor
 	 */
 	private String ver;
@@ -37,8 +37,8 @@ public class Version implements Comparable<Version> {
 	private int minor;
 	
 	/**
-	 * 构造函�?
-	 * @param ver 版本�?, 格式: major.minor
+	 * 构造函数
+	 * @param ver 版本号, 格式: major.minor
 	 */
 	public Version(String ver) {
 		List<String> groups = RegexUtils.findGroups(ver, REGEX);
@@ -55,7 +55,7 @@ public class Version implements Comparable<Version> {
 	}
 	
 	/**
-	 * 构造函�?
+	 * 构造函数
 	 * @param major 主版本号 (>=0)
 	 * @param minor 次版本号 (>=0)
 	 */
@@ -78,8 +78,8 @@ public class Version implements Comparable<Version> {
 	}
 	
 	/**
-	 * 比较两个版本�?
-	 * @param other 其他版本�?
+	 * 比较两个版本号
+	 * @param other 其他版本号
 	 * @return 0: this == other
 	 *        >0: this > other
 	 *        <0: this < other

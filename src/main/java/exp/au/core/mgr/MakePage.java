@@ -18,14 +18,14 @@ import exp.libs.warp.tpl.Template;
  * 根据补丁目录生成补丁管理页面
  * </PRE>
  * <B>PROJECT : </B> auto-upgrader
- * <B>SUPPORT : </B> <a href="http://www.exp-blog.com" target="_blank">www.exp-blog.com</a>
+ * <B>SUPPORT : </B> <a href="http://www.exp-blog.com" target="_blank">www.exp-blog.com</a> 
  * @version   1.0 # 2018-05-20
  * @author    EXP: 272629724@qq.com
  * @since     jdk版本：jdk1.6
  */
 public class MakePage {
 
-	/** 私有化构造函�? */
+	/** 私有化构造函数 */
 	protected MakePage() {}
 	
 	/**
@@ -57,9 +57,9 @@ public class MakePage {
 	}
 	
 	/**
-	 * 根据升级补丁目录生成每个应用的升级补丁导航表�?
+	 * 根据升级补丁目录生成每个应用的升级补丁导航表单
 	 * @param patchDir 升级补丁目录
-	 * @return 每个应用的升级补丁导航表�?
+	 * @return 每个应用的升级补丁导航表单
 	 */
 	private static List<String> toTables(File patchDir) {
 		List<String> tables = new LinkedList<String>();
@@ -80,7 +80,7 @@ public class MakePage {
 	
 	/**
 	 * 根据某个应用的升级补丁目录生成其每个升级补丁的导航栏
-	 * @param appDir 某个应用的升级补�?
+	 * @param appDir 某个应用的升级补丁
 	 * @return 每个升级补丁的导航栏
 	 */
 	private static List<String> toRows(File appDir) {

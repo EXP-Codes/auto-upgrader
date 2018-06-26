@@ -12,7 +12,7 @@ import exp.libs.utils.other.StrUtils;
  * 升级补丁参数对象
  * </PRE>
  * <B>PROJECT : </B> auto-upgrader
- * <B>SUPPORT : </B> <a href="http://www.exp-blog.com" target="_blank">www.exp-blog.com</a>
+ * <B>SUPPORT : </B> <a href="http://www.exp-blog.com" target="_blank">www.exp-blog.com</a> 
  * @version   1.0 # 2018-05-20
  * @author    EXP: 272629724@qq.com
  * @since     jdk版本：jdk1.6
@@ -37,23 +37,23 @@ public class PatchInfo implements Comparable<PatchInfo> {
 	/** 补丁校验MD5 */
 	private String MD5;
 	
-	/** zip格式补丁的下载路�? */
+	/** zip格式补丁的下载路径 */
 	private String zipURL;
 	
-	/** zip格式补丁的名�? */
+	/** zip格式补丁的名称 */
 	private String zipName;
 	
-	/** txt格式补丁的下载路�? */
+	/** txt格式补丁的下载路径 */
 	private String txtURL;
 	
-	/** txt格式补丁的名�? */
+	/** txt格式补丁的名称 */
 	private String txtName;
 	
-	/** 升级步骤命令�?(有序) */
+	/** 升级步骤命令集(有序) */
 	private List<UpdateCmd> updateCmds;
 	
 	/**
-	 * 构造函�?
+	 * 构造函数
 	 */
 	public PatchInfo() {
 		this.appName = "";

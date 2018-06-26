@@ -20,7 +20,7 @@ import exp.libs.warp.ui.SwingUtils;
  * 命令行组件
  * </PRE>
  * <B>PROJECT : </B> auto-upgrader
- * <B>SUPPORT : </B> <a href="http://www.exp-blog.com" target="_blank">www.exp-blog.com</a>
+ * <B>SUPPORT : </B> <a href="http://www.exp-blog.com" target="_blank">www.exp-blog.com</a> 
  * @version   1.0 # 2018-05-20
  * @author    EXP: 272629724@qq.com
  * @since     jdk版本：jdk1.6
@@ -29,9 +29,9 @@ public class _CmdLine extends JPanel {
 
 	private static final long serialVersionUID = -1015365465387409580L;
 
-	private final static String FROM_TIPS = " �?: ";
+	private final static String FROM_TIPS = " 从: ";
 	
-	private final static String TO_TIPS = " �?: ";
+	private final static String TO_TIPS = " 到: ";
 	
 	private final static String PATCH_DIR_TIPS = "{补丁目录}";
 	
@@ -64,12 +64,12 @@ public class _CmdLine extends JPanel {
 		
 		this.fromTipsLabel = new JLabel(FROM_TIPS);
 		this.fromLabel = new JLabel(PATCH_DIR);
-		this.fromTF = new JTextField(20);	// 限制长度, 避免其根据内容自动延�?
+		this.fromTF = new JTextField(20);	// 限制长度, 避免其根据内容自动延展
 		fromTF.setToolTipText(getToolTips(PATCH_DIR_TIPS));
 		
 		this.toTipsLabel = new JLabel(TO_TIPS);
 		this.toLabel = new JLabel(APP_DIR);
-		this.toTF = new JTextField(20);		// 限制长度, 避免其根据内容自动延�?
+		this.toTF = new JTextField(20);		// 限制长度, 避免其根据内容自动延展
 		toTF.setToolTipText(getToolTips(APP_DIR_TIPS));
 		
 		initLayout();
@@ -100,25 +100,25 @@ public class _CmdLine extends JPanel {
 	            if(cmdType == CmdType.ADD) {
 	            	updateFromTips(true);
 	            	updateToTips(false);
-	            	tips(cmdType, "�? ", PATCH_DIR_TIPS, " 移动一�? [文件/目录] �? ", 
-	            			APP_DIR_TIPS, " 的相同位�? (若存在则替换,不存在则新增)");
+	            	tips(cmdType, "从 ", PATCH_DIR_TIPS, " 移动一个 [文件/目录] 到 ", 
+	            			APP_DIR_TIPS, " 的相同位置 (若存在则替换,不存在则新增)");
 	            	
 	            } else if(cmdType == CmdType.RPL) {
 		            	updateFromTips(true);
 		            	updateToTips(false);
-		            	tips(cmdType, "�? ", PATCH_DIR_TIPS, " 移动一�? [文件/目录] �? ", 
-		            			APP_DIR_TIPS, " 的相同位�? (仅存在时替换,不存在不操作)");
+		            	tips(cmdType, "从 ", PATCH_DIR_TIPS, " 移动一个 [文件/目录] 到 ", 
+		            			APP_DIR_TIPS, " 的相同位置 (仅存在时替换,不存在不操作)");
 	            	
 	            } else if(cmdType == CmdType.MOV) {
 	            	updateFromTips(false);
 	            	updateToTips(false);
-	            	tips(cmdType, "�? ", APP_DIR_TIPS, " 移动一�? [文件/目录] �? ", 
-	            			APP_DIR_TIPS, " 的另一个位�?");
+	            	tips(cmdType, "从 ", APP_DIR_TIPS, " 移动一个 [文件/目录] 到 ", 
+	            			APP_DIR_TIPS, " 的另一个位置");
 	            	
 	            } else if(cmdType == CmdType.DEL) {
 	            	updateFromTips(false);
 	            	updateToTips(true);
-	            	tips(cmdType, "�? ", APP_DIR_TIPS, " 删除一�? [文件/目录]");
+	            	tips(cmdType, "从 ", APP_DIR_TIPS, " 删除一个 [文件/目录]");
 	            }
 			}
 		});
@@ -134,7 +134,7 @@ public class _CmdLine extends JPanel {
 					String data = fromTF.getText();
 					char ch = e.getKeyChar();
 					if(ch < 32 || ch == 127) {
-						// UNDO: <32为控制信号字�?, 127为Del
+						// UNDO: <32为控制信号字符, 127为Del
 						
 					} else {
 						data = data + ch;
@@ -169,11 +169,11 @@ public class _CmdLine extends JPanel {
 	}
 	
 	private String getToolTips(String dir) {
-		return StrUtils.concat("相对�? ", dir, " �? [文件/目录] 路径");
+		return StrUtils.concat("相对于 ", dir, " 的 [文件/目录] 路径");
 	}
 	
 	private void tips(CmdType cmdType, String... msgs) {
-		String cmd = StrUtils.concat("<font color='red'>�?", cmdType.CH(), "�? 命令: </font>");
+		String cmd = StrUtils.concat("<font color='red'>【", cmdType.CH(), "】 命令: </font>");
 		String msg = StrUtils.concat(msgs);
 		MakePatchUI.getInstn().toConsole(cmd, msg);
 	}

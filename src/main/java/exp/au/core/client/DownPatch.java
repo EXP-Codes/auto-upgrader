@@ -25,18 +25,18 @@ import exp.libs.warp.net.http.HttpURLUtils;
  * 根据应用信息下载对应的升级补丁列表
  * </PRE>
  * <B>PROJECT : </B> auto-upgrader
- * <B>SUPPORT : </B> <a href="http://www.exp-blog.com" target="_blank">www.exp-blog.com</a>
+ * <B>SUPPORT : </B> <a href="http://www.exp-blog.com" target="_blank">www.exp-blog.com</a> 
  * @version   1.0 # 2018-05-20
  * @author    EXP: 272629724@qq.com
  * @since     jdk版本：jdk1.6
  */
 public class DownPatch {
 	
-	/** 私有化构造函�? */
+	/** 私有化构造函数 */
 	protected DownPatch() {}
 	
 	/**
-	 * 提取指定应用的补丁列表信�?
+	 * 提取指定应用的补丁列表信息
 	 * @param APP_NAME 应用名称
 	 * @return 升级补丁列表信息
 	 */
@@ -126,8 +126,8 @@ public class DownPatch {
 	
 	/**
 	 * 合并URL路径
-	 * @param prefix 前缀路径�? �?: http://lyy289065406.gitee.io/auto-upgrader/
-	 * @param suffix 后缀路径�? �?: ./foo/bar.suffix
+	 * @param prefix 前缀路径， 如: http://lyy289065406.gitee.io/auto-upgrader/
+	 * @param suffix 后缀路径， 如: ./foo/bar.suffix
 	 * @return
 	 */
 	private static String combineURL(String prefix, String suffix) {
@@ -145,16 +145,16 @@ public class DownPatch {
 		
 		boolean isOk = true;
 		if(FileUtils.exists(zipPath)) {
-			// Undo 若已存在则不再重复下�?
+			// Undo 若已存在则不再重复下载
 			
 		} else {
 			final String MD5 = patchInfo.getMD5();
 			FileUtils.createDir(saveDir);
 			
-			// 下载zip版本升级�?
+			// 下载zip版本升级包
 			isOk = downZipPatch(patchInfo.getZipURL(), zipPath, MD5);
 			
-			// 若zip版本升级包下载失�?, 则下载txt版本升级�?
+			// 若zip版本升级包下载失败, 则下载txt版本升级包
 			if(isOk == false) {
 				FileUtils.delete(zipPath);
 				String txtPath = PathUtils.combine(saveDir, patchInfo.getTxtName());
@@ -162,7 +162,7 @@ public class DownPatch {
 			}
 		}
 		
-		// 若下载补丁失�?, 则删除该补丁所在的目录
+		// 若下载补丁失败, 则删除该补丁所在的目录
 		if(isOk == false) {
 			FileUtils.delete(saveDir);
 		}

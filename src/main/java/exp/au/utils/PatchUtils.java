@@ -9,18 +9,18 @@ import exp.libs.utils.other.StrUtils;
  * 补丁工具
  * </PRE>
  * <B>PROJECT : </B> auto-upgrader
- * <B>SUPPORT : </B> <a href="http://www.exp-blog.com" target="_blank">www.exp-blog.com</a>
+ * <B>SUPPORT : </B> <a href="http://www.exp-blog.com" target="_blank">www.exp-blog.com</a> 
  * @version   1.0 # 2018-05-20
  * @author    EXP: 272629724@qq.com
  * @since     jdk版本：jdk1.6
  */
 public class PatchUtils {
 
-	/** 私有化构造函�? */
+	/** 私有化构造函数 */
 	protected PatchUtils() {}
 	
 	/**
-	 * 构造补丁名�?
+	 * 构造补丁名称
 	 * @param appName 应用名称
 	 * @param version 补丁版本
 	 * @return
@@ -30,7 +30,7 @@ public class PatchUtils {
 	}
 	
 	/**
-	 * 执行补丁相关操作步骤之间的休�?
+	 * 执行补丁相关操作步骤之间的休眠
 	 *  (目的是可以在界面看到提示效果)
 	 */
 	public static void patchSleep() {

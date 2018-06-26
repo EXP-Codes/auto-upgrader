@@ -15,7 +15,7 @@ import exp.libs.warp.ui.SwingUtils;
  * 补丁升级步骤的命令行配置组件
  * </PRE>
  * <B>PROJECT : </B> auto-upgrader
- * <B>SUPPORT : </B> <a href="http://www.exp-blog.com" target="_blank">www.exp-blog.com</a>
+ * <B>SUPPORT : </B> <a href="http://www.exp-blog.com" target="_blank">www.exp-blog.com</a> 
  * @version   1.0 # 2018-05-20
  * @author    EXP: 272629724@qq.com
  * @since     jdk版本：jdk1.6
@@ -24,13 +24,13 @@ class _PatchLine extends JPanel {
 
 	private static final long serialVersionUID = 3115712607344507109L;
 
-	private final static String UNDOWN = "  未下�?  ";
+	private final static String UNDOWN = "  未下载  ";
 	
-	private final static String DOWN = "  已下�?  ";
+	private final static String DOWN = "  已下载  ";
 	
-	private final static String UNISTALL = "  未安�?  ";
+	private final static String UNISTALL = "  未安装  ";
 	
-	private final static String INSTALL = "  已安�?  ";
+	private final static String INSTALL = "  已安装  ";
 	
 	private JLabel patchLabel;
 	
