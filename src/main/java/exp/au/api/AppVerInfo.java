@@ -24,8 +24,8 @@ import exp.libs.warp.ver.VersionMgr;
  *  客户端则根据所生成的当前版本信息对该应用程序进行升级 (若没有当前版本信息则不执行升级操作)
  *  
  * </PRE>
- * <B>PROJECT : </B> auto-upgrader
- * <B>SUPPORT : </B> <a href="http://www.exp-blog.com" target="_blank">www.exp-blog.com</a> 
+ * <br/><B>PROJECT : </B> auto-upgrader
+ * <br/><B>SUPPORT : </B> <a href="http://www.exp-blog.com" target="_blank">www.exp-blog.com</a> 
  * @version   1.0 # 2018-05-20
  * @author    EXP: 272629724@qq.com
  * @since     jdk版本：jdk1.6
