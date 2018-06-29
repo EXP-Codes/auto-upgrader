@@ -89,8 +89,8 @@
               <artifactId>jep</artifactId>
 	        </exclusion>
 	        <exclusion>
-	          <groupId>org.quartz</groupId>
-	          <artifactId>quartz-all</artifactId>
+	          <groupId>org.quartz-scheduler</groupId>
+	          <artifactId>quartz</artifactId>
 	        </exclusion>
 	        <exclusion>
 	          <groupId>jsch</groupId>
