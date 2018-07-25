@@ -89,6 +89,7 @@ public class UpgradeUI extends MainWindow {
 			synchronized (UpgradeUI.class) {
 				if(instance == null) {
 					instance = new UpgradeUI();
+					instance.setMini(TO_MINI);
 				}
 			}
 		}

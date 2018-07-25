@@ -98,6 +98,7 @@ public class MakePatchUI extends MainWindow {
 			synchronized (MakePatchUI.class) {
 				if(instance == null) {
 					instance = new MakePatchUI();
+					instance.setMini(TO_MINI);
 				}
 			}
 		}
