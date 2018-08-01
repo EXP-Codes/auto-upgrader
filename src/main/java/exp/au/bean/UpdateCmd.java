@@ -1,9 +1,6 @@
 package exp.au.bean;
 
 import exp.au.envm.CmdType;
-import exp.au.envm.Params;
-import exp.libs.utils.io.FileUtils;
-import exp.libs.utils.other.StrUtils;
 
 /**
  * <PRE>
