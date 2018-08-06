@@ -9,8 +9,8 @@
 	<version>1.0-SNAPSHOT</version>
 	<packaging>jar</packaging>
 
-	<name>auto-upgrader</name>
-	<description>软件自动升级插件</description>
+	<name>软件自动升级插件</name>
+	<description>提供升级包制作界面、升级包发布页面、软件升级接口、软件升级界面</description>
 	<url>https://github.com/lyy289065406/auto-upgrader/trunk</url>
 	<inceptionYear>2018-04-28</inceptionYear>
 
