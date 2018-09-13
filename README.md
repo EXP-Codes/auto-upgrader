@@ -1,6 +1,6 @@
 # auto-upgrader
 
-> <b>软件自动升级插件&nbsp;:&nbsp;</b>[[ Management-Page ]](https://lyy289065406.github.io/auto-upgrader/)
+> <b>自动化升级插件&nbsp;:&nbsp;</b>[[ Management-Page ]](https://lyy289065406.github.io/auto-upgrader/)
 
 
 ## 版权声明
