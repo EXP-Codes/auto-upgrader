@@ -49,10 +49,11 @@
 
 - 01.　通过 git 命令 clone 这个插件仓库到本地，并通过 Eclipse 导入这个插件项目
 - 02.　准备好某个应用在升级到下一个版本时需要用到的文件，随便放在一个目录内
-- 03.　运行 `exp.au.PatchMaker`
+- 03.　运行 `exp.au.PatchMaker`，通过UI界面读取这个目录，制作升级补丁：<br/>
+![制作升级补丁](https://raw.githubusercontent.com/lyy289065406/auto-upgrader/master/doc/02-%E5%88%B6%E4%BD%9C%E5%8D%87%E7%BA%A7%E8%A1%A5%E4%B8%81.png)
 - 04.　通过 git 提交变更，即成功把应用的版本信息和升级补丁提交到了 Github服务器
 - 05.　此时刷新静态页面地址 `xxx-url`，会发现页面内容已变更，如：
-![静态页面](https://raw.githubusercontent.com/lyy289065406/auto-upgrader/master/doc/02-%E9%9D%99%E6%80%81%E9%A1%B5%E9%9D%A2%E7%9A%84%E5%8D%87%E7%BA%A7%E8%A1%A5%E4%B8%81.png)
+![补丁列表](https://raw.githubusercontent.com/lyy289065406/auto-upgrader/master/doc/03-%E9%9D%99%E6%80%81%E9%A1%B5%E9%9D%A2%E7%9A%84%E5%8D%87%E7%BA%A7%E8%A1%A5%E4%B8%81%E5%88%97%E8%A1%A8.png)
 
 
 
