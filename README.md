@@ -51,7 +51,7 @@
 
 - 04.　通过 git 提交变更，即成功把应用的版本信息和升级补丁提交到了 Github服务器
 - 05.　此时刷新静态页面地址 `xxx-url`，会发现页面内容已变更，如：
-![静态页面](https://raw.githubusercontent.com/lyy289065406/certificate/master/doc/02-%E9%9D%99%E6%80%81%E9%A1%B5%E9%9D%A2%E7%9A%84%E6%8E%88%E6%9D%83%E5%BA%94%E7%94%A8%E4%BF%A1%E6%81%AF.png)
+![静态页面](https://raw.githubusercontent.com/lyy289065406/auto-upgrader/master/doc/02-%E9%9D%99%E6%80%81%E9%A1%B5%E9%9D%A2%E7%9A%84%E5%8D%87%E7%BA%A7%E8%A1%A5%E4%B8%81.png)
 
 
 
