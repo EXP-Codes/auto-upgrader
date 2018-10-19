@@ -72,7 +72,7 @@
 - 02.　构件内提供了API：`exp.au.api.AppVerInfo.existNewVersion()` ，可据此检查 `xxx-url` 中是否存在新版本补丁
 - 03.　构件内提供了API：`exp.au.api.AppVerInfo.export()` ，让其在应用的main方法中执行，可在应用每次运行时导出其版本信息到 `./conf/au.ver` 文件，同时在应用根目录生成 `软件升级.exe` 用于升级
 - 04.　运行 `软件升级.exe` 会连接到你的版本补丁管理页面 `xxx-url` ，点击 `检查更新` 按钮会与 `./conf/au.ver` 文件记录的当前版本进行比较，若存在更高版本时，点击 `一键升级` 按钮即可自动下载补丁文件并升级，如：<br/>
-![应用升级]()
+![应用升级](https://raw.githubusercontent.com/lyy289065406/auto-upgrader/master/doc/04-%E5%BA%94%E7%94%A8%E5%8D%87%E7%BA%A7.png)
 - 05.　下载的升级补丁会保存到 `./patches` 目录
 
 
