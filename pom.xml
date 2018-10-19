@@ -6,7 +6,7 @@
 	<!--项目基本信息(必填)-->
 	<groupId>exp.au</groupId>
 	<artifactId>auto-upgrader</artifactId>
-	<version>1.0-SNAPSHOT</version>
+	<version>1.0</version>
 	<packaging>jar</packaging>
 
 	<name>软件自动升级插件</name>
@@ -39,8 +39,8 @@
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<release.dir>${project.build.directory}/${project.artifactId}-${project.version}</release.dir>
 		<jdk.version>1.6</jdk.version>
-		<explibs.version>1.0-SNAPSHOT</explibs.version>
-		<mrp.plugin.version>1.0-SNAPSHOT</mrp.plugin.version>
+		<explibs.version>1.0</explibs.version>
+		<mrp.plugin.version>1.0</mrp.plugin.version>
 	</properties>
 
 	<!-- 项目依赖 -->
@@ -49,7 +49,7 @@
 		<!-- 经验库 -->
     	<dependency>
 		  <groupId>exp.libs</groupId>
-		  <artifactId>exp-libs-base</artifactId>
+		  <artifactId>exp-libs-simple</artifactId>
 		  <version>${explibs.version}</version>
 		</dependency>
 		

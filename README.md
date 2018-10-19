@@ -48,8 +48,9 @@
 <br/>　**（开发环境）在 `xxx-url` 静态页面维护应用的版本信息和升级补丁：**
 
 - 01.　通过 git 命令 clone 这个插件仓库到本地，并通过 Eclipse 导入这个插件项目
-- 02.　准备好某个应用在升级到下一个版本时需要用到的文件，随便放在一个目录内
-- 03.　运行 `exp.au.PatchMaker`，通过UI读取这个目录，制作升级补丁：<br/>
+- 02.　修改 `src/main/resources/exp/au/au_conf.xml` 中的版本补丁管理页面为你的 `xxx-url` 
+- 03.　准备好某个应用在升级到下一个版本时需要用到的文件，随便放在一个目录内
+- 04.　运行 `exp.au.PatchMaker`，通过UI读取这个目录，制作升级补丁：<br/>
 ![制作升级补丁](https://raw.githubusercontent.com/lyy289065406/auto-upgrader/master/doc/02-%E5%88%B6%E4%BD%9C%E5%8D%87%E7%BA%A7%E8%A1%A5%E4%B8%81.png)
 - 05.　制作补丁的过程根据UI的指引去操作即可，简单来说就是告诉升级程序，应用程序在升级时，需要新增、删除、替换、移动哪些文件。点击 `一键生成补丁` 按钮后，会在 `./patches-for-page/%应用名称%/%补丁版本%` 目录下生成补丁包，同时会更新 `./index.html` 静态页面中的补丁列表。
 - 06.　通过 git 提交变更，即成功把应用的版本信息和升级补丁提交到了 Github服务器
@@ -68,8 +69,11 @@
   <version>1.0</version>
 </dependency>
 ```
-- 02.　构件内提供了API：`exp.certificate.api.getAppInfo` ，可据此从 `xxx-url` 获取自身的授权信息
-- 03.　获取到的授权信息会以明文方式保存到 `exp.certificate.bean.AppInfo`， 按需使用即可
+- 02.　构件内提供了API：`exp.au.api.AppVerInfo.existNewVersion()` ，可据此检查 `xxx-url` 中是否存在新版本补丁
+- 03.　构件内提供了API：`exp.au.api.AppVerInfo.export()` ，让其在应用的main方法中执行，可在应用每次运行时导出其版本信息到 `./conf/au.ver` 文件，同时在应用根目录生成 `软件升级.exe` 用于升级
+- 04.　运行 `软件升级.exe` 会连接到你的版本补丁管理页面 `xxx-url` ，点击 `检查更新` 按钮会与 `./conf/au.ver` 文件记录的当前版本进行比较，若存在更高版本时，点击 `一键升级` 按钮即可自动下载补丁文件并升级，如：<br/>
+![应用升级]()
+- 05.　下载的升级补丁会保存到 `./patches` 目录
 
 
 ## 版权声明
