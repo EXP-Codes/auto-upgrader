@@ -60,8 +60,8 @@ public class CmdType {
 	
 	/**
 	 * 根据命令名称转换为命令对象
-	 * @param cmdName
-	 * @return
+	 * @param cmdName 命令名称
+	 * @return 命令对象
 	 */
 	public static CmdType toType(String cmdName) {
 		CmdType type = UNKNOW;

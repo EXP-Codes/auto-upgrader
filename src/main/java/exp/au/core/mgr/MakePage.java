@@ -30,7 +30,7 @@ public class MakePage {
 	
 	/**
 	 * 更新补丁管理页面
-	 * @return
+	 * @return 是否更新成功
 	 */
 	public static boolean updatePage() {
 		boolean isOk = false;

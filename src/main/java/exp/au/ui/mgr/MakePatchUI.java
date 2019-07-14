@@ -343,7 +343,7 @@ public class MakePatchUI extends MainWindow {
 	
 	/**
 	 * 提取xml格式的命令列表
-	 * @return
+	 * @return 命令列表
 	 */
 	public String getXmlCmds() {
 		StringBuilder cmds = new StringBuilder();

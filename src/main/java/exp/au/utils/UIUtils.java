@@ -22,7 +22,7 @@ public class UIUtils {
 	
 	/**
 	 * 打印信息到升级界面的控制台
-	 * @param msgs
+	 * @param msgs 信息列表
 	 */
 	public static void toConsole(Object... msgs) {
 		UpgradeUI.getInstn().toConsole(msgs);
@@ -31,7 +31,7 @@ public class UIUtils {
 	/**
 	 * 创建占位用的Label
 	 * @param spaceNum 占位空格个数
-	 * @return
+	 * @return 占位Label
 	 */
 	public static JLabel newLabel(int spaceNum) {
 		return new JLabel(StrUtils.multiChar(' ', spaceNum));

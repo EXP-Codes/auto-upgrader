@@ -213,7 +213,7 @@ public class UpgradeUI extends MainWindow {
 	
 	/**
 	 * 获取版本服务器URL
-	 * @return
+	 * @return 版本服务器URL
 	 */
 	public String getServerURL() {
 		return serverCB.isSelected() ? 

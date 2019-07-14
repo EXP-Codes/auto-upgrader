@@ -23,7 +23,7 @@ public class PatchUtils {
 	 * 构造补丁名称
 	 * @param appName 应用名称
 	 * @param version 补丁版本
-	 * @return
+	 * @return 补丁名称
 	 */
 	public static String toPatchName(String appName, String version) {
 		return StrUtils.concat(appName, Params.PATCH_TAG, version);
