@@ -65,12 +65,12 @@ public class Config {
 		return instance;
 	}
 	
-	public String TEST_SERVER() {
-		return xConf.getVal("testServer");
+	public String STAGING_SERVER() {
+		return xConf.getVal("stagingServer");
 	}
 	
-	public String OFFICIAL_SERVER() {
-		return xConf.getVal("officialServer");
+	public String PRODUCE_SERVER() {
+		return xConf.getVal("produceServer");
 	}
 	
 }

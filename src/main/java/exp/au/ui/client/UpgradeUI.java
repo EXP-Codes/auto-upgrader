@@ -217,8 +217,8 @@ public class UpgradeUI extends MainWindow {
 	 */
 	public String getServerURL() {
 		return serverCB.isSelected() ? 
-				Config.getInstn().TEST_SERVER() : 
-				Config.getInstn().OFFICIAL_SERVER();
+				Config.getInstn().STAGING_SERVER() : 
+				Config.getInstn().PRODUCE_SERVER();
 	}
 	
 	/**
