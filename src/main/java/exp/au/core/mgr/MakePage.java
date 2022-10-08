@@ -6,12 +6,12 @@ import java.util.List;
 
 import exp.au.Config;
 import exp.au.envm.Params;
-import exp.libs.utils.io.FileUtils;
+import exp.libs.utils.file.FileTemplate;
+import exp.libs.utils.file.FileUtils;
 import exp.libs.utils.other.ListUtils;
 import exp.libs.utils.other.PathUtils;
-import exp.libs.utils.other.StrUtils;
+import exp.libs.utils.str.StrUtils;
 import exp.libs.utils.time.TimeUtils;
-import exp.libs.warp.tpl.Template;
 
 /**
  * <PRE>
@@ -49,7 +49,7 @@ public class MakePage {
 		File patchDir = new File(patchDirPath);
 		List<String> tables = toTables(patchDir);
 		
-		Template tpl = new Template(Config.PAGE_TPL, Config.DEFAULT_CHARSET);
+		FileTemplate tpl = new FileTemplate(Config.PAGE_TPL, Config.DEFAULT_CHARSET);
 		tpl.set("tables", StrUtils.concat(tables, ""));
 		tpl.set("time", TimeUtils.getSysDate());
 		return FileUtils.write(Config.PAGE_PATH, 
@@ -63,7 +63,7 @@ public class MakePage {
 	 */
 	private static List<String> toTables(File patchDir) {
 		List<String> tables = new LinkedList<String>();
-		Template tpl = new Template(Config.TABLE_TPL, Config.DEFAULT_CHARSET);
+		FileTemplate tpl = new FileTemplate(Config.TABLE_TPL, Config.DEFAULT_CHARSET);
 		
 		File[] appDirs = patchDir.listFiles();
 		for(File appDir : appDirs) {
@@ -85,7 +85,7 @@ public class MakePage {
 	 */
 	private static List<String> toRows(File appDir) {
 		List<String> rows = new LinkedList<String>();
-		Template tpl = new Template(Config.ROW_TPL, Config.DEFAULT_CHARSET);
+		FileTemplate tpl = new FileTemplate(Config.ROW_TPL, Config.DEFAULT_CHARSET);
 		
 		File[] verDirs = appDir.listFiles();
 		for(File verDir : verDirs) {

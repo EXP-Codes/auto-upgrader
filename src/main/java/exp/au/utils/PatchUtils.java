@@ -1,8 +1,8 @@
 package exp.au.utils;
 
 import exp.au.envm.Params;
-import exp.libs.utils.os.ThreadUtils;
-import exp.libs.utils.other.StrUtils;
+import exp.libs.utils.concurrent.ThreadUtils;
+import exp.libs.utils.str.StrUtils;
 
 /**
  * <PRE>

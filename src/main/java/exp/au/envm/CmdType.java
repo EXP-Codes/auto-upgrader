@@ -1,6 +1,6 @@
 package exp.au.envm;
 
-import exp.libs.utils.other.StrUtils;
+import exp.libs.utils.str.StrUtils;
 
 /**
  * <PRE>

@@ -4,14 +4,14 @@ import exp.au.Config;
 import exp.au.envm.Params;
 import exp.au.ui.mgr.MakePatchUI;
 import exp.au.utils.PatchUtils;
-import exp.libs.utils.encode.CompressUtils;
-import exp.libs.utils.encode.CryptoUtils;
-import exp.libs.utils.format.TXTUtils;
-import exp.libs.utils.io.FileUtils;
+import exp.libs.encode.CompressUtils;
+import exp.libs.encode.CryptoUtils;
+import exp.libs.ext.format.TXTUtils;
+import exp.libs.ui.SwingUtils;
+import exp.libs.utils.file.FileTemplate;
+import exp.libs.utils.file.FileUtils;
 import exp.libs.utils.other.PathUtils;
-import exp.libs.utils.other.StrUtils;
-import exp.libs.warp.tpl.Template;
-import exp.libs.warp.ui.SwingUtils;
+import exp.libs.utils.str.StrUtils;
 
 /**
  * <PRE>
@@ -44,7 +44,7 @@ public class MakePatch {
 		final String PATCH_ZIP_PATH = SNK_DIR.concat(PATCH_ZIP_NAME);
 		
 		int step = clearStepStatus();
-		if(FileUtils.exists(PATCH_ZIP_PATH) && 
+		if(FileUtils.exists(PATCH_ZIP_PATH) &&
 				!SwingUtils.confirm("补丁已存在, 是否覆盖 ? ")) {
 			return;
 		}
@@ -129,7 +129,7 @@ public class MakePatch {
 	 * @return
 	 */
 	private static boolean _toUpdateXml(String patchDir, String patchName, String releaseTime) {
-		Template tmp = new Template(Config.UPDATE_TPL, Config.DEFAULT_CHARSET);
+		FileTemplate tmp = new FileTemplate(Config.UPDATE_TPL, Config.DEFAULT_CHARSET);
 		tmp.set("patch-name", patchName);
 		tmp.set("release-time", releaseTime);
 		tmp.set("cmds", MakePatchUI.getInstn().getXmlCmds());

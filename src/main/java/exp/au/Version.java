@@ -1,7 +1,7 @@
 package exp.au;
 
-import exp.libs.utils.other.LogUtils;
-import exp.libs.warp.ver.VersionMgr;
+import exp.libs.log.LogUtils;
+import exp.libs.version.VersionMgr;
 
 /**
  * <PRE>

@@ -3,7 +3,7 @@ package exp.au.utils;
 import javax.swing.JLabel;
 
 import exp.au.ui.client.UpgradeUI;
-import exp.libs.utils.other.StrUtils;
+import exp.libs.utils.str.StrUtils;
 
 /**
  * <PRE>

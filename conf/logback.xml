@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <configuration debug="false" scan="false" scanPeriod="60 seconds">
 	<property name="CHARSET" value="utf-8" /><!-- 字符集 -->
-	<property name="LOG_HOME" value="log" /><!-- log目录 -->
+	<property name="LOG_HOME" value="logs" /><!-- log目录 -->
 	<property name="BACKUP" value="${LOG_HOME}/BACKUP/%d{yyyy-MM-dd}" /><!-- 日志备份目录 -->
 	<property name="PATTERN_DEF" value="[%d{yyyy-MM-dd HH:mm:ss SSS}] [%-5p] [%t] [%c{0}:%L] - %m%n" /><!-- 日志输出格式, %c{0} 表示打印logger名，若logger名是一个类路径，则打印最后一个.右边的部分 -->
 

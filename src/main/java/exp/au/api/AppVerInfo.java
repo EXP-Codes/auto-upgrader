@@ -9,12 +9,12 @@ import exp.au.bean.Version;
 import exp.au.core.client.DownPatch;
 import exp.au.envm.Params;
 import exp.libs.envm.Delimiter;
-import exp.libs.utils.io.FileUtils;
-import exp.libs.utils.io.JarUtils;
+import exp.libs.utils.file.FileUtils;
+import exp.libs.utils.file.JarUtils;
 import exp.libs.utils.os.OSUtils;
 import exp.libs.utils.other.PathUtils;
-import exp.libs.utils.other.StrUtils;
-import exp.libs.warp.ver.VersionMgr;
+import exp.libs.utils.str.StrUtils;
+import exp.libs.version.VersionMgr;
 
 /**
  * <PRE>

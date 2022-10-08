@@ -1,8 +1,8 @@
 package exp.au;
 
 import exp.au.ui.mgr.MakePatchUI;
-import exp.libs.utils.other.LogUtils;
-import exp.libs.warp.ui.BeautyEyeUtils;
+import exp.libs.log.LogUtils;
+import exp.libs.ui.BeautyEyeUtils;
 
 /**
  * <PRE>

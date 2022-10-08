@@ -4,127 +4,94 @@
 	<modelVersion>4.0.0</modelVersion>
 
 	<!--项目基本信息(必填)-->
-	<groupId>exp.au</groupId>
+	<groupId>com.exp-blog</groupId>
 	<artifactId>auto-upgrader</artifactId>
-	<version>1.1-SNAPSHOT</version>
+	<version>2.0.0</version>
 	<packaging>jar</packaging>
 
-	<name>软件自动升级插件</name>
-	<description>提供升级包制作界面、升级包发布页面、软件升级接口、软件升级界面</description>
-	<url>https://github.com/lyy289065406/auto-upgrader/trunk</url>
+	<name>auto-upgrader</name>
+	<description>软件自动升级插件: 提供升级包制作界面、升级包发布页面、软件升级接口、软件升级界面</description>
+	<url>https://github.com/lyy289065406/auto-upgrader.git</url>
 	<inceptionYear>2018-04-28</inceptionYear>
 
-	<!--项目的问题管理系统(可选)-->
-	<issueManagement>
-		<system>EXPLIBS-API-ONLINE</system>
-		<url>https://lyy289065406.github.io/api-online/</url>
-	</issueManagement>
-	
-	<!--项目的问题追踪系统(可选)-->
-	<ciManagement>
-		<system>jenkins</system>
-		<url>http://127.0.0.1:8080/jenkins/</url>
-	</ciManagement>
-	
-	<!-- 软件配置管理 -->
 	<scm>
-		<!-- 项目SVN主干目录（需保证目录已存在） -->
-		<connection>scm:svn:https://github.com/lyy289065406/auto-upgrader/trunk</connection>
-		<developerConnection>scm:svn:https://github.com/lyy289065406/auto-upgrader/trunk</developerConnection>
-		<url>scm:svn:https://github.com/lyy289065406/auto-upgrader/trunk</url>
+		<connection>scm:git:https://github.com/lyy289065406/auto-upgrader.git</connection>
+		<developerConnection>scm:git:git@github.com:lyy289065406/auto-upgrader.git</developerConnection>
+		<url>scm:git:https://github.com/lyy289065406/auto-upgrader.git</url>
 	</scm>
 
 	<!-- 变量定义 -->
 	<properties>
-		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<release.dir>${project.build.directory}/${project.artifactId}-${project.version}</release.dir>
+		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<jdk.version>1.8</jdk.version>
-		<explibs.version>1.2-SNAPSHOT</explibs.version>
-		<mrp.plugin.version>1.0</mrp.plugin.version>
+		<exp.libs.version>2.3.0-SNAPSHOT</exp.libs.version>
+		<rpp.plugin.version>2.1.0-SNAPSHOT</rpp.plugin.version>
+		<ut.version>5.9.1</ut.version>
 	</properties>
 
 	<!-- 项目依赖 -->
 	<dependencies>
 	
 		<!-- 经验库 -->
-    	<dependency>
-		  <groupId>exp.libs</groupId>
-		  <artifactId>exp-libs-simple</artifactId>
-		  <version>${explibs.version}</version>
+		<dependency>
+			<groupId>com.exp-blog</groupId>
+			<artifactId>exp-libs-base</artifactId>
+			<version>${exp.libs.version}</version>
 		</dependency>
-		
-		<!-- logback -->
 		<dependency>
-          <groupId>ch.qos.logback</groupId>
-          <artifactId>logback-core</artifactId>
-          <version>1.0.13</version>
-          <scope>runtime</scope>
-        </dependency>
-        <dependency>
-          <groupId>ch.qos.logback</groupId>
-          <artifactId>logback-classic</artifactId>
-          <version>1.0.13</version>
-          <scope>runtime</scope>
-        </dependency>
-        <dependency>
-          <groupId>ch.qos.logback</groupId>
-          <artifactId>logback-access</artifactId>
-          <version>1.0.13</version>
-          <scope>runtime</scope>
-        </dependency>
-		
-		<!-- 单元测试 -->
+			<groupId>com.exp-blog</groupId>
+			<artifactId>exp-libs-net</artifactId>
+			<version>${exp.libs.version}</version>
+		</dependency>
 		<dependency>
-			<groupId>junit</groupId>
-			<artifactId>junit</artifactId>
-			<version>4.8.2</version>
-			<scope>test</scope>
+			<groupId>com.exp-blog</groupId>
+			<artifactId>exp-libs-crypt</artifactId>
+			<version>${exp.libs.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>com.exp-blog</groupId>
+			<artifactId>exp-libs-log</artifactId>
+			<version>${exp.libs.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>com.exp-blog</groupId>
+			<artifactId>exp-libs-ui</artifactId>
+			<version>${exp.libs.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>com.exp-blog</groupId>
+			<artifactId>exp-libs-version</artifactId>
+			<version>${exp.libs.version}</version>
 		</dependency>
 
+		<!-- 单元测试 -->
+		<dependency>
+			<groupId>org.junit.jupiter</groupId>
+			<artifactId>junit-jupiter-engine</artifactId>
+			<version>${ut.version}</version>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.junit.jupiter</groupId>
+			<artifactId>junit-jupiter-api</artifactId>
+			<version>${ut.version}</version>
+			<scope>test</scope>
+		</dependency>
 	</dependencies>
 
 	<!-- 项目构建 -->
 	<build>
 		<plugins>
-
-			<!-- 指定项目JDK版本 -->
+			<!-- 编译 maven 工程 -->
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-compiler-plugin</artifactId>
+				<version>3.10.0</version>
 				<configuration>
 					<source>${jdk.version}</source>
 					<target>${jdk.version}</target>
-				</configuration>
-			</plugin>
-			
-			<!-- 版本打包插件，在dos跳转到项目根目录，依次执行（需保证没有引用快照、本地与SVN服务器内容完全一致）: 
-				1 发布基线到svn: mvn release:prepare 
-				2 发布引用到私服 : mvn release:perform -->
-			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-release-plugin</artifactId>
-				<configuration>
-					<!-- 项目的SVN基线目录（需保证目录已存在） -->
-					<tagBase>https://github.com/lyy289065406/auto-upgrader/tags</tagBase>
-				</configuration>
-			</plugin>
-
-			<!-- 测试插件 -->
-			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-surefire-plugin</artifactId>
-				<configuration>
-					<!-- 解决控制台输出乱码问题 -->
-					<forkMode>once</forkMode>
-					<argLine>-Dfile.encoding=UTF-8</argLine>
-					<systemProperties>
-						<property>
-							<name>net.sourceforge.cobertura.datafile</name>
-							<value>target/cobertura/cobertura.ser</value>
-						</property>
-					</systemProperties>
-					<!-- 项目打包时是否跳过d单元测试 -->
-					<skipTests>true</skipTests>
+					<encoding>${project.build.sourceEncoding}</encoding>
 				</configuration>
 			</plugin>
 			
@@ -132,7 +99,7 @@
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-antrun-plugin</artifactId>
-				<version>1.8</version>
+				<version>3.1.0</version>
 				<executions>
 					<execution>
 						<id>ant-build</id>
@@ -154,9 +121,9 @@
 			
 			<!-- 项目发布插件(自动生成脚本) -->
 			<plugin>
-				<groupId>exp.libs</groupId>
-				<artifactId>mojo-release-plugin</artifactId>
-				<version>${mrp.plugin.version}</version>
+				<groupId>com.exp-blog</groupId>
+				<artifactId>release-project-plugin</artifactId>
+				<version>${rpp.plugin.version}</version>
 				<executions>
 					<execution>
 						<id>mrp</id>
@@ -168,80 +135,32 @@
 							<mavenRepository>D:\mavenRepository</mavenRepository>
 							<verClass>exp.au.Version</verClass>
 							<mainClass>exp.au.PatchInstaller</mainClass>
-							<mainArgs></mainArgs>
 							<charset>UTF-8</charset>
 							<jdkPath>java</jdkPath>
 							<xms>32m</xms>
 							<xmx>256m</xmx>
-							<jdkParams></jdkParams>
 							<noVerJarRegex>exp-?libs-.*</noVerJarRegex> <!-- 不使用版本号的依赖构件(正则式) -->
 							<proguard>false</proguard>  <!-- 是否使用混淆包(需配置混淆打包插件) -->
 						</configuration>
 					</execution>
 				</executions>
 			</plugin>
-			
-			<!-- 打包源码: 项目发布基线版本时会自动打包源码，不要启用此插件，否则会失败 -->
-			<!-- plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-source-plugin</artifactId>
-				<version>2.1.2</version>
-				<executions>
-					<execution>
-						<id>attach-sources</id>
-						<phase>verify</phase>
-						<goals>
-							<goal>jar-no-fork</goal>
-							<goal>test-jar-no-fork</goal>
-						</goals>
-					</execution>
-				</executions>
-			</plugin -->
-
-			<!-- 打包javadoc: 项目发布基线版本时会自动打包javadoc，若报错不要启用此插件 -->
-            <!-- javadoc插件会强制使用GBK读取pom文件的内容, 若得到的html网页标题乱码,  -->
-            <!-- 则需要通过Run Configurations -> 自定义Maven install命令 -> Common -> Encoding:GBK 确保不会乱码 -->
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-javadoc-plugin</artifactId>
-                <configuration>
-                    <aggregate>true</aggregate>
-                    <charset>UTF-8</charset>
-                    <encoding>UTF-8</encoding>
-                    <docencoding>UTF-8</docencoding>
-                    
-                    <!-- 从JDK8开始, Javadoc中添加了doclint, 目的是旨在获得符合W3C HTML 4.01标准规范的HTML文档 -->
-                    <!-- 简而言之Javadoc不允许出现html相关的元素, 若旧注释含有这些元素又不想修改, 只能关闭doclint -->
-                    <additionalOptions>
-                        <additionalOption>-Xdoclint:none</additionalOption>
-                    </additionalOptions>
-                </configuration>
-                <executions>
-                    <execution>
-                        <id>attach-javadocs</id>
-                        <goals>
-                            <goal>jar</goal>
-                        </goals>
-                    </execution>
-                </executions>
-            </plugin>
-
 		</plugins>
 	</build>
 
-	<!-- 项目发布管理 -->
+	<!-- deploy 的目标服务器 -->
 	<distributionManagement>
-	
-		<!-- 私服地址 ，基线仓库 -->
-		<repository>
-			<id>Releases</id>
-			<url>http://127.0.0.1:8081/nexus/content/repositories/releases</url>
-		</repository>
-		
-		<!-- 私服地址 ，快照仓库 -->
+
+		<!-- sonatype 的快照仓库 -->
 		<snapshotRepository>
-			<id>Snapshots</id>
-			<url>http://127.0.0.1:8081/nexus/content/repositories/snapshots</url>
+			<id>sonatype</id>
+			<url>https://s01.oss.sonatype.org/content/repositories/snapshots/</url>
 		</snapshotRepository>
+
+		<!-- sonatype 的正式仓库 -->
+		<repository>
+			<id>sonatype</id>
+			<url>https://s01.oss.sonatype.org/service/local/staging/deploy/maven2/</url>
+		</repository>
 	</distributionManagement>
 </project>
