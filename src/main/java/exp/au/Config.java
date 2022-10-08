@@ -30,7 +30,7 @@ public class Config {
 	
 	public final static String PATCH_DOWN_DIR = "./patches/";
 	
-	public final static String PATCH_PAGE_DIR = "./patches-for-page/";
+	public final static String PATCH_PAGE_DIR = "./docs/patches-for-page/";
 	
 	private final static String TPL_PACKAGE = "/exp/au/core/mgr/";
 	
@@ -42,7 +42,7 @@ public class Config {
 	
 	public final static String UPDATE_TPL = TPL_PACKAGE.concat("update.tpl");
 	
-	public final static String PAGE_PATH = "./index.html";
+	public final static String PAGE_PATH = "./docs/index.html";
 	
 	private static volatile Config instance;
 	
