@@ -70,7 +70,7 @@
 <dependency>
     <groupId>com.exp-blog</groupId>
     <artifactId>auto-upgrader</artifactId>
-    <version>2.0.0-SNAPSHOT</version>
+    <version>${LATEST_VERSION}</version>
 </dependency>
 ```
 
