@@ -14,7 +14,9 @@
   <div> 
    <br />
    <h2>SOFTWARE-PATCH-LIST</h2> 
-   <br /> 
+   <br />
+   (<a href="./javadocs/index.html" target="_blank">Javadoc</a>)
+   <br />
    
 @{tables}@
   </div>  
