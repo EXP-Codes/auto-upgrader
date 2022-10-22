@@ -1,0 +1,44 @@
+name: Automatically deploy to sonatype
+on:
+  # 手动触发构建
+  workflow_dispatch:
+
+  # （从版本分支）创建 release 的时候触发 （release 版）
+  release:
+    types: [published]
+
+  # 把特性分支合并到 v* 版本分支时触发 （snapshot 版）
+  pull_request:
+    branches: [v*]
+
+  # 推送特性分支时触发 （snapshot 版）
+#  push:
+#    branches: [feature-*]
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      # 拉取仓库
+      - name: Check out repo
+        uses: actions/checkout@v2
+
+      # 设置 Java 环境
+      - name: Set up Java env
+        uses: actions/setup-java@v1
+        with:
+          java-version: 1.8
+          server-id: sonatype                 # 要与 distributionManagement 定义的 id 一致
+          server-username: MAVEN_USERNAME
+          server-password: MAVEN_CENTRAL_TOKEN
+          gpg-passphrase: MAVEN_GPG_PASSPHRASE
+          gpg-private-key: ${{ secrets.GPG_PRIVATE_KEY }}
+
+      # 发布 Jar 到 Maven 中央仓库
+      - name: Publish to Sonatype Maven Central
+        run: mvn clean deploy -P autoDeploy   # 指定使用 pom.xml 的 <profile>.<id>autoDeploy</id> 配置进行发布
+        env:
+          MAVEN_USERNAME: ${{ secrets.SONATYPE_USERNAME }}
+          MAVEN_CENTRAL_TOKEN: ${{ secrets.SONATYPE_PASSWORD }}
+          MAVEN_GPG_PASSPHRASE: ${{ secrets.GPG_PASSPHRASE_KEY }}

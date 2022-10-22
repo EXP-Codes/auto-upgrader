@@ -1,0 +1,36 @@
+name: Automatically Generate Javadoc
+on:
+  # 支持手动触发构建
+  workflow_dispatch:
+
+  # 把版本分支合并到 master 时触发
+#  pull_request:
+#    branches: [ master ]
+
+  # 推送版本分支时触发
+  push:
+    branches: [v*]
+
+jobs:
+  javadoc:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Check out repo
+        uses: actions/checkout@v2
+
+      - name: Set up JDK 1.8
+        uses: actions/setup-java@v1
+        with:
+          java-version: 1.8
+
+      - name: Generate Javadoc
+        run: bin/gen_javadoc.sh
+
+      - name: Deploy Javadoc
+        run: |-
+          git config --global user.email "github-bot@example.com"
+          git config --global user.name "Github-Bot"
+          git add -A
+          git commit -m "Updated by Github Bot" || exit 0
+          git push
